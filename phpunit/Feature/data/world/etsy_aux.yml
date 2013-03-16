@@ -1,0 +1,6 @@
+staff:
+  -
+    id: 3
+    auth_username: 'staff_member'
+    create_date: 0
+    update_date: 0

@@ -1,0 +1,14 @@
+users_index:
+ -
+   user_id: 1
+   user_shard: 1
+   login_name: peter
+   primary_email: foo@etsycorp.com
+   is_admin: 0
+ -
+   user_id: 2
+   user_shard: 1
+   login_name: paul
+   primary_email: bar@etsycorp.com
+   is_admin: 1
+
