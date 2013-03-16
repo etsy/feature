@@ -61,8 +61,6 @@ class Feature_Config {
             $stanza = array(self::ENABLED => $stanza);
         }
 
-        $this->lint($stanza);
-
         // Pull stuff from the config stanza.
         $this->_description         = $this->parseDescription($stanza);
         $this->_enabled             = $this->parseEnabled($stanza);
@@ -75,29 +73,6 @@ class Feature_Config {
 
         // Put the _enabled value into a more useful form for actually doing bucketing.
         $this->_percentages = $this->computePercentages();
-    }
-
-    /*
-     * Do any checking we want to detect possibly malformed
-     * configurations and log errors that hopefully folks will notice
-     * in Supergrep.
-     */
-    private function lint($stanza) {
-        // One easy to make mistake is to use the old-style syntax in the new_config section like this:
-        // $server_config['new_config']['busted_config'] = array(
-        //   'enabled' => 'rampup',
-        //   'rampup' => array('foo' => 10, 'bar' => 20)
-        // );
-        //
-        // with the unfortunate result of enabling the feature for
-        // everyone (with the variant named 'rampup'). This checks for
-        // that.
-        $enabled = Std::arrayVar($stanza, self::ENABLED, 0);
-        $rampup  = Std::arrayVar($stanza, 'rampup', null);
-
-        if ($enabled === 'rampup' && $rampup) {
-            $this->error('Old-style config syntax detected in Feature configuration');
-        }
     }
 
     ////////////////////////////////////////////////////////////////////////
