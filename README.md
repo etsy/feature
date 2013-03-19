@@ -54,23 +54,40 @@ It is an error (and will be logged as such) to ask for the variant of
 a feature that is not enabled. So the calls to variant should always
 be guarded by an `Feature::isEnabled` check.
 
-The API also provides another pair of methods that will be used much
-less frequently:
+The API also provides two other pairs of methods that will be used
+much less frequently:
 
     Feature::isEnabledFor('my_feature', $user)
 
     Feature::variantFor('my_feature', $user)
 
-These methods exist only to support a very specific use-case: when we
-want to enable or disable a feature based not on the user making the
-request but on some other user. The canonical case is if we wanted to
+and
+
+    Feature::isEnabledBucketingBy('my_feature', $bucketingID)
+
+    Feature::variantBucketingBy('my_feature', $bucketingID)
+
+These methods exist only to support a couple very specific use-cases:
+when we want to enable or disable a feature based not on the user
+making the request but on some other user or when we want to bucket a
+percentage of executions based on something entirely other than a
+user.) The canonical case for the former, at Etsy, is if we wanted to
 change something about how we deal with listings and instead of
 enabling the feature for only some users but for all listings those
 users see, but instead we want to enable it for all users but for only
 some of the listings. Then we could use `isEnabledFor` and
 `variantFor` and pass in the user object representing the owner of the
-listing. In general it is much more likely you want to use the plain
-old `isEnabled` and `variant` methods.
+listing. That would also allow us to enable the feature for specific
+listing owners. The `bucketingBy` methods serve a similar purpose
+except when there either is no relevant user or where we don't want to
+always put the same user in the same bucket. Thus if we wanted to
+enable a certain feature for 10% of all listings displayed,
+independent of both the user making the request and the user who owned
+the listing, we could use `isEnabledBucketingBy` with the listing id
+as the bucketing ID.
+
+In general it is much more likely you want to use the plain old
+`isEnabled` and `variant` methods.
 
 For Smarty templates, where static methods can’t readily be called,
 there is an object, `$feature`, wired up in Tpl.php that exposes the
