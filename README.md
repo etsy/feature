@@ -177,7 +177,7 @@ This is kind of a funny edge case. It could also be written:
 
 since a missing `'enabled'` is defaulted to 0.
 
-** Configuration details
+## Configuration details
 
 Each feature’s config stanza controls when the feature is enabled and
 what variant should be used when it is.
@@ -324,7 +324,7 @@ Note, however, that removing the `'enabled'` property does mostly turn
 off the feature it doesn’t completely disable it as it could still be
 enabled via an `'admin'` property, etc.
 
-** Precedence:
+## Precedence:
 
 The precedence of the various mechanisms for enabling a feature are as
 follows.
@@ -361,7 +361,7 @@ follows.
   - Otherwise, the request is bucketed and a variant is chosen so that
     the correct percentage of bucketed requests will see each variant.
 
-** Errors
+## Errors
 
 There are a few ways to misuse the Feature API or misconfigure a
 feature that may be detected and logged. (Some of these are not
@@ -393,7 +393,7 @@ currently detected but may be in the future.)
   1. When `'enabled'` is an array, setting the `'admin'` or
     `'internal'` property to a value that is not a key in `'enabled'`.
 
-** The life cycle of a feature
+## The life cycle of a feature
 
 The Feature API was designed with a eye toward making it a bit easier
 for us to push features through a predictable life cycle wherein a
@@ -505,7 +505,7 @@ Here’s what will happen in those cases:
 
   1. Promote, cleanup, or re-experiment as appropriate.
 
-** A few style guidelines
+## A few style guidelines
 
 To make it easier to push features through this life cycle there are a
 few coding guidelines to observe.
