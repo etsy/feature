@@ -18,13 +18,10 @@ class Feature_World {
     }
 
     /*
-     * Get the config value for the given key. For the moment we
-     * always look under the new_config section of the config
-     * file. Eventually (once we've excised all the old-style configs)
-     * we'll move them up and take out the new_config prefix.
+     * Get the config value for the given key.
      */
     public function configValue($name, $default = null) {
-        return Etsy_ServerConfig::getInstance()->getFeatureValue("new_config.$name", $default);
+        return Etsy_ServerConfig::getInstance()->getFeatureValue($name, $default);
     }
 
     /**

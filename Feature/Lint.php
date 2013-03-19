@@ -40,11 +40,9 @@ class Feature_Lint {
     }
 
     public function run($file = null) {
-        $new_config = $file
-            ? $this->fromFile($file)
-            : Etsy_ServerConfig::getInstance()->getFeatureValue("new_config");
-        $this->assert($new_config, "*** Bad configuration.");
-        $this->lintNested($new_config);
+        $config = $this->fromFile($file);
+        $this->assert($config, "*** Bad configuration.");
+        $this->lintNested($config);
     }
 
     public function checked() {
@@ -62,7 +60,7 @@ class Feature_Lint {
         $r = eval('?>' . $content);
         error_reporting(-1);
         if ($r === null) {
-            return $server_config['new_config'];
+            return $server_config;
         } else if ($r === false) {
             return false;
         } else {

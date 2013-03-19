@@ -103,38 +103,29 @@ complete syntax of the feature configuration stanzas, here are some of
 the more common cases along with the most concise way to write the
 configuration.
 
-**Note:** In order to support both the new and old configuration APIs,
-all features using the new API should, for now, put their
-configuration flags in the `'new_config'` section of `$server_config`
-as shown in these examples. You do *not* need to include `new_config`
-in the name you pass to `Feature::isEnabled` or `Feature::variant`.
-Eventually the old APIs will be removed and we will move all the
-`new_config` configurations up to the top-level, but you don’t need to
-worry about that.
-
 ### A totally enabled feature:
 
-    $server_config['new_config']['foo'] = 'on';
+    $server_config['foo'] = 'on';
 
 ### A totally disabled feature:
 
-    $server_config['new_config']['foo'] = 'off';
+    $server_config['foo'] = 'off';
 
 ### Feature with winning variant turned on for everyone
 
-    $server_config['new_config']['foo'] = 'blue_background';
+    $server_config['foo'] = 'blue_background';
 
 ### Feature enabled only for admins:
 
-    $server_config['new_config']['foo'] = array('admin' => 'on');
+    $server_config['foo'] = array('admin' => 'on');
 
 ### Single-variant feature ramped up to 1% of users.
 
-    $server_config['new_config']['foo'] = array('enabled' => 1);
+    $server_config['foo'] = array('enabled' => 1);
 
 ### Multi-variant feature ramped up to 1% of users for each variant.
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'enabled' => array(
            'blue_background'   => 1,
            'orange_background' => 1,
@@ -144,39 +135,39 @@ worry about that.
 
 ### Enabled for a single specific user.
 
-    $server_config['new_config']['foo'] = array('users' => 'fred');
+    $server_config['foo'] = array('users' => 'fred');
 
 ### Enabled for a few specific users.
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'users' => array('fred', 'barney', 'wilma', 'betty'),
     );
 
 ### Enabled for a specific group
 
-    $server_config['new_config']['foo'] = array('groups' => 1234);
+    $server_config['foo'] = array('groups' => 1234);
 
 ### Enabled for 10% of regular users and all admin.
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'enabled' => 10,
        'admin' => 'on',
     );
 
 ### Feature ramped up to 1% of requests, bucketing at random rather than by user
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'enabled' => 1,
        'bucketing' => 'random',
     );
 
 ### Single-variant feature in 50/50 A/B test
 
-    $server_config['new_config']['foo'] = array('enabled' => 50);
+    $server_config['foo'] = array('enabled' => 50);
 
 ### Multi-variant feature in A/B test with 20% of users seeing each variant (and 40% left in control group).
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'enabled' => array(
            'blue_background'   => 20,
            'orange_background' => 20,
@@ -186,11 +177,11 @@ worry about that.
 
 ### New feature intended only to be enabled by adding ?features=foo to a URL
 
-    $server_config['new_config']['foo'] = array('enabled' => 0);
+    $server_config['foo'] = array('enabled' => 0);
 
 This is kind of a funny edge case. It could also be written:
 
-    $server_config['new_config']['foo'] = array();
+    $server_config['foo'] = array();
 
 since a missing `'enabled'` is defaulted to 0.
 
@@ -237,11 +228,11 @@ of the `'users'` or `'groups'` property can simply be the value that
 should be assigned to the `'on'` variant. So using both shorthands,
 these are equivalent:
 
-    $server_config['new_config']['foo'] => array('users' => array('on' => array('fred')));
+    $server_config['foo'] => array('users' => array('on' => array('fred')));
 
 and:
 
-    $server_config['new_config']['foo'] => array('users' => 'fred');
+    $server_config['foo'] => array('users' => 'fred');
 
 None of these four properties have any effect if `'enabled'` is a
 string since in those cases the feature is considered either entirely
@@ -286,15 +277,15 @@ Finally, two last shorthands:
 First, a config stanza with only the key `'enabled'` and a string
 value can be replaced with just the string. So:
 
-    $server_config['new_config']['foo'] = array('enabled' => 'on');
-    $server_config['new_config']['bar'] = array('enabled' => 'off');
-    $server_config['new_config']['baz'] = array('enabled' => 'some_variant');
+    $server_config['foo'] = array('enabled' => 'on');
+    $server_config['bar'] = array('enabled' => 'off');
+    $server_config['baz'] = array('enabled' => 'some_variant');
 
 Can be written simply:
 
-    $server_config['new_config']['foo'] = 'on';
-    $server_config['new_config']['bar'] = 'off';
-    $server_config['new_config']['baz'] = 'some_variant';
+    $server_config['foo'] = 'on';
+    $server_config['bar'] = 'off';
+    $server_config['baz'] = 'some_variant';
 
 And second, if a feature config is missing entirely, it’s equivalent
 to specifying it as `'off'`. This allows dark changes to include code
@@ -308,13 +299,13 @@ turn off an existing feature in an emergency would be to set
 `'enabled'` to `'off'`. To facilitate that, we should try to keep the
 `'enabled'` value on one line, whenever possible. Thus:
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'enabled' => array('foo' => 10, 'bar' => 10),
     );
 
 rather than
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'enabled' => array(
            'foo' => 10,
            'bar' => 10
@@ -323,13 +314,13 @@ rather than
 
 so that the bleary-eyed, junior ops person at 3am can do this:
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'enabled' => 'off', // array('foo' => 10, 'bar' => 10),
     );
 
 rather than this, which breaks the config file:
 
-    $server_config['new_config']['foo'] = array(
+    $server_config['foo'] = array(
        'enabled' => 'off', // array(
            'foo' => 10,
            'bar' => 10
