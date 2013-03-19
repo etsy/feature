@@ -231,7 +231,7 @@ class Feature {
     /**
      * Get the list of selections that have been made as an array of
      * (feature_name, variant_name, selector) arrays. This can be used
-     * to include information about what features were associated with
+     * to record information about what features were associated with
      * what variants and why during the course of handling a request.
      */
     public static function selections () {
