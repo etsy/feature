@@ -250,8 +250,7 @@ signed-in user id. Currently we fall back to bucketing by UAID if the
 user is not signed in but this is problematic since it means that a
 user can switch buckets if they sign in or out. (We may change the
 behavior of this bucketing scheme to simply disable the feature for
-users who are not signed in. With that in mind, this bucketing scheme
-should, for now, only be used after consulting with peter@etsy.com.)
+users who are not signed in.)
 
 Finally the bucketing value `'random'`, causes each request to be
 bucketed independently meaning that the same user will be in different
@@ -517,8 +516,7 @@ particular feature is checked. If you find yourself creating feature
 names at run time and then checking them, you’re probably abusing the
 Feature system. Chances are in such a case you don’t really want to be
 using the Feature API but rather simply driving your code with some
-plain old config data. If you don’t see it, talk to peter@etsy.com
-about why what you’re doing seems necessary.
+plain old config data.
 
 Second, the results of the Feature methods should not be cached, such
 as by calling `Feature::isEnabled` once and storing the result in an
