@@ -285,8 +285,7 @@ class Feature_Config {
      * false otherwise.
      */
     private function variantForUser ($userID) {
-        $isValid = (boolean)$userID || Etsy_ServerConfig::isAtlasRequest();
-        if ($isValid && $this->_users) {
+        if ($this->_users) {
             $name = $this->_world->userName($userID);
             if ($name && array_key_exists($name, $this->_users)) {
                 return array($this->_users[$name], 'u');
@@ -370,7 +369,7 @@ class Feature_Config {
     // Configuration parsing
 
     private function parseDescription ($stanza) {
-        return Std::arrayVar($stanza, self::DESCRIPTION, 'No description.');
+        return Feature_Util::arrayGet($stanza, self::DESCRIPTION, 'No description.');
     }
 
     /*
@@ -378,7 +377,7 @@ class Feature_Config {
      */
     private function parseEnabled ($stanza) {
 
-        $enabled = Std::arrayVar($stanza, self::ENABLED, 0);
+        $enabled = Feature_Util::arrayGet($stanza, self::ENABLED, 0);
 
         if (is_numeric($enabled)) {
             if ($enabled < 0) {
@@ -428,7 +427,7 @@ class Feature_Config {
      * or group names to they variant they should see.
      */
     private function parseUsersOrGroups ($stanza, $what) {
-        $value = Std::arrayVar($stanza, $what);
+        $value = Feature_Util::arrayGet($stanza, $what);
         if (is_string($value) || is_numeric($value)) {
             // Users are configrued with their user names. Groups as
             // numeric ids. (Not sure if that's a great idea.)
@@ -468,7 +467,7 @@ class Feature_Config {
      * enabled map unless enabled is 'on' or 'off'.
      */
     private function parseVariantName ($stanza, $what) {
-        $value = Std::arrayVar($stanza, $what);
+        $value = Feature_Util::arrayGet($stanza, $what);
         if ($value) {
             if (is_array($this->_enabled)) {
                 if (array_key_exists($value, $this->_enabled)) {
@@ -485,11 +484,11 @@ class Feature_Config {
     }
 
     private function parsePublicURLOverride ($stanza) {
-        return Std::arrayVar($stanza, self::PUBLIC_URL_OVERRIDE, false);
+        return Feature_Util::arrayGet($stanza, self::PUBLIC_URL_OVERRIDE, false);
     }
 
     private function parseBucketBy ($stanza) {
-        return Std::arrayVar($stanza, self::BUCKETING, self::UAID);
+        return Feature_Util::arrayGet($stanza, self::BUCKETING, self::UAID);
     }
 
     ////////////////////////////////////////////////////////////////////////

@@ -108,8 +108,8 @@ class Feature_Lint {
     }
 
     private function checkForOldstyle($stanza) {
-        $enabled = Std::arrayVar($stanza, Feature_Config::ENABLED, 0);
-        $rampup  = Std::arrayVar($stanza, 'rampup', null);
+        $enabled = Feature_Util::arrayGet($stanza, Feature_Config::ENABLED, 0);
+        $rampup  = Feature_Util::arrayGet($stanza, 'rampup', null);
         $this->assert($enabled !== 'rampup' || !$rampup, "Old-style config syntax detected.");
     }
 

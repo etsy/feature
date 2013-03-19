@@ -40,9 +40,9 @@ class Feature_JSON {
             $value = array('enabled' => $value);
         }
 
-        $enabled = Std::arrayVar($value, 'enabled', 0);
-        $users   = self::expandUsersOrGroups(Std::arrayVar($value, 'users', array()));
-        $groups  = self::expandUsersOrGroups(Std::arrayVar($value, 'groups', array()));
+        $enabled = Feature_Util::arrayGet($value, 'enabled', 0);
+        $users   = self::expandUsersOrGroups(Feature_Util::arrayGet($value, 'users', array()));
+        $groups  = self::expandUsersOrGroups(Feature_Util::arrayGet($value, 'groups', array()));
 
         if ($enabled === 'off') {
             $spec['variants'][] = self::makeVariantWithUsersAndGroups('on', 0, $users, $groups);

@@ -217,11 +217,10 @@ class Feature {
     }
 
     /**
-     * N.B. This method is for testing only. In fact it should
-     * probably only be called from Testing_EtsyConfig::setForTest,
-     * which it is. (The issue is that once a Feature has been checked
-     * once, the result of the check is cached but in testing we need
-     * to change the configuration.)
+     * N.B. This method is for testing only. (The issue is that once a
+     * Feature has been checked once, the result of the check is
+     * cached but in tests we need to change the configuration and
+     * have those changes be reflected in feature checks.)
      */
     public static function clearCacheForTests() {
         self::$configCache = array();

@@ -21,23 +21,21 @@ class Feature_World {
      * Get the config value for the given key.
      */
     public function configValue($name, $default = null) {
-        return Etsy_ServerConfig::getInstance()->getFeatureValue($name, $default);
+        return $default; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
      * UAID of the current request.
      */
     public function uaid() {
-        $uaid = UAIDCookie::getSecureCookie();
-        return $uaid ? $uaid->get('uaid') : null;
+        return null; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
-     * User ID of the currently logged in user or null. Doesn't need
-     * the ORM.
+     * User ID of the currently logged in user or null.
      */
     public function userID () {
-        return Std::loggedUser();
+        return null; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
@@ -46,12 +44,7 @@ class Feature_World {
      * passed in userID and return instead the Atlas user name.
      */
     public function userName ($userID) {
-        if (Etsy_ServerConfig::isAtlasRequest()) {
-            return Atlas_Admin::getAuthUsername();
-        } else {
-            $user = EtsyORM::getFinder('User')->findRecord($userID);
-            return $user ? strtolower($user->login_name) : null;
-        }
+        return null; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
@@ -62,11 +55,7 @@ class Feature_World {
      * name.)
      */
     public function inGroup ($userID, $groupID) {
-        if (Etsy_ServerConfig::isAtlasRequest()) {
-            // Atlas user IDs are taken from a different space
-            return false;
-        }
-        return EtsyModel_GroupMembership::hasActiveMembership($userID, $groupID);
+        return null; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
@@ -76,45 +65,14 @@ class Feature_World {
      * currently logged in user or some other user.
      */
     public function isAdmin ($userID) {
-        // If the UAID cookie belongs to the relevant user we can
-        // check whether they are an admin without involving the
-        // ORM. In cases where we are checking for a different user we
-        // will end up using the ORM. There is, it seems, an edge case
-        // where a user who logs out and back in as a different user
-        // doesn't get a new UAID cookie so user id stored in the
-        // cookie won't match the user id passed in which came from
-        // Std::loggedUser(). (My understanding is that this is on
-        // purpose so that we can detect the same person (or browser,
-        // anyway) logging in as lots of different users.)
-        //
-        // In that case we return false so that we can guarantee that
-        // code inside the ORM can safely use feature checks and
-        // enable those features for admin as long. (Note, however,
-        // that it can only use isEnabled/variant and not
-        // isEnabledFor/variantFor.)
-
-        if ($userID) {
-            $uaid = UAIDCookie::getSecureCookie();
-            if (
-                $uaid instanceof SecureCookie && //could be null if not previously initialised
-                $userID == Std::loggedUser() && //comes from a global, could differ from cookie-sourced value
-                !is_null($uaid->get(UAIDCookie::USER_ID_ATTRIBUTE)) //check there's a user_id to compare against
-            ) {
-                return $uaid->get(UAIDCookie::USER_ID_ATTRIBUTE) == $userID &&
-                    $uaid->get(UAIDCookie::ADMIN_ATTRIBUTE) == '1';
-            } else if ($user = EtsyORM::getFinder('User')->findRecord($userID)) {
-                return $user->isAdmin() || $user->isBoardMember();
-            }
-        }
-
-        return false;
+        return false; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
      * Is this an internal request?
      */
     public function isInternalRequest () {
-        return HTTP_Request::getInstance()->isInternal();
+        return false; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /*
