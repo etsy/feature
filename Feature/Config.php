@@ -507,6 +507,6 @@ class Feature_Config {
     }
 
     private function error ($message) {
-        Logger::log_error($message . ": feature " . $this->_name, __CLASS__);
+        // IMPLEMENT FOR YOUR CONTEXT
     }
 }
