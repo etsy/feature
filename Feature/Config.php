@@ -8,36 +8,19 @@
  */
 class Feature_Config {
 
-    /* Keys used in a feature configuration. */
-    const DESCRIPTION         = 'description';
-    const ENABLED             = 'enabled';
-    const USERS               = 'users';
-    const GROUPS              = 'groups';
-    const ADMIN               = 'admin';
-    const INTERNAL            = 'internal';
-    const PUBLIC_URL_OVERRIDE = 'public_url_override';
-    const BUCKETING           = 'bucketing';
+    /* Standard keys used in a feature configuration. */
+    const ENABLED   = 'enabled';
+    const BUCKETING = 'bucketing';
 
     /* Special values for enabled property. */
     const ON  = 'on';  /* Feature is fully enabled. */
     const OFF = 'off'; /* Feature is fully disabled. */
 
-    /* Bucketing schemes. */
-    const UAID   = 'uaid';
-    const USER   = 'user';
-    const RANDOM = 'random';
-
     private $_name;
     private $_cache;
     private $_world;
 
-    private $_description;
     private $_enabled;
-    private $_users;
-    private $_groups;
-    private $_adminVariant;
-    private $_internalVariant;
-    private $_public_url_override;
     private $_bucketing;
 
     private $_percentages;
@@ -62,14 +45,8 @@ class Feature_Config {
         }
 
         // Pull stuff from the config stanza.
-        $this->_description         = $this->parseDescription($stanza);
-        $this->_enabled             = $this->parseEnabled($stanza);
-        $this->_users               = $this->parseUsersOrGroups($stanza, self::USERS);
-        $this->_groups              = $this->parseUsersOrGroups($stanza, self::GROUPS);
-        $this->_adminVariant        = $this->parseVariantName($stanza, self::ADMIN);
-        $this->_internalVariant     = $this->parseVariantName($stanza, self::INTERNAL);
-        $this->_public_url_override = $this->parsePublicURLOverride($stanza);
-        $this->_bucketing           = $this->parseBucketBy($stanza);
+        $this->_enabled   = $this->parseEnabled($stanza);
+        $this->_bucketing = $this->parseBucketBy($stanza);
 
         // Put the _enabled value into a more useful form for actually doing bucketing.
         $this->_percentages = $this->computePercentages();
@@ -487,7 +464,7 @@ class Feature_Config {
         return Feature_Util::arrayGet($stanza, self::PUBLIC_URL_OVERRIDE, false);
     }
 
-    private function parseBucketBy ($stanza) {
+    private function parseStringValue ($stanza, $default) {
         return Feature_Util::arrayGet($stanza, self::BUCKETING, self::UAID);
     }
 
