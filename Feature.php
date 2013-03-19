@@ -227,22 +227,15 @@ class Feature {
         self::$configCache = array();
     }
 
+
+    /**
+     * Get the list of selections that have been made as an array of
+     * (feature_name, variant_name, selector) arrays. This can be used
+     * to include information about what features were associated with
+     * what variants and why during the course of handling a request.
+     */
     public static function selections () {
         return self::world()->selections();
-    }
-
-    // For now, when getting the GA selections we need to mix in the
-    // selections from the old-style configs. Once we get rid of the
-    // AB2 code, the one place this function is used can use
-    // selections() directly.
-    public static function gaSelections () {
-        $selections = self::selections();
-
-        $oldstyle = explode('..', AB2_Logger_EtsyLoggers::ga()->selections());
-        foreach ($oldstyle as $s) {
-            $selections[] = explode('.', $s);
-        }
-        return $selections;
     }
 
     /**
