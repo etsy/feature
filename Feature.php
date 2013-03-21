@@ -6,21 +6,13 @@
  *
  * Primary public API:
  *
- *   Feature::isEnabled('foo');
- *   Feature::variant('foo');
+ *   Feature::isEnabled('foo', $data = null);
+ *   Feature::variant('foo', $data = null);
  *
- * For cases when we want to bucket on a user other than the currently
- * logged in user (e.g. to bucket how we treat listings by their
- * owners) this secondary API is available:
- *
- *   Feature::isEnabledFor('foo', $user);
- *   Feature::variantFor('foo', $user);
- *
- * And for case when we want to bucket on something else entirely
- * (such as a shop ID), we provide these two methods:
- *
- *   Feature::isEnabledBucketingBy('foo', $bucketingID);
- *   Feature::variantBucketingBy('foo', $bucketingID);
+ * What the $data value should be depends on the experiment unit the
+ * feature is configured to use. Often the default experimental unit
+ * will simply be based on something in the global environment such as
+ * a web request from which we can obtain user information.
  *
  * In addition, in order to support Smarty templates, which can't call
  * static methods, the getInstance() method returns a singleton object
@@ -45,56 +37,22 @@ class Feature {
     }
 
     /**
-     * Test whether the named feature is enabled for the current user.
+     * Test whether the named feature is enabled.
      *
      * @static
      * @param string $name the config key for this feature.
      * @return bool
      */
-    public static function isEnabled ($name) {
-        return self::fromConfig($name)->isEnabled();
+    public static function isEnabled ($name, $data = null) {
+        return self::fromConfig($name)->isEnabled($data);
     }
 
-    /**
-     * Test whether the named feature is enabled for a given
-     * user. This method should only be used when we want to bucket
-     * based on a user other than the current logged in user, e.g. if
-     * we are bucketing different listings based on their owner.
-     *
-     * @static
-     * @param string $name the config key for this feature.
-     *
-     * @param $user A user object whose id will be combined with $name
-     * and hashed to get the bucketing.
-     *
-     * @return bool
-     */
-    public static function isEnabledFor($name, $user) {
-        return self::fromConfig($name)->isEnabledFor($user);
-    }
 
     /**
-     * Test whether the named feature is enabled for a given
-     * arbitrary string. This method should only be used when we want to bucket
-     * based on something other than a user, e.g. shops, teams, treasuries, tags, etc.
-     *
-     * @static
-     * @param string $name the config key for this feature.
-     *
-     * @param $string A string which will be combined with $name
-     * and hashed to get the bucketing.
-     *
-     * @return bool
-     */
-    public static function isEnabledBucketingBy($name, $string) {
-        return self::fromConfig($name)->isEnabledBucketingBy($string);
-    }
-
-    /**
-     * Get the name of the A/B variant for the named feature for the
-     * current user. Logs an error if called when isEnabled($name)
-     * doesn't return true. (I.e. calls to this method should only
-     * occur in blocks guarded by an isEnabled check.)
+     * Get the name of the A/B variant for the named feature. Logs an
+     * error if called when isEnabled($name) doesn't return true.
+     * (I.e. calls to this method should only occur in blocks guarded
+     * by an isEnabled check.)
      *
      * Also logs an error if 'enabled' is 'on' for the named feature
      * since there should be no variant-dependent code left when a
@@ -105,69 +63,8 @@ class Feature {
      * @static
      * @param string $name the config key for the feature.
      */
-    public static function variant($name) {
-        return self::fromConfig($name)->variant();
-    }
-
-    /**
-     * Get the name of the A/B variant for the named feature for the
-     * given user. This method should only be used when we want to
-     * bucket based on a user other than the current logged in user,
-     * e.g. if we are bucketing different listings based on their
-     * owner.
-     *
-     * Logs an error if called when isEnabledFor($name, $user) doesn't
-     * return true. (I.e. calls to this method should only occur in
-     * blocks guarded by an isEnabledFor check.)
-
-     * Also logs an error if 'enabled' is 'on' for the named feature
-     * since there should be no variant-dependent code left when a
-     * feature has been fully enabled. To clean up a finished
-     * experiment, first set 'enabled' to the name of the winning
-     * variant.
-     *
-     * @static
-     *
-     * @param string $name the config key for the feature.
-     *
-     * @param $user A user object whose id will be combined with $name
-     * and hashed to get the bucketing.
-     */
-    public static function variantFor($name, $user) {
-        return self::fromConfig($name)->variantFor($user);
-    }
-
-    /**
-     * Get the name of the A/B variant for the named feature,
-     * bucketing by the given bucketing ID. (For other checks such as
-     * admin, and user whitelists uses the current user which may or
-     * may not make sense. If it doesn't make sense, don't configure
-     * the feature to use those mechanisms.) Logs an error if called
-     * when isEnabled($name) doesn't return true. (I.e. calls to this
-     * method should only occur in blocks guarded by an isEnabled
-     * check.)
-     *
-     * Also logs an error if 'enabled' is 'on' for the named feature
-     * since there should be no variant-dependent code left when a
-     * feature has been fully enabled. To clean up a finished
-     * experiment, first set 'enabled' to the name of the winning
-     * variant.
-     *
-     * @static
-     *
-     * @param string $name the config key for the feature.
-     *
-     * @param string $bucketingID A string to use as the bucketing ID.
-     */
-    public static function variantBucketingBy($name, $bucketingID) {
-        return self::fromConfig($name)->variantBucketingBy($bucketingID);
-    }
-
-    /*
-     * Description of the feature.
-     */
-    public static function description ($name) {
-        return self::fromConfig($name)->description();
+    public static function variant($name, $data = null) {
+        return self::fromConfig($name)->variant($data);
     }
 
     /**

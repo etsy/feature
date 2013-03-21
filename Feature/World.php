@@ -10,6 +10,8 @@
  */
 class Feature_World {
 
+    const DEFAULT_UNIT = 'request';
+
     private $_logger;
     private $_selections = array();
 
@@ -18,68 +20,26 @@ class Feature_World {
     }
 
     /*
+     * Get an ExperimentalUnit object.
+     */
+    public function unit($unit = null) {
+        if (is_null($unit)) {
+            $unit = self::DEFAULT_UNIT;
+        }
+
+        switch ($unit) {
+        case 'request':
+            return new Feature_EtsyRequestUnit();
+        default:
+            throw new InvalidArgumentException("Bad unit type: $unit");
+        }
+    }
+
+    /*
      * Get the config value for the given key.
      */
     public function configValue($name, $default = null) {
         return $default; // IMPLEMENT FOR YOUR CONTEXT
-    }
-
-    /**
-     * UAID of the current request.
-     */
-    public function uaid() {
-        return null; // IMPLEMENT FOR YOUR CONTEXT
-    }
-
-    /**
-     * User ID of the currently logged in user or null.
-     */
-    public function userID () {
-        return null; // IMPLEMENT FOR YOUR CONTEXT
-    }
-
-    /**
-     * Login name of the currently logged in user or null. Needs the
-     * ORM. If we're running as part of an Atlas request we ignore the
-     * passed in userID and return instead the Atlas user name.
-     */
-    public function userName ($userID) {
-        return null; // IMPLEMENT FOR YOUR CONTEXT
-    }
-
-    /**
-     * Is the given user a member of the given group? (This currently,
-     * like the old config system, uses numeric group IDs in the
-     * config file, in order to speed up the lookup--the numeric ID is
-     * the primary key and we save having to look up the group by
-     * name.)
-     */
-    public function inGroup ($userID, $groupID) {
-        return null; // IMPLEMENT FOR YOUR CONTEXT
-    }
-
-    /**
-     * Is the current user an admin?
-     *
-     * @param $userID the id of the relevant user, either the
-     * currently logged in user or some other user.
-     */
-    public function isAdmin ($userID) {
-        return false; // IMPLEMENT FOR YOUR CONTEXT
-    }
-
-    /**
-     * Is this an internal request?
-     */
-    public function isInternalRequest () {
-        return false; // IMPLEMENT FOR YOUR CONTEXT
-    }
-
-    /*
-     * 'features' query param for url overrides.
-     */
-    public function urlFeatures () {
-        return array_key_exists('features', $_GET) ? $_GET['features'] : '';
     }
 
     /*
