@@ -20,12 +20,12 @@ made a quick start at that in the `generalized` branch. Note that the
 code in this branch is completely untested and may still be
 wrongheaded in many ways.
 
-That said, the basic approach I took in that branch was to introduce a
-new abstraction, the "experimental unit". Every feature is tested
-relative to some kind of experimental unit which is named in the
-feature's configuration (under the `unit` key) though the
-Feature_World implementation can provide a default. Each kind of
-experimental unit can support:
+The basic approach I took in that branch was to introduce a new
+abstraction, the "experimental unit". Every feature is tested relative
+to some kind of experimental unit which is named in the feature's
+configuration (under the `unit` key) though the Feature_World
+implementation can provide a default. Each kind of experimental unit
+can support:
 
 - explicit configuration of variants based on some characteristic of
   the unit.
