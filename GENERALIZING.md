@@ -69,3 +69,29 @@ should ensure that any data they are passed is of the appropriate
 type: there is an obligation on callers of the Feature API methods to
 pass the appropriate kind of date for the kind of experimental unit
 the feature has been configured with.
+
+One thing this generalization does is get rid of the need for the
+`isEnabledFor`/`variantFor` and
+`isEnabledBucketingBy`/`variantBucketingBy` methods. The main use
+case, at Etsy, for the former pair is if we wanted to run an
+experiment where insted of bucketing by the user making a request, we
+want to bucket by the user who owns the shop the user is looking at.
+In the current API, that is achieved by passing the user object
+representing the shop owner to `isEnabledFor` and `variantFor`. And
+the use case for the `bucketingBy` methods is when we want to bucket
+on something that doesn't necessarily have an associated user. For
+instance if we wanted to run an experiment on a random selection of
+searches, we might use the search terms as the second argument to the
+`bucketingBy` methods.
+
+In the generalized API, in the first case we would instead configure a
+feature with a `unit` of, say, 'seller' that would map to a class that
+either expects some object reperesenting the seller to be passed to
+the Feature API calls or which knows how to figure out the seller from
+the context of the request. And in the second case we would configure
+a query with a `unit` of 'query' that maps to a class that expects a
+query string passed as the `$data` argument to the Feature methods.
+With such a class, we could then allow the feature to be configured to
+return a specific variant for specific queries, e.g. if we want to
+ensure that certain very popular queries are kept out of the treatment
+group for whatever reason.
