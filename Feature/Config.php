@@ -158,7 +158,15 @@ class Feature_Config {
     /*
      * The normal case where there is no explicitly assigned variant.
      */
-    private function variantByPercentage ($id) {
+    private function variantByPercentage($id) {
+        // If the bucketing id is null (e.g. if we're bucketing by
+        // user id and the user is not signed in) then we treat the
+        // feature as OFF but with a different selector so it's not
+        // counted as part of the experimental data.
+        if (is_null($id)) {
+            return array(self::OFF, 'x');
+        }
+
         $n = 100 * $this->randomish($id);
         foreach ($this->_percentages as $v) {
             // === 100 check may not be necessary but I'm not good
@@ -289,6 +297,26 @@ class Feature_Config {
         } else {
             $this->error("$key value $value not string");
         }
+    }
+
+    /*
+     * Compute the variant from the URL in the standard way. Up to
+     * ExperimentalUnit classes to call this when appropriate. (E.g.
+     * at Etsy we only allow URL overrides for internal requests
+     * unless the feature is configured with 'public_url_override' =>
+     * true.
+     */
+    public function variantFromURL($selector) {
+        $urlFeatures = array_key_exists('features', $_GET) ? $_GET['features'] : '';
+        if ($urlFeatures) {
+            foreach (explode(',', $urlFeatures) as $f) {
+                $parts = explode(':', $f);
+                if ($parts[0] === $this->_name) {
+                    return array(isset($parts[1]) ? $parts[1] : Feature_Config::ON, $selector);
+                }
+            }
+        }
+        return false;
     }
 
 

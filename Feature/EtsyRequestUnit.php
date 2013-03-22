@@ -15,10 +15,11 @@ class Feature_EtsyRequestUnit implements Feature_ExperimentalUnit {
      * the clauses in the config stanza or false otherwise.
      */
     public function assignedVariant($data, $config) {
-        // Ignore $data. Should be null.
+        // Ignore $data. Should be null. (Or assert that it is null.)
         $userID = $this->userID();
 
-        return $this->variantFromURL($config->getBoolean('public_url_override')) ?:
+        return
+            $this->variantFromURL($config) ?:
             $this->variantForUser($userID, $this->parseUsersOrGroups($config, 'users')) ?:
             $this->variantForGroup($userID, $this->parseUsersOrGroups($config, 'groups')) ?:
             $this->variantForAdmin($userID, $config->getVariantName('admin')) ?:
@@ -45,7 +46,7 @@ class Feature_EtsyRequestUnit implements Feature_ExperimentalUnit {
             // Not clear if this is right. There's an argument to be
             // made that if we're bucketing by userID and the user is
             // not logged in we should treat the feature as disabled.
-            return !is_null($userID) ? $userID : $this->uaid();
+            return $userID;
         default:
             throw new InvalidArgumentException("Bad bucketing: $scheme");
         }
@@ -105,17 +106,12 @@ class Feature_EtsyRequestUnit implements Feature_ExperimentalUnit {
      * meaning nothing was specified. Note that foo:off will turn off
      * the 'foo' feature.
      */
-    private function variantFromURL($public_url_override) {
-        if ($public_url_override or $this->isInternalRequest() or $this->isAdmin($userID)) {
-            $urlFeatures = $this->urlFeatures();
-            if ($urlFeatures) {
-                foreach (explode(',', $urlFeatures) as $f) {
-                    $parts = explode(':', $f);
-                    if ($parts[0] === $this->_name) {
-                        return array(isset($parts[1]) ? $parts[1] : Feature_Config::ON, 'o');
-                    }
-                }
-            }
+    private function variantFromURL($config) {
+        if ($config->getBoolean('public_url_override') or
+            $this->isInternalRequest() or
+            $this->isAdmin($userID)
+        ) {
+            return $config->variantFromURL('o');
         }
         return false;
     }
@@ -244,7 +240,4 @@ class Feature_EtsyRequestUnit implements Feature_ExperimentalUnit {
         return HTTP_Request::getInstance()->isInternal();
     }
 
-    private function urlFeatures () {
-        return array_key_exists('features', $_GET) ? $_GET['features'] : '';
-    }
 }
