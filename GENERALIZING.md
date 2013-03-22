@@ -15,10 +15,12 @@ with your own stuff. I’ve started things down that path for you by
 turning several methods into no-ops and marking with the comment
 “IMPLEMENT FOR YOUR CONTEXT”.
 
-That said, if anyone is intersted in generalizing this code, I've also
-made a quick start at that in the `generalized` branch. Note that the
-code in this branch is completely untested and may still be
-wrongheaded in many ways.
+However even with those bits ripped out, the structure of things in
+`master` is still tied to its Etsy heritage so, I've also made a quick
+start at that in the `generalized` branch. Note that the code in this
+branch is completely untested and may still be wrongheaded in many
+ways. (There are plans at Etsy to finish up this work and the port it
+back into our own codebase.)
 
 The basic approach I took in that branch was to introduce a new
 abstraction, the "experimental unit". Every feature is tested relative
