@@ -97,3 +97,5 @@ With such a class, we could then allow the feature to be configured to
 return a specific variant for specific queries, e.g. if we want to
 ensure that certain very popular queries are kept out of the treatment
 group for whatever reason.
+
+-Peter Seibel
