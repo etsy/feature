@@ -299,6 +299,42 @@ class Feature_Config {
         }
     }
 
+    public function getListy($key) {
+        $stanza  = $config->stanza();
+        $enabled = $config->enabled();
+
+        $value = Feature_Util::arrayGet($stanza, $key);
+        if (is_string($value) || is_numeric($value)) {
+            return array($value => self::ON);
+
+        } elseif (self::isList($value)) {
+            $result = array();
+            foreach ($value as $who) {
+                $result[$who] = self::ON;
+            }
+            return $result;
+
+        } elseif (is_array($value)) {
+            $result = array();
+            $bad_keys = is_array($enabled) ?
+                array_keys(array_diff_key($value, $enabled)) :
+                array();
+            if (!$bad_keys) {
+                foreach ($value as $variant => $whos) {
+                    foreach (self::asArray($whos) as $who) {
+                        $result[$who] = $variant;
+                    }
+                }
+                return $result;
+
+            } else {
+                $this->error("Unknown variants " . implode(', ', $bad_keys));
+            }
+        } else {
+            return array();
+        }
+    }
+
     /*
      * Compute the variant from the URL in the standard way. Up to
      * ExperimentalUnit classes to call this when appropriate. (E.g.

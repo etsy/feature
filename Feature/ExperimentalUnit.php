@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * The interface implemented by classes that can be returned by
+ * Feature_World->unit().
+ */
 interface Feature_ExperimentalUnit {
 
     /*

@@ -20,8 +20,8 @@ class Feature_EtsyRequestUnit implements Feature_ExperimentalUnit {
 
         return
             $this->variantFromURL($config) ?:
-            $this->variantForUser($userID, $this->parseUsersOrGroups($config, 'users')) ?:
-            $this->variantForGroup($userID, $this->parseUsersOrGroups($config, 'groups')) ?:
+            $this->variantForUser($userID, $this->getUsers()) ?:
+            $this->variantForGroup($userID, $config->getListy('groups')) ?:
             $this->variantForAdmin($userID, $config->getVariantName('admin')) ?:
             $this->variantForInternal($config->getVariantName('internal'));
     }
@@ -60,44 +60,17 @@ class Feature_EtsyRequestUnit implements Feature_ExperimentalUnit {
     }
 
 
-    private function parseUsersOrGroups($config, $what) {
-        $stanza  = $config->stanza();
-        $enabled = $config->enabled();
-
-        $value = Feature_Util::arrayGet($stanza, $what);
-        if (is_string($value) || is_numeric($value)) {
-            // Users are configrued with their user names. Groups as
-            // numeric ids. (Not sure if that's a great idea.)
-          return array($value => self::ON);
-
-        } elseif (self::isList($value)) {
+    private function getUsers() {
+        $users = $config->getListy('users');
+        if ($users) {
             $result = array();
-            foreach ($value as $who) {
-              $result[strtolower($who)] = self::ON;
+            foreach ($users as $who => $variant) {
+                $result[strtolower($who)] = $variant;
             }
             return $result;
-
-        } elseif (is_array($value)) {
-            $result = array();
-            $bad_keys = is_array($enabled) ?
-                array_keys(array_diff_key($value, $enabled)) :
-                array();
-            if (!$bad_keys) {
-                foreach ($value as $variant => $whos) {
-                    foreach (self::asArray($whos) as $who) {
-                        $result[strtolower($who)] = $variant;
-                    }
-                }
-                return $result;
-
-            } else {
-                $config->error("Unknown variants " . implode(', ', $bad_keys));
-            }
-        } else {
-            return array();
         }
+        return array();
     }
-
 
     /*
      * For internal requests or if the feature has public_url_override

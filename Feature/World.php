@@ -30,6 +30,8 @@ class Feature_World {
         switch ($unit) {
         case 'request':
             return new Feature_EtsyRequestUnit();
+        case 'query':
+            return new Feature_EtsySearchQueryUnit();
         default:
             throw new InvalidArgumentException("Bad unit type: $unit");
         }
