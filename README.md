@@ -1,3 +1,7 @@
+# This is an Archived Project
+
+Feature is no longer actively maintained and is no longer in sync with the version used internally at Etsy.
+
 # Feature API
 
 Etsy's Feature flagging API used for operational rampups and A/B
