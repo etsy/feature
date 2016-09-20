@@ -1,14 +1,22 @@
 <?php
 
+namespace CafeMedia\Feature;
+
 /**
  * A thin wrapper around the static Feature API for use in
  * templates. The singleton instance of this class should be obtained
  * via Feature::getInstance().
  */
-class Feature_Instance {
+/**
+ * Class Instance
+ * @package CafeMedia\Feature
+ */
+class Instance {
 
     /**
      * Wrapper for Feature::isEnabled($name).
+     * @param $name
+     * @return bool
      */
     public function isEnabled ($name) {
         return Feature::isEnabled($name);
@@ -16,6 +24,9 @@ class Feature_Instance {
 
     /**
      * Wrapper for Feature::isEnabledFor($name, $user).
+     * @param $name
+     * @param $user
+     * @return bool
      */
     public function isEnabledFor($name, $user) {
         return Feature::isEnabledFor($name, $user);
@@ -23,6 +34,9 @@ class Feature_Instance {
 
     /**
      * Wrapper for Feature::isEnabledBucketingBy($name, $string).
+     * @param $name
+     * @param $string
+     * @return bool
      */
     public function isEnabledBucketingBy($name, $string) {
         return Feature::isEnabledBucketingBy($name, $string);
@@ -30,6 +44,8 @@ class Feature_Instance {
 
     /**
      * Wrapper for Feature::variant($name).
+     * @param $name
+     * @return mixed|string
      */
     public function variant($name) {
         return Feature::variant($name);
@@ -37,6 +53,9 @@ class Feature_Instance {
 
     /**
      * Wrapper for Feature::variantFor($name, $user).
+     * @param $name
+     * @param $user
+     * @return mixed|string
      */
     public function variantFor($name, $user) {
         return Feature::variantFor($name, $user);
@@ -44,6 +63,9 @@ class Feature_Instance {
 
     /**
      * Wrapper for Feature::variantBucketingBy($name, $bucketingID).
+     * @param $name
+     * @param $bucketingID
+     * @return mixed|string
      */
     public function variantBucketingBy($name, $bucketingID) {
         return Feature::variantBucketingBy($name, $bucketingID);
