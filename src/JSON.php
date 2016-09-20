@@ -1,20 +1,36 @@
 <?php
 
+namespace CafeMedia\Feature;
+
 /*
  * Utility for turning configs into JSON-encodeable data.
  */
-class Feature_JSON {
+/**
+ * Class JSON
+ * @package CafeMedia\Feature
+ */
+class JSON {
 
     /*
      * Return the given config stanza as an array that can be json
      * encoded in a form that is slightly easier to deal with in
      * Javascript.
      */
+    /**
+     * @param $key
+     * @param null $server_config
+     * @return array|bool
+     */
     public static function stanza ($key, $server_config=null) {
         $stanza = self::findStanza($key, $server_config);
         return $stanza !== false ? self::translate($key, $stanza) : false;
     }
 
+    /**
+     * @param $key
+     * @param $cursor
+     * @return bool|mixed
+     */
     private static function findStanza($key, $cursor) {
         $step = strtok($key, '.');
         while ($step) {
@@ -28,6 +44,11 @@ class Feature_JSON {
         return $cursor;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     private static function translate ($key, $value) {
 
         $spec = self::makeSpec($key);
@@ -40,9 +61,9 @@ class Feature_JSON {
             $value = array('enabled' => $value);
         }
 
-        $enabled = Feature_Util::arrayGet($value, 'enabled', 0);
-        $users   = self::expandUsersOrGroups(Feature_Util::arrayGet($value, 'users', array()));
-        $groups  = self::expandUsersOrGroups(Feature_Util::arrayGet($value, 'groups', array()));
+        $enabled = Util::arrayGet($value, 'enabled', 0);
+        $users   = self::expandUsersOrGroups(Util::arrayGet($value, 'users', array()));
+        $groups  = self::expandUsersOrGroups(Util::arrayGet($value, 'groups', array()));
 
         if ($enabled === 'off') {
             $spec['variants'][] = self::makeVariantWithUsersAndGroups('on', 0, $users, $groups);
@@ -84,6 +105,10 @@ class Feature_JSON {
         return $spec;
     }
 
+    /**
+     * @param $key
+     * @return array
+     */
     private static function makeSpec ($key) {
         return array(
             'key' => $key,
@@ -95,6 +120,11 @@ class Feature_JSON {
             'variants' => array());
     }
 
+    /**
+     * @param $name
+     * @param $percentage
+     * @return array
+     */
     private static function makeVariant ($name, $percentage) {
         return array(
             'name' => $name,
@@ -103,6 +133,13 @@ class Feature_JSON {
             'groups' => array());
     }
 
+    /**
+     * @param $name
+     * @param $percentage
+     * @param $users
+     * @param $groups
+     * @return array
+     */
     private static function makeVariantWithUsersAndGroups ($name, $percentage, $users, $groups) {
         return array(
             'name'       => $name,
@@ -112,6 +149,11 @@ class Feature_JSON {
         );
     }
 
+    /**
+     * @param $usersOrGroups
+     * @param $name
+     * @return array
+     */
     private static function extractForVariant ($usersOrGroups, $name) {
         $result = array();
         foreach ($usersOrGroups as $thing => $variant) {
@@ -122,17 +164,21 @@ class Feature_JSON {
         return $result;
     }
 
-    // This is based on parseUsersOrGroups in Feature_Config. Probably
+    // This is based on parseUsersOrGroups in Config. Probably
     // this logic should be put in that class in a form that we can
     // use.
+    /**
+     * @param $value
+     * @return array
+     */
     private static function expandUsersOrGroups ($value) {
         if (is_string($value) || is_numeric($value)) {
-            return array($value => Feature_Config::ON);
+            return array($value => Config::ON);
 
         } elseif (self::isList($value)) {
             $result = array();
             foreach ($value as $who) {
-                $result[$who] = Feature_Config::ON;
+                $result[$who] = Config::ON;
             }
             return $result;
 
@@ -150,12 +196,19 @@ class Feature_JSON {
         }
     }
 
+    /**
+     * @param $a
+     * @return bool
+     */
     private static function isList($a) {
         return is_array($a) and array_keys($a) === range(0, count($a) - 1);
     }
 
+    /**
+     * @param $x
+     * @return array
+     */
     private static function asArray ($x) {
         return is_array($x) ? $x : array($x);
     }
-
 }

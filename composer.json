@@ -1,0 +1,21 @@
+{
+  "name": "cafemedia/feature",
+  "description": "PSR-4 based Etsy Feature Flags library",
+  "authors": [
+    {
+      "name": "Pablo Iglesias",
+      "email": "piglesias@cafemedia.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "CafeMedia\\Feature\\": "src/"
+    }
+  }
+}

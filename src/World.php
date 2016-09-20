@@ -1,24 +1,45 @@
 <?php
 
+namespace CafeMedia\Feature;
+
 /**
- * The interface Feature_Config needs to the outside world. This class
+ * The interface Config needs to the outside world. This class
  * is used in the normal case but tests can use a mock
  * version. There's a reasonable argument that the code in Logger
  * should just be moved into this class since there's a fair bit of
  * passing stuff back and forth between here and Logger and Logger has
  * no useful independent existence.
  */
-class Feature_World {
+/**
+ * Class World
+ * @package CafeMedia\Feature
+ */
+class World {
 
+    /**
+     * @var Logger
+     */
     private $_logger;
+    /**
+     * @var array
+     */
     private $_selections = array();
 
-    public function __construct ($logger) {
+    /**
+     * World constructor.
+     * @param Logger $logger
+     */
+    public function __construct (Logger $logger) {
         $this->_logger = $logger;
     }
 
     /*
      * Get the config value for the given key.
+     */
+    /**
+     * @param $name
+     * @param null $default
+     * @return null
      */
     public function configValue($name, $default = null) {
         return $default; // IMPLEMENT FOR YOUR CONTEXT
@@ -63,6 +84,7 @@ class Feature_World {
      *
      * @param $userID the id of the relevant user, either the
      * currently logged in user or some other user.
+     * @return bool
      */
     public function isAdmin ($userID) {
         return false; // IMPLEMENT FOR YOUR CONTEXT
@@ -78,12 +100,18 @@ class Feature_World {
     /*
      * 'features' query param for url overrides.
      */
+    /**
+     * @return string
+     */
     public function urlFeatures () {
         return array_key_exists('features', $_GET) ? $_GET['features'] : '';
     }
 
     /*
      * Produce a random number in [0, 1) for RANDOM bucketing.
+     */
+    /**
+     * @return float|int
      */
     public function random () {
         return mt_rand(0, mt_getrandmax() - 1) / mt_getrandmax();
@@ -92,6 +120,10 @@ class Feature_World {
     /*
      * Produce a randomish number in [0, 1) based on the given id.
      */
+    /**
+     * @param $id
+     * @return float
+     */
     public function hash ($id) {
         return self::mapHex(hash('sha256', $id));
     }
@@ -99,6 +131,11 @@ class Feature_World {
     /*
      * Record that $variant has been selected for feature named $name
      * by $selector and pass the same information along to the logger.
+     */
+    /**
+     * @param $name
+     * @param $variant
+     * @param $selector
      */
     public function log ($name, $variant, $selector) {
         $this->_selections[] = array($name, $variant, $selector);
@@ -109,6 +146,9 @@ class Feature_World {
      * Get the list of selections that we have recorded. The public
      * API for getting at the selections is Feature::selections which
      * should be the only caller of this method.
+     */
+    /**
+     * @return array
      */
     public function selections () {
         return $this->_selections;

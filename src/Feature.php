@@ -1,5 +1,7 @@
 <?php
 
+namespace CafeMedia\Feature;
+
 /**
  * The public API testing whether a specific feature is enabled and,
  * if so, what variant should be used.
@@ -27,10 +29,23 @@
  * that can be passed to templates and which provides the same API via
  * instance methods.
  */
+/**
+ * Class Feature
+ * @package CafeMedia\Feature
+ */
 class Feature {
 
+    /**
+     * @var
+     */
     private static $defaultWorld;
+    /**
+     * @var array
+     */
     private static $configCache = array();
+    /**
+     * @var
+     */
     private static $instance;
 
     /**
@@ -39,7 +54,7 @@ class Feature {
      */
     public static function getInstance() {
         if (!isset(self::$instance)) {
-            self::$instance = new Feature_Instance();
+            self::$instance = new Instance();
         }
         return self::$instance;
     }
@@ -104,6 +119,7 @@ class Feature {
      *
      * @static
      * @param string $name the config key for the feature.
+     * @return mixed|string
      */
     public static function variant($name) {
         return self::fromConfig($name)->variant();
@@ -119,7 +135,6 @@ class Feature {
      * Logs an error if called when isEnabledFor($name, $user) doesn't
      * return true. (I.e. calls to this method should only occur in
      * blocks guarded by an isEnabledFor check.)
-
      * Also logs an error if 'enabled' is 'on' for the named feature
      * since there should be no variant-dependent code left when a
      * feature has been fully enabled. To clean up a finished
@@ -132,6 +147,7 @@ class Feature {
      *
      * @param $user A user object whose id will be combined with $name
      * and hashed to get the bucketing.
+     * @return mixed|string
      */
     public static function variantFor($name, $user) {
         return self::fromConfig($name)->variantFor($user);
@@ -158,6 +174,7 @@ class Feature {
      * @param string $name the config key for the feature.
      *
      * @param string $bucketingID A string to use as the bucketing ID.
+     * @return mixed|string
      */
     public static function variantBucketingBy($name, $bucketingID) {
         return self::fromConfig($name)->variantBucketingBy($bucketingID);
@@ -165,6 +182,10 @@ class Feature {
 
     /*
      * Description of the feature.
+     */
+    /**
+     * @param $name
+     * @return mixed|null
      */
     public static function description ($name) {
         return self::fromConfig($name)->description();
@@ -204,7 +225,7 @@ class Feature {
      *
      * @param $name name of the feature. Used as a key into the global config array
      *
-     * @return Feature_Config
+     * @return Config
      */
     private static function fromConfig($name) {
         if (array_key_exists($name, self::$configCache)) {
@@ -212,7 +233,7 @@ class Feature {
         } else {
             $world = self::world();
             $stanza = $world->configValue($name);
-            return self::$configCache[$name] = new Feature_Config($name, $stanza, $world);
+            return self::$configCache[$name] = new Config($name, $stanza, $world);
         }
     }
 
@@ -238,12 +259,12 @@ class Feature {
     }
 
     /**
-     * This API always uses the default World. Feature_Config takes
+     * This API always uses the default World. Config takes
      * the world as an argument in order to ease unit testing.
      */
     private static function world () {
         if (!isset(self::$defaultWorld)) {
-            self::$defaultWorld = new Feature_World(new Feature_Logger());
+            self::$defaultWorld = new World(new Logger());
         }
         return self::$defaultWorld;
     }
