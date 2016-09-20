@@ -1,6 +1,6 @@
 {
-  "name": "alfred-nutile-inc/feature-flags",
-  "description": "PSR-4 based Etsy library",
+  "name": "cafemedia/feature",
+  "description": "PSR-4 based Etsy Feature Flags library",
   "authors": [
     {
       "name": "Pablo Iglesias",
