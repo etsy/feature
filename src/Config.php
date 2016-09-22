@@ -723,6 +723,6 @@ class Config
      */
     private function error ($message)
     {
-        $this->logger->error($message);
+        $this->logger->error("$message: feature $this->_name");
     }
 }
