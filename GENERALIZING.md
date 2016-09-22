@@ -1,3 +1,5 @@
+This is an archived file left for reference.
+
 # A theory about generalizing this code
 
 This code was written at Etsy to meet our specific needs and with a

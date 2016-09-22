@@ -4,25 +4,23 @@ namespace CafeMedia\Feature;
 
 /**
  * Utility functions.
- */
-/**
+ *
  * Class Util
  * @package CafeMedia\Feature
  */
-class Util {
-
-    /*
+class Util
+{
+    /**
      * Get the value from an array if it is in fact an array and
      * contain the key, a default value otherwise.
-     */
-    /**
+     *
      * @param $array
      * @param $key
      * @param null $default
      * @return mixed|null
      */
-    public static function arrayGet($array, $key, $default = null) {
-        return is_array($array) && array_key_exists($key, $array) ? $array[$key] : $default;
+    public static function arrayGet($array, $key, $default = null)
+    {
+        return is_array($array) && isset($array[$key]) ? $array[$key] : $default;
     }
-
 }

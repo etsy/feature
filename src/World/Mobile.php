@@ -10,7 +10,8 @@ use CafeMedia\Feature\World;
  * feature rampups can maintain consistency on mobile devices.
 */
 
-class Mobile extends World {
+class Mobile extends World
+{
     /**
      * @var
      */
@@ -39,7 +40,8 @@ class Mobile extends World {
      * @param $userID
      * @param Logger $logger
      */
-    public function __construct ($udid, $userID, Logger $logger) {
+    public function __construct ($udid, $userID, Logger $logger)
+    {
         parent::__construct($logger);
         $this->_udid = $udid;
         $this->_userID = $userID;
@@ -48,14 +50,18 @@ class Mobile extends World {
     /**
      * @return Logger
      */
-    public function uaid() {
+    public function uaid()
+    {
+        parent::uaid();
         return $this->_udid;
     }
 
     /**
      * @return mixed
      */
-    public function userID () {
+    public function userID ()
+    {
+        parent::userID();
         return $this->_userID;
     }
 
@@ -63,9 +69,11 @@ class Mobile extends World {
      * @param $name
      * @param $variant
      * @param $selector
+     * @param null $do_tracking
      */
-    public function log ($name, $variant, $selector) {
-        parent::log($name, $variant, $selector);
+    public function log ($name, $variant, $selector, $do_tracking = null)
+    {
+        parent::log($name, $variant, $selector, $do_tracking);
 
         $this->_name = $name;
         $this->_variant = $variant;
@@ -75,25 +83,29 @@ class Mobile extends World {
     /**
      * @return mixed
      */
-    public function getLastName() {
+    public function getLastName()
+    {
         return $this->_name;
     }
 
     /**
      * @return mixed
      */
-    public function getLastVariant() {
+    public function getLastVariant()
+    {
         return $this->_variant;
     }
 
     /**
      * @return mixed
      */
-    public function getLastSelector() {
+    public function getLastSelector()
+    {
         return $this->_selector;
     }
 
-    public function clearLastFeature() {
+    public function clearLastFeature()
+    {
         $this->_selector = null;
         $this->_name = null;
         $this->_variant = null;
