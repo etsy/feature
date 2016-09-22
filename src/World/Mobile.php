@@ -71,9 +71,9 @@ class Mobile extends World
      * @param $selector
      * @param null $do_tracking
      */
-    public function log ($name, $variant, $selector, $do_tracking = null)
+    public function log ($name, $variant, $selector)
     {
-        parent::log($name, $variant, $selector, $do_tracking);
+        parent::log($name, $variant, $selector);
 
         $this->_name = $name;
         $this->_variant = $variant;
