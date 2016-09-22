@@ -55,9 +55,9 @@ class World
     private $source;
 
     /**
-     * @var array
+     * @var bool
      */
-    private $adminIds;
+    private $isAdmin;
 
     /**
      * @var string
@@ -94,7 +94,7 @@ class World
         $this->userName = $userName;
         $this->group = $group;
         $this->source = $source;
-        $this->adminIds = $adminIds;
+        $this->isAdmin = $isAdmin;
         $this->url = $url;
     }
 
@@ -191,11 +191,10 @@ class World
      * currently logged in user or some other user.
      * @return bool
      */
-    public function isAdmin ($userID)
+    public function isAdmin ($userID = null)
     {
         //return false; // IMPLEMENT FOR YOUR CONTEXT
-
-        return in_array($userID, $this->adminIds);
+        return $this->isAdmin;
     }
 
     /**
