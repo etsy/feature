@@ -6,7 +6,7 @@ use CafeMedia\Feature\Logger;
 use CafeMedia\Feature\World;
 
 /**
- * This sublcass of World overrides UAID and UserID so that
+ * This subclass of World overrides UAID and UserID so that
  * feature rampups can maintain consistency on mobile devices.
 */
 
@@ -69,7 +69,6 @@ class Mobile extends World
      * @param $name
      * @param $variant
      * @param $selector
-     * @param null $do_tracking
      */
     public function log ($name, $variant, $selector)
     {
