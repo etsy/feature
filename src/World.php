@@ -75,7 +75,7 @@ class World
      * @param string $source
      * @param bool $isAdmin
      * @param string $url
-     * @internal param array $adminIds
+     * @internal param bool $isAdmin
      */
     public function __construct (
         Logger $logger,

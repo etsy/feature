@@ -84,9 +84,9 @@ class Feature
      */
     private static $source = '';
     /**
-     * @var array
+     * @var bool
      */
-    private static $adminIds = array();
+    private static $isAdmin = false;
     /**
      * @var string
      */
@@ -101,7 +101,7 @@ class Feature
      * @param string $userName
      * @param null $group
      * @param string $source
-     * @param array $adminIds
+     * @param bool $isAdmin
      * @param string $url
      */
     public function __construct(
@@ -112,7 +112,7 @@ class Feature
         $userName = '',
         $group = null,
         $source = '',
-        array $adminIds = array(),
+        $isAdmin = bool,
         $url = ''
     ) {
         self::$log = $log;
@@ -122,7 +122,7 @@ class Feature
         $this->userName = $userName;
         $this->group = $group;
         $this->source = $source;
-        $this->adminIds = $adminIds;
+        $this->isAdmin = $isAdmin;
         $this->url = $url;
     }
 
@@ -364,7 +364,7 @@ class Feature
                 static::$userName,
                 static::$group,
                 static::$source,
-                static::$adminIds,
+                static::$isAdmin,
                 static::$url
             );
         }
