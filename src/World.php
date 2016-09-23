@@ -73,8 +73,9 @@ class World
      * @param string $userName
      * @param null $group
      * @param string $source
-     * @param array $adminIds
+     * @param bool $isAdmin
      * @param string $url
+     * @internal param array $adminIds
      */
     public function __construct (
         Logger $logger,
@@ -84,7 +85,7 @@ class World
         $userName = '',
         $group = null,
         $source = '',
-        array $adminIds = array(),
+        $isAdmin = false,
         $url = ''
     ) {
         $this->_logger = $logger;
