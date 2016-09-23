@@ -23,7 +23,7 @@ class Config
     
     const GROUPS              = 'groups';
     
-    const UTM_SOURCES         = 'utm_sources';
+    const SOURCES             = 'sources';
     
     const ADMIN               = 'admin';
     
@@ -79,7 +79,7 @@ class Config
     /**
      * @var array
      */
-    private $_utm_sources;
+    private $_sources;
     /**
      * @var bool|mixed|null
      */
@@ -140,7 +140,7 @@ class Config
         $this->_enabled             = $this->parseEnabled($stanza);
         $this->_users               = $this->parseUsersOrGroups($stanza, self::USERS);
         $this->_groups              = $this->parseUsersOrGroups($stanza, self::GROUPS);
-        $this->_utm_sources         = $this->parseUsersOrGroups($stanza, self::UTM_SOURCES);
+        $this->_sources             = $this->parseUsersOrGroups($stanza, self::SOURCES);
         $this->_adminVariant        = $this->parseVariantName($stanza, self::ADMIN);
         $this->_internalVariant     = $this->parseVariantName($stanza, self::INTERNAL);
         $this->_public_url_override = $this->parsePublicURLOverride($stanza);
@@ -311,7 +311,7 @@ class Config
         if ($_v = $this->variantFromURL($userID))  {}
         elseif ($_v = $this->variantForUser($userID)) {}
         elseif ($_v = $this->variantForViewingGroup($userID)) {}
-        elseif ($_v = $this->variantForUtmSource($userID)) {}
+        elseif ($_v = $this->variantForSource($userID)) {}
         elseif ($_v = $this->variantForAdmin($userID)) {}
         elseif ($_v = $this->variantByPercentage($bucketingID)) {}
         else {
@@ -432,10 +432,10 @@ class Config
      * @param $userID
      * @return array|bool
      */
-    private function variantForUtmSource ($userID = null)
+    private function variantForSource ($userID = null)
     {
-        foreach ($this->_utm_sources as $utm_source => $variant) {
-            if ($this->_world->isSource($utm_source)) {
+        foreach ($this->_sources as $source => $variant) {
+            if ($this->_world->isSource($source)) {
                 return array($variant, 's');
             }
         }
