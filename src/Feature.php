@@ -116,14 +116,14 @@ class Feature
         $url = ''
     ) {
         self::$log = $log;
-        $this->features = $features;
-        $this->uaid = $uaid;
-        $this->userID = $userID;
-        $this->userName = $userName;
-        $this->group = $group;
-        $this->source = $source;
-        $this->isAdmin = $isAdmin;
-        $this->url = $url;
+        self::$features = $features;
+        self::$uaid = $uaid;
+        self::$userID = $userID;
+        self::$userName = $userName;
+        self::$group = $group;
+        self::$source = $source;
+        self::$isAdmin = $isAdmin;
+        self::$url = $url;
     }
 
     /**
