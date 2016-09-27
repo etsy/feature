@@ -40,10 +40,12 @@ class Feature
      * @var
      */
     private static $defaultWorld;
+
     /**
      * @var array
      */
     private static $configCache = array();
+
     /**
      * @var
      */
@@ -63,30 +65,37 @@ class Feature
      * @var array
      */
     private static $features = array();
+
     /**
      * @var string
      */
     private static $uaid = '';
+
     /**
      * @var string
      */
     private static $userID = '';
+
     /**
      * @var string
      */
     private static $userName = '';
+
     /**
      * @var null
      */
     private static $group = null;
+
     /**
      * @var string
      */
     private static $source = '';
+
     /**
      * @var bool
      */
     private static $isAdmin = false;
+
     /**
      * @var string
      */
@@ -112,7 +121,7 @@ class Feature
         $userName = '',
         $group = null,
         $source = '',
-        $isAdmin = bool,
+        $isAdmin = false,
         $url = ''
     ) {
         self::$log = $log;
@@ -129,6 +138,8 @@ class Feature
     /**
      * Get an object that can be passed to Smarty templates that wraps
      * our API with non-static methods of the same names and arguments.
+     *
+     * @return Instance
      */
     public static function getInstance()
     {
@@ -337,12 +348,13 @@ class Feature
         self::$configCache = array();
     }
 
-
     /**
      * Get the list of selections that have been made as an array of
      * (feature_name, variant_name, selector) arrays. This can be used
      * to record information about what features were associated with
      * what variants and why during the course of handling a request.
+     *
+     * @return array
      */
     public static function selections ()
     {
@@ -352,6 +364,8 @@ class Feature
     /**
      * This API always uses the default World. Config takes
      * the world as an argument in order to ease unit testing.
+     *
+     * @return World
      */
     private static function world ()
     {

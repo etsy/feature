@@ -48,7 +48,8 @@ class Mobile extends World
     }
 
     /**
-     * @return Logger
+     * UAID of the current request.
+     * @return mixed
      */
     public function uaid()
     {
