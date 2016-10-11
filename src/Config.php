@@ -309,9 +309,11 @@ class Config
 
         if ($_v = $this->variantFromURL($userID))  {}
         elseif ($_v = $this->variantForUser($userID)) {}
+        elseif ($_v = $this->variantForGroup($userID)) {}
         elseif ($_v = $this->variantForViewingGroup($userID)) {}
         elseif ($_v = $this->variantForSource($userID)) {}
         elseif ($_v = $this->variantForAdmin($userID)) {}
+        elseif ($_v = $this->variantForInternal()) {}
         elseif ($_v = $this->variantByPercentage($bucketingID)) {}
         else {
             $_v = array(self::OFF, 'w');
