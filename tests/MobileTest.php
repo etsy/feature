@@ -20,17 +20,26 @@ class MobileTest extends \PHPUnit_Framework_TestCase
             $this->getMockBuilder('CafeMedia\Feature\Logger')->disableOriginalConstructor()->getMock()
         );
     }
-
+    
+    /**
+     * @covers \CafeMedia\Feature\World\Mobile::uaid
+     */
     public function testUaid()
     {
         $this->assertEquals($this->mobile->uaid(), 'test');
     }
 
+    /**
+     * @covers \CafeMedia\Feature\World\Mobile::userID
+     */
     public function testUserID()
     {
         $this->assertEquals($this->mobile->userID(), 1);
     }
 
+    /**
+     * @covers \CafeMedia\Feature\World\Mobile::getLastName
+     */
     public function testGetLastName()
     {
         $this->assertEquals($this->mobile->getLastName(), null);
@@ -42,6 +51,9 @@ class MobileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->mobile->getLastName(), null);
     }
 
+    /**
+     * @covers \CafeMedia\Feature\World\Mobile::getLastVariant
+     */
     public function testGetLastVariant()
     {
         $this->assertEquals($this->mobile->getLastVariant(), null);
@@ -53,6 +65,9 @@ class MobileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->mobile->getLastVariant(), null);
     }
 
+    /**
+     * @covers \CafeMedia\Feature\World\Mobile::getLastSelector
+     */
     public function getLastSelector()
     {
         $this->assertEquals($this->mobile->getLastSelector(), null);

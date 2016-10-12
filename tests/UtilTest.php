@@ -10,6 +10,9 @@ use CafeMedia\Feature\Util;
  */
 class UtilTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @covers \CafeMedia\Feature\Util::arrayGet
+     */
     public function testArrayGet()
     {
         $this->assertEquals(Util::arrayGet('test', 'test'), null);
