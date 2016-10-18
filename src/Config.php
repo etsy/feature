@@ -321,10 +321,11 @@ class Config
 
         list($v, $selector) = $_v;
 
-        if ($inVariantMethod && $v === self::OFF) {
+        /*if ($inVariantMethod && $v === self::OFF) {
             $this->error('Variant check outside enabled check');
         }
-        $this->_world->log($this->_name, $v, $selector);
+        //uncomment this to enable logging
+        $this->_world->log($this->_name, $v, $selector);*/
 
         return $this->_cache[$bucketingID] = $v;
     }
