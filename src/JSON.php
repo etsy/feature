@@ -1,58 +1,84 @@
 <?php
 
-/*
- * Utility for turning configs into JSON-encodeable data.
- */
-class Feature_JSON {
+namespace CafeMedia\Feature;
 
-    /*
+/**
+ * Utility for turning configs into JSON-encodeable data.
+ *
+ * Class JSON
+ * @package CafeMedia\Feature
+ */
+class JSON
+{
+    /**
      * Return the given config stanza as an array that can be json
      * encoded in a form that is slightly easier to deal with in
      * Javascript.
+     *
+     * @param $key
+     * @param null $server_config
+     * @return array|bool
      */
-    public static function stanza ($key, $server_config=null) {
+    public static function stanza ($key, $server_config = null)
+    {
         $stanza = self::findStanza($key, $server_config);
         return $stanza !== false ? self::translate($key, $stanza) : false;
     }
 
-    private static function findStanza($key, $cursor) {
+    /**
+     * @param $key
+     * @param $cursor
+     * @return bool|mixed
+     */
+    private static function findStanza($key, $cursor)
+    {
         $step = strtok($key, '.');
         while ($step) {
-            if (is_array($cursor) && array_key_exists($step, $cursor)) {
-                $cursor = $cursor[$step];
-            } else {
+            if (!is_array($cursor) || !isset($cursor[$step])) {
                 return false;
             }
+
+            $cursor = $cursor[$step];
             $step = strtok('.');
         }
+
         return $cursor;
     }
 
-    private static function translate ($key, $value) {
-
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
+    private static function translate ($key, $value)
+    {
         $spec = self::makeSpec($key);
 
         $internal_url = true;
 
         if (is_numeric($value)) {
             $value = array('enabled' => (int)$value);
-        } else if (is_string($value)) {
+        }
+        else if (is_string($value)) {
             $value = array('enabled' => $value);
         }
 
-        $enabled = Feature_Util::arrayGet($value, 'enabled', 0);
-        $users   = self::expandUsersOrGroups(Feature_Util::arrayGet($value, 'users', array()));
-        $groups  = self::expandUsersOrGroups(Feature_Util::arrayGet($value, 'groups', array()));
+        $enabled = Util::arrayGet($value, 'enabled', 0);
+        $users   = self::expandUsersOrGroups(Util::arrayGet($value, 'users', array()));
+        $groups  = self::expandUsersOrGroups(Util::arrayGet($value, 'groups', array()));
 
         if ($enabled === 'off') {
             $spec['variants'][] = self::makeVariantWithUsersAndGroups('on', 0, $users, $groups);
             $internal_url = false;
-        } else if (is_numeric($enabled)) {
+        }
+        else if (is_numeric($enabled)) {
             $spec['variants'][] = self::makeVariantWithUsersAndGroups('on', (int)$enabled, $users, $groups);
-        } else if (is_string($enabled)) {
+        }
+        else if (is_string($enabled)) {
             $spec['variants'][] = self::makeVariantWithUsersAndGroups($enabled, 100, $users, $groups);
             $internal_url = false;
-        } else if (is_array($enabled)) {
+        }
+        else if (is_array($enabled)) {
             foreach ($enabled as $v => $p) {
                 if (is_numeric($p)) {
                     // Kind of a kludge. $p had better be numeric and
@@ -65,26 +91,31 @@ class Feature_JSON {
         }
         $spec['internal_url_override'] = $internal_url;
 
-        if (array_key_exists('admin', $value)) {
+        if (isset($value['admin'])) {
             $spec['admin'] = $value['admin'];
         }
-        if (array_key_exists('internal', $value)) {
+        if (isset($value['internal'])) {
             $spec['internal'] = $value['internal'];
         }
-        if (array_key_exists('bucketing', $value)) {
+        if (isset($value['bucketing'])) {
             $spec['bucketing'] = $value['bucketing'];
         }
-        if (array_key_exists('internal', $value)) {
+        if (isset($value['internal'])) {
             $spec['internal'] = $value['internal'];
         }
-        if (array_key_exists('public_url_override', $value)) {
+        if (isset($value['public_url_override'])) {
             $spec['public_url_override'] = $value['public_url_override'];
         }
 
         return $spec;
     }
 
-    private static function makeSpec ($key) {
+    /**
+     * @param $key
+     * @return array
+     */
+    private static function makeSpec ($key)
+    {
         return array(
             'key' => $key,
             'internal_url_override' => false,
@@ -92,18 +123,34 @@ class Feature_JSON {
             'bucketing' => 'uaid',
             'admin' => null,
             'internal' => null,
-            'variants' => array());
+            'variants' => array()
+        );
     }
 
-    private static function makeVariant ($name, $percentage) {
+    /**
+     * @param $name
+     * @param $percentage
+     * @return array
+     */
+    private static function makeVariant ($name, $percentage)
+    {
         return array(
             'name' => $name,
             'percentage' => $percentage,
             'users' => array(),
-            'groups' => array());
+            'groups' => array()
+        );
     }
 
-    private static function makeVariantWithUsersAndGroups ($name, $percentage, $users, $groups) {
+    /**
+     * @param $name
+     * @param $percentage
+     * @param $users
+     * @param $groups
+     * @return array
+     */
+    private static function makeVariantWithUsersAndGroups ($name, $percentage, $users, $groups)
+    {
         return array(
             'name'       => $name,
             'percentage' => $percentage,
@@ -112,7 +159,13 @@ class Feature_JSON {
         );
     }
 
-    private static function extractForVariant ($usersOrGroups, $name) {
+    /**
+     * @param $usersOrGroups
+     * @param $name
+     * @return array
+     */
+    private static function extractForVariant ($usersOrGroups, $name)
+    {
         $result = array();
         foreach ($usersOrGroups as $thing => $variant) {
             if ($variant == $name) {
@@ -122,40 +175,57 @@ class Feature_JSON {
         return $result;
     }
 
-    // This is based on parseUsersOrGroups in Feature_Config. Probably
-    // this logic should be put in that class in a form that we can
-    // use.
-    private static function expandUsersOrGroups ($value) {
+    /**
+     * This is based on parseUsersOrGroups in Config. Probably
+     * this logic should be put in that class in a form that we can
+     * use.
+     *
+     * @param $value
+     * @return array
+     */
+    private static function expandUsersOrGroups ($value)
+    {
         if (is_string($value) || is_numeric($value)) {
-            return array($value => Feature_Config::ON);
-
-        } elseif (self::isList($value)) {
-            $result = array();
-            foreach ($value as $who) {
-                $result[$who] = Feature_Config::ON;
-            }
-            return $result;
-
-        } elseif (is_array($value)) {
-            $result = array();
-            foreach ($value as $variant => $whos) {
-                foreach (self::asArray($whos) as $who) {
-                    $result[$who] = $variant;
-                }
-            }
-            return $result;
-
-        } else {
-            return array();
+            return array($value => Config::ON);
         }
+
+        $result = array();
+
+        if (self::isList($value)) {
+            foreach ($value as $who) {
+                $result[$who] = Config::ON;
+            }
+            return $result;
+        }
+
+        if (!is_array($value)) {
+            return $result;
+        }
+
+        foreach ($value as $variant => $whos) {
+            foreach (self::asArray($whos) as $who) {
+                $result[$who] = $variant;
+            }
+        }
+
+        return $result;
     }
 
-    private static function isList($a) {
+    /**
+     * @param $a
+     * @return bool
+     */
+    private static function isList($a)
+    {
         return is_array($a) and array_keys($a) === range(0, count($a) - 1);
     }
 
-    private static function asArray ($x) {
+    /**
+     * @param $x
+     * @return array
+     */
+    private static function asArray ($x)
+    {
         return is_array($x) ? $x : array($x);
     }
-
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpdox xmlns="http://xml.phpdox.net/config">
+ <project name="CafeMedia" source="../src" workdir="phpdox">
+  <collector publiconly="false">
+   <include mask="*.php" />
+   <exclude mask="*autoload.php" />
+  </collector>
+
+  <generator output=".">
+   <enrich base="logs">
+    <source type="build" />
+    <source type="git" />
+    <source type="phploc" />
+    <source type="checkstyle" />
+    <source type="pmd" />
+    <source type="phpunit" />
+   </enrich>
+
+   <build engine="html" enabled="true" output="api">
+    <file extension="html" />
+   </build>
+  </generator>
+ </project>
+</phpdox>
+

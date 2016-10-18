@@ -1,3 +1,5 @@
+This is an archived file left for reference.
+
 # A theory about generalizing this code
 
 This code was written at Etsy to meet our specific needs and with a
@@ -25,7 +27,7 @@ back into our own codebase.)
 The basic approach I took in that branch was to introduce a new
 abstraction, the "experimental unit". Every feature is tested relative
 to some kind of experimental unit which is named in the feature's
-configuration (under the `unit` key) though the Feature_World
+configuration (under the `unit` key) though the World
 implementation can provide a default. Each kind of experimental unit
 can support:
 
@@ -45,7 +47,7 @@ within Etsy.
 
 The configuration syntax for a feature configured with this
 experimental unit (which is the default in the current implementation
-of `Feature_World`) can be configured with `users`, `groups`, `admin`,
+of `World`) can be configured with `users`, `groups`, `admin`,
 and `internal` keys, that specify variants to be assigned to specific
 users, users in specific groups, all Etsy employees (called "admin"),
 or for internal requests.

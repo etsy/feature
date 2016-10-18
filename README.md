@@ -1,3 +1,5 @@
+This is an archived file left for reference.
+
 # This is an Archived Project
 
 Feature is no longer actively maintained and is no longer in sync with the version used internally at Etsy.
