@@ -38,10 +38,10 @@ class Feature {
      * our API with non-static methods of the same names and arguments.
      */
     public static function getInstance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new Feature_Instance();
+        if (!isset(static::$instance)) {
+            static::$instance = new Feature_Instance();
         }
-        return self::$instance;
+        return static::$instance;
     }
 
     /**
@@ -52,7 +52,8 @@ class Feature {
      * @return bool
      */
     public static function isEnabled ($name) {
-        return self::fromConfig($name)->isEnabled();
+
+        return static::fromConfig($name)->isEnabled();
     }
 
     /**
@@ -70,7 +71,7 @@ class Feature {
      * @return bool
      */
     public static function isEnabledFor($name, $user) {
-        return self::fromConfig($name)->isEnabledFor($user);
+        return static::fromConfig($name)->isEnabledFor($user);
     }
 
     /**
@@ -87,7 +88,7 @@ class Feature {
      * @return bool
      */
     public static function isEnabledBucketingBy($name, $string) {
-        return self::fromConfig($name)->isEnabledBucketingBy($string);
+        return static::fromConfig($name)->isEnabledBucketingBy($string);
     }
 
     /**
@@ -106,7 +107,7 @@ class Feature {
      * @param string $name the config key for the feature.
      */
     public static function variant($name) {
-        return self::fromConfig($name)->variant();
+        return static::fromConfig($name)->variant();
     }
 
     /**
@@ -134,7 +135,7 @@ class Feature {
      * and hashed to get the bucketing.
      */
     public static function variantFor($name, $user) {
-        return self::fromConfig($name)->variantFor($user);
+        return static::fromConfig($name)->variantFor($user);
     }
 
     /**
@@ -160,14 +161,14 @@ class Feature {
      * @param string $bucketingID A string to use as the bucketing ID.
      */
     public static function variantBucketingBy($name, $bucketingID) {
-        return self::fromConfig($name)->variantBucketingBy($bucketingID);
+        return static::fromConfig($name)->variantBucketingBy($bucketingID);
     }
 
     /*
      * Description of the feature.
      */
     public static function description ($name) {
-        return self::fromConfig($name)->description();
+        return static::fromConfig($name)->description();
     }
 
     /**
@@ -179,7 +180,7 @@ class Feature {
      * @return mixed
      */
     public static function data($name, $default = array()) {
-        return self::world()->configValue("$name.data", $default);
+        return static::world()->configValue("$name.data", $default);
     }
 
     /**
@@ -191,8 +192,8 @@ class Feature {
      * @return mixed
      */
     public static function variantData($name, $default = array()) {
-        $data    = self::data($name);
-        $variant = self::variant($name);
+        $data    = static::data($name);
+        $variant = static::variant($name);
         return isset($data[$variant]) ? $data[$variant] : $default;
     }
 
@@ -207,12 +208,13 @@ class Feature {
      * @return Feature_Config
      */
     private static function fromConfig($name) {
-        if (array_key_exists($name, self::$configCache)) {
-            return self::$configCache[$name];
+        if (array_key_exists($name, static::$configCache)) {
+            return static::$configCache[$name];
         } else {
-            $world = self::world();
+            $world = static::world();
+drupal_set_message(get_class($world));
             $stanza = $world->configValue($name);
-            return self::$configCache[$name] = new Feature_Config($name, $stanza, $world);
+            return static::$configCache[$name] = new Feature_Config($name, $stanza, $world);
         }
     }
 
@@ -223,7 +225,7 @@ class Feature {
      * have those changes be reflected in feature checks.)
      */
     public static function clearCacheForTests() {
-        self::$configCache = array();
+        static::$configCache = array();
     }
 
 
@@ -234,7 +236,7 @@ class Feature {
      * what variants and why during the course of handling a request.
      */
     public static function selections () {
-        return self::world()->selections();
+        return static::world()->selections();
     }
 
     /**
@@ -242,9 +244,9 @@ class Feature {
      * the world as an argument in order to ease unit testing.
      */
     private static function world () {
-        if (!isset(self::$defaultWorld)) {
-            self::$defaultWorld = new Feature_World(new Feature_Logger());
+        if (!isset(static::$defaultWorld)) {
+            static::$defaultWorld = new Feature_World(new Feature_Logger());
         }
-        return self::$defaultWorld;
+        return static::$defaultWorld;
     }
 }
