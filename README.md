@@ -1,4 +1,7 @@
-This is an archived file left for reference.
+[![Build Status](https://travis-ci.org/PabloJoan/feature.svg?branch=master)](https://travis-ci.org/PabloJoan/feature)
+
+
+Everything below is an archive, left for reference.
 
 # This is an Archived Project
 
