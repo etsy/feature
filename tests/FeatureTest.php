@@ -26,14 +26,13 @@ class FeatureTest extends TestCase
                                      'admin' => 'test3',
                                      'internal' => 'test1',
                                      'public_url_override' => true,
-                                     'bucketing' => 'random',
                                      'exclude_from' => [
                                          'zips' => [10014, 10023],
                                          'countries' => ['us', 'rd'],
                                          'regions' => ['ny', 'nj', 'ca']
                                      ],
-                                     'start' => 20170314,
-                                     'end' => 20170530
+                                     'start' => 20170214,
+                                     'end' => 99990530
                                  ]
                              ]))
                              ->addUrl('feature')
@@ -51,7 +50,7 @@ class FeatureTest extends TestCase
 
     public function testIsEnabled()
     {
-        $this->assertEquals($this->feature->isEnabled('testFeature'), false);
+        $this->assertEquals($this->feature->isEnabled('testFeature'), true);
     }
 
     public function testIsEnabledFor()
@@ -76,13 +75,13 @@ class FeatureTest extends TestCase
     {
         $this->assertEquals(
             $this->feature->isEnabledBucketingBy('testFeature', 'test'),
-            false
+            true
         );
     }
 
     public function testVariant()
     {
-        $this->assertEquals($this->feature->variant('testFeature'), 'off');
+        $this->assertEquals($this->feature->variant('testFeature'), 'test1');
     }
 
     public function testVariantFor()
@@ -99,7 +98,7 @@ class FeatureTest extends TestCase
                     'internal-ip' => false
                 ]
             ),
-            'off'
+            'test4'
         );
     }
 
@@ -107,7 +106,7 @@ class FeatureTest extends TestCase
     {
         $this->assertEquals(
             $this->feature->variantBucketingBy('testFeature', 'test'),
-            'off'
+            'test2'
         );
     }
 

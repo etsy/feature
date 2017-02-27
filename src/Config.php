@@ -122,10 +122,11 @@ class Config
             return $this->cache[$bucketingID];
         }
 
-        return $this->cache[$bucketingID] = (string)(new Variant($this->world))
+        return $this->cache[$bucketingID] = (new Variant($this->world))
                                                  ->addStanza($this->stanza)
                                                  ->addBucketingID($bucketingID)
-                                                 ->addName($this->name);
+                                                 ->addName($this->name)
+						 ->getVariant();
     }
 
     /**

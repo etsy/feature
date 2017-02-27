@@ -68,8 +68,8 @@ class VariantTest extends TestCase
                              ->addName('test');
     }
 
-    public function testToString()
+    public function testGetVariant()
     {
-        $this->assertEquals((string)$this->variant, 'off');
+        $this->assertEquals($this->variant->getVariant(), 'off');
     }
 }

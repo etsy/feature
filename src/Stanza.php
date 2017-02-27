@@ -46,7 +46,7 @@ class Stanza
     private function parseDescription(array $stanza)
     {
         if (isset($stanza['description'])) return $stanza['description'];
-        return 'No description.';
+        return '';
     }
 
     /**

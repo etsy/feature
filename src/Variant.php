@@ -40,12 +40,11 @@ class Variant
         return $this;
     }
 
-    public function __toString()
+    public function getVariant()
     {
         return $this->variantFromURL() ?:
                $this->variantForUser() ?:
                $this->variantForGroup() ?:
-               $this->variantForViewingGroup() ?:
                $this->variantForSource() ?:
                $this->variantForAdmin() ?:
                $this->variantForInternal() ?:
@@ -95,18 +94,6 @@ class Variant
         $name = strtolower($this->world->userName());
         if (!isset($this->stanza->users[$name])) return false;
         return $this->stanza->users[$name];
-    }
-
-    /**
-     * Get the variant visitor should see based on group
-     * they're currently viewing
-     */
-    private function variantForViewingGroup()
-    {
-        foreach ($this->stanza->groups as $groupID => $variant) {
-            if ($this->world->viewingGroup($groupID)) return $variant;
-        }
-        return false;
     }
 
     /**
@@ -196,8 +183,8 @@ class Variant
     private function variantTime()
     {
         $time = time();
-        if (($this->stanza->start && $this->stanza->start < $time) ||
-            ($this->stanza->end && $this->stanza->end > $time)
+        if (($this->stanza->start && $this->stanza->start > $time) ||
+            ($this->stanza->end && $this->stanza->end < $time)
         ) {
             return 'off';
         }

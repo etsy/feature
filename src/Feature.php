@@ -52,7 +52,7 @@ class Feature
 
     public function addUrl($url)
     {
-        $this->source = $url;
+        $this->url = $url;
         return $this;
     }
 
