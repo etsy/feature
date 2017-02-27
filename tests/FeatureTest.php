@@ -3,121 +3,118 @@
 namespace CafeMedia\Feature\Tests;
 
 use CafeMedia\Feature\Feature;
-use CafeMedia\Feature\Instance;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Class FeatureTest
- * @package CafeMedia\Feature\Tests
- */
-class FeatureTest extends PHPUnit_Framework_TestCase
+class FeatureTest extends TestCase
 {
     private $feature;
 
     public function setUp()
     {
-        $this->feature = new Feature($this->getMock('Psr\Log\LoggerInterface'));
+        $this->feature = (new Feature([
+                                 'testFeature' => [
+                                     'description' => 'this is the description',
+                                     'enabled' => [
+                                         'test1' => 20,
+                                         'test2' => 30,
+                                         'test3' => 15,
+                                         'test4' => 35
+                                     ],
+                                     'users' => ['user1', 'user2', 'user3'],
+                                     'groups' => ['group1', 'group2', 'group3'],
+                                     'sources' => ['source1', 'source2'],
+                                     'admin' => 'test3',
+                                     'internal' => 'test1',
+                                     'public_url_override' => true,
+                                     'exclude_from' => [
+                                         'zips' => [10014, 10023],
+                                         'countries' => ['us', 'rd'],
+                                         'regions' => ['ny', 'nj', 'ca']
+                                     ],
+                                     'start' => 20170214,
+                                     'end' => 99990530
+                                 ]
+                             ]))
+                             ->addUrl('feature')
+                             ->addSource('')
+                             ->addUser([
+                                 'user-uaid' => 'as54gerfd',
+                                 'user-id' => 5,
+                                 'user-name' => 'testUserName',
+                                 'is-admin' => false,
+                                 'user-group' => 'group',
+                                 'internal-ip' => false
+                             ]);
+        $this->assertEquals($this->feature instanceof Feature, true);
     }
 
-    /**
-     * @covers \CafeMedia\Feature\Feature::getInstance
-     */
-    public function testGetInstance()
-    {
-        $this->assertEquals($this->feature->getInstance() instanceof Instance, true);
-    }
-
-    /**
-     * @covers \CafeMedia\Feature\Feature::isEnabled
-     */
     public function testIsEnabled()
     {
-        $this->assertEquals($this->feature->isEnabled('test'), false);
-        $this->assertEquals($this->feature->getInstance()->isEnabled('test'), false);
+        $this->assertEquals($this->feature->isEnabled('testFeature'), true);
     }
 
-    /**
-     * @covers \CafeMedia\Feature\Feature::isEnabledFor
-     */
     public function testIsEnabledFor()
     {
-        $this->assertEquals($this->feature->isEnabledFor('test', (object) array('user_id' => 1)), false);
-        $this->assertEquals($this->feature->getInstance()->isEnabledFor('test', (object) array('user_id' => 1)), false);
+        $this->assertEquals(
+            $this->feature->isEnabledFor(
+                'testFeature',
+                [
+                    'user-uaid' => 'as54gerfd',
+                    'user-id' => 5,
+                    'user-name' => 'testUserName',
+                    'is-admin' => false,
+                    'user-group' => 'group',
+                    'internal-ip' => false
+                ]
+            ),
+            false
+        );
     }
 
-    /**
-     * @covers \CafeMedia\Feature\Feature::isEnabledBucketingBy
-     */
     public function testIsEnabledBucketingBy()
     {
-        $this->assertEquals($this->feature->isEnabledBucketingBy('test', 'test'), false);
-        $this->assertEquals($this->feature->getInstance()->isEnabledBucketingBy('test', 'test'), false);
+        $this->assertEquals(
+            $this->feature->isEnabledBucketingBy('testFeature', 'test'),
+            true
+        );
     }
 
-    /**
-     * @covers \CafeMedia\Feature\Feature::variant
-     */
     public function testVariant()
     {
-        $this->assertEquals($this->feature->variant('test'), 'off');
-        $this->assertEquals($this->feature->getInstance()->variant('test'), 'off');
+        $this->assertEquals($this->feature->variant('testFeature'), 'test1');
     }
 
-    /**
-     * @covers \CafeMedia\Feature\Feature::variantFor
-     */
     public function testVariantFor()
     {
-        $this->assertEquals($this->feature->variantFor('test', (object) array('user_id' => 1)), 'off');
-        $this->assertEquals($this->feature->getInstance()->variantFor('test', (object) array('user_id' => 1)), 'off');
+        $this->assertEquals(
+            $this->feature->variantFor(
+                'testFeature',
+                [
+                    'user-uaid' => 'as54gerfd',
+                    'user-id' => 5,
+                    'user-name' => 'testUserName',
+                    'is-admin' => false,
+                    'user-group' => 'group',
+                    'internal-ip' => false
+                ]
+            ),
+            'test4'
+        );
     }
 
-    /**
-     * @covers \CafeMedia\Feature\Feature::variantBucketingBy
-     */
     public function testVariantBucketingBy()
     {
-        $this->assertEquals($this->feature->variantBucketingBy('test', 'test'), 'off');
-        $this->assertEquals($this->feature->getInstance()->variantBucketingBy('test', 'test'), 'off');
+        $this->assertEquals(
+            $this->feature->variantBucketingBy('testFeature', 'test'),
+            'test2'
+        );
     }
 
-    /**
-     * @covers \CafeMedia\Feature\Feature::description
-     */
     public function testDescription()
     {
-        $this->assertEquals($this->feature->description('test'), 'No description.');
-    }
-
-    /**
-     * @covers \CafeMedia\Feature\Feature::data
-     */
-    public function testData()
-    {
-        $this->assertEquals($this->feature->data('test'), array());
-    }
-
-    /**
-     * @covers \CafeMedia\Feature\Feature::variantData
-     */
-    public function testVariantData()
-    {
-        $this->assertEquals($this->feature->variantData('test'), array());
-    }
-
-    /**
-     * @covers \CafeMedia\Feature\Instance::getGACustomVarJS
-     */
-    public function testGetGACustomVarJS()
-    {
         $this->assertEquals(
-            $this->feature->getInstance()->getGACustomVarJS('test'),
-            "_gaq.push(['_setCustomVar', 3, 'AB', 'null', 3]);"
-        );
-
-        $this->assertEquals(
-            $this->feature->getInstance()->getGACustomVarJS('mobile'),
-            "['_setCustomVar', 3, 'AB', 'null', 3],"
+            $this->feature->description('testFeature'),
+            'this is the description'
         );
     }
 }

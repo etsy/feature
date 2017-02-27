@@ -3,125 +3,90 @@
 namespace CafeMedia\Feature\Tests;
 
 use CafeMedia\Feature\World;
+use CafeMedia\Feature\User;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Class WorldTest
- * @package CafeMedia\Feature\Tests
- */
-class WorldTest extends \PHPUnit_Framework_TestCase
+class WorldTest extends TestCase
 {
     private $world;
 
     public function setUp()
     {
-        $this->world = new World(
-            $this->getMockBuilder('CafeMedia\Feature\Logger')->disableOriginalConstructor()->getMock()
-        );
+        $this->world = (new World(['test' => ['value']]))
+                           ->addUrl('feature')
+                           ->addSource('')
+                           ->addUser(new User([
+                               'user-uaid' => 'as54gerfd',
+                               'user-id' => 5,
+                               'user-name' => 'testUserName',
+                               'is-admin' => false,
+                               'user-group' => 'group',
+                               'internal-ip' => false,
+                               'zipcode' => 10203,
+                               'region' => 'ny',
+                               'country' => 'us'
+                           ]));
+        $this->assertEquals($this->world instanceof World, true);
     }
-    
-    /**
-     * @covers \CafeMedia\Feature\World::configValue
-     */
+
     public function testConfigValue()
     {
-        $this->assertEquals($this->world->configValue('test'), null);
+        $this->assertEquals($this->world->configValue('test'), ['value']);
     }
-    
-    /**
-     * @covers \CafeMedia\Feature\World::uaid
-     */
+
     public function testUaid()
     {
-        $this->assertEquals($this->world->uaid(), '');
+        $this->assertEquals($this->world->uaid(), 'as54gerfd');
     }
-    
-    /**
-     * @covers \CafeMedia\Feature\World::userId
-     */
+
     public function testUserId()
     {
-        $this->assertEquals($this->world->userId(), '');
+        $this->assertEquals($this->world->userId(), 5);
     }
-    
-    /**
-     * @covers \CafeMedia\Feature\World::userName
-     */
+
     public function testUserName()
     {
-        $this->assertEquals($this->world->userName(), '');
+        $this->assertEquals($this->world->userName(), 'testUserName');
     }
-    
-    /**
-     * @covers \CafeMedia\Feature\World::viewingGroup
-     */
+
     public function testViewingGroup()
     {
         $this->assertEquals($this->world->viewingGroup('test'), false);
     }
 
-    /**
-     * @covers \CafeMedia\Feature\World::isSource
-     */
     public function testIsSource()
     {
         $this->assertEquals($this->world->isSource('test'), false);
         $this->assertEquals($this->world->isSource(''), true);
     }
 
-    /**
-     * @covers \CafeMedia\Feature\World::inGroup
-     */
-    public function testInGroup()
-    {
-        $this->assertEquals($this->world->inGroup(), false);
-    }
-
-    /**
-     * @covers \CafeMedia\Feature\World::isAdmin
-     */
     public function testIsAdmin()
     {
         $this->assertEquals($this->world->isAdmin(), false);
     }
 
-    /**
-     * @covers \CafeMedia\Feature\World::isInternalRequest
-     */
     public function testIsInternalRequest()
     {
         $this->assertEquals($this->world->isInternalRequest(), false);
     }
 
-    /**
-     * @covers \CafeMedia\Feature\World::urlFeatures
-     */
     public function testUrlFeatures()
     {
-        $this->assertEquals($this->world->urlFeatures(), '');
+        $this->assertEquals($this->world->urlFeatures(), 'feature');
     }
 
-    /**
-     * @covers \CafeMedia\Feature\World::random
-     */
-    public function testRandom()
+    public function testZipcode()
     {
-        $this->assertEquals(is_numeric($this->world->random()), true);
+        $this->assertEquals($this->world->zipcode(), 10203);
     }
 
-    /**
-     * @covers \CafeMedia\Feature\World::hash
-     */
-    public function testHash()
+    public function testRegion()
     {
-        $this->assertEquals($this->world->hash('test'), 0.91731063090264797);
+        $this->assertEquals($this->world->region(), 'ny');
     }
 
-    /**
-     * @covers \CafeMedia\Feature\World::selections
-     */
-    public function testSelections()
+    public function testCounrty()
     {
-        $this->world->log('test', 'test', 'test');
-        $this->assertEquals($this->world->selections(), array(array('test', 'test', 'test')));
+        $this->assertEquals($this->world->country(), 'us');
     }
 }

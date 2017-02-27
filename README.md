@@ -1,4 +1,45 @@
-This is an archived file left for reference.
+[![Build Status](https://travis-ci.org/PabloJoan/feature.svg?branch=master)](https://travis-ci.org/PabloJoan/feature)
+
+Requires PHP 5.6 and above.
+
+# Installation
+
+```bash
+composer require cafemedia/feature
+```
+
+# Usage
+
+```php
+$config = [
+   'testFeature' => [
+       'description' => 'this is the description of the test feature',
+       'enabled' => [
+           'variant1' => 100, //100% chance this variable will be chosen
+           'variant2' => 0
+       ],
+    ]
+];
+$feature = (new Feature($config))->addUser([
+  'user-uaid' => 'unique identifier', //required
+  'user-id' => 'logged in user ID', // if applicable
+  'user-name' => 'logged in user name' // if applicable
+]);
+
+$feature->isEnabled('testFeature'); // true
+$feature->variant('variant1'); // true
+$feature->variant('description'); // 'this is the description of the test feature'
+```
+
+
+# TODO
+
+DOCUMENTATION!!!!! remove archived documentation by etsy and replace with new.
+More tests.
+Add more bucketing schemes.
+
+
+Everything below is an archive, left for reference.
 
 # This is an Archived Project
 
@@ -21,22 +62,22 @@ including what variant was selected, in the events we fire.
 
 The two main API entry points are:
 
-    Feature::isEnabled('my_feature')
+    $feature->isEnabled('my_feature')
 
 which returns true when `my_feature` is enabled and, for multi-variant
 features:
 
-    Feature::variant('my_feature')
+    $feature->variant('my_feature')
 
 which returns the name of the particular variant which should be used.
 
 The single argument to each of these methods is the name of the
 feature to test.
 
-A typical use of `Feature::isEnabled` for a single-variant feature
+A typical use of `$feature->isEnabled` for a single-variant feature
 would look something like this:
 
-    if (Feature::isEnabled('my_feature')) {
+    if ($feature->isEnabled('my_feature')) {
         // do stuff
     }
 
@@ -44,9 +85,9 @@ For a multi-variant feature, within the block guarded by the
 `Feature::isEnabled` check, we can determine the appropriate code to
 run for each variant with something like this:
 
-    if (Feature::isEnabled('my_feature')) {
+    if ($feature->('my_feature')) {
 
-        switch (Feature::variant('my_feature')) {
+        switch ($feature->variant('my_feature')) {
           case 'foo':
               // do stuff appropriate for the foo variant
               break;
@@ -58,20 +99,20 @@ run for each variant with something like this:
 
 It is an error (and will be logged as such) to ask for the variant of
 a feature that is not enabled. So the calls to variant should always
-be guarded by an `Feature::isEnabled` check.
+be guarded by an `$feature->isEnabled` check.
 
 The API also provides two other pairs of methods that will be used
 much less frequently:
 
-    Feature::isEnabledFor('my_feature', $user)
+    $feature->isEnabledFor('my_feature', $user)
 
-    Feature::variantFor('my_feature', $user)
+    $feature->variantFor('my_feature', $user)
 
 and
 
-    Feature::isEnabledBucketingBy('my_feature', $bucketingID)
+    $feature->isEnabledBucketingBy('my_feature', $bucketingID)
 
-    Feature::variantBucketingBy('my_feature', $bucketingID)
+    $feature->variantBucketingBy('my_feature', $bucketingID)
 
 These methods exist only to support a couple very specific use-cases:
 when we want to enable or disable a feature based not on the user
@@ -111,11 +152,11 @@ configuration.
 
 ### A totally enabled feature:
 
-    $server_config['foo'] = 'on';
+    $server_config['foo'] = ['enabled' => 100];
 
 ### A totally disabled feature:
 
-    $server_config['foo'] = 'off';
+    $server_config['foo'] = ['enabled' => 0];
 
 ### Feature with winning variant turned on for everyone
 
@@ -380,10 +421,10 @@ There are a few ways to misuse the Feature API or misconfigure a
 feature that may be detected and logged. (Some of these are not
 currently detected but may be in the future.)
 
-  1. Calling `Feature::variant` for a single-variant feature.
+  1. Calling `$feature->variant` for a single-variant feature.
 
-  1. Calling `Feature::variant` in code not guarded by an
-    `Feature::isEnabled` check.
+  1. Calling `$feature->variant` in code not guarded by an
+    `$feature->isEnabled` check.
 
   1. Including `'on'` as a variant name in a multi-variant feature.
 
@@ -467,7 +508,7 @@ Here’s what will happen in those cases:
     calls to `Feature::variant` and any related conditional logic
     (e.g. switches on the variant name).
 
-  1. Remove the `Feature::isEnabled` checks but keep the code they
+  1. Remove the `$feature->isEnabled` checks but keep the code they
     guarded.
 
   1. Remove the feature config.
@@ -478,7 +519,7 @@ Here’s what will happen in those cases:
     variant (`'on'` for a single-variant feature).
 
   1. Delete any code that implements other variants and remove the
-    calls to `Feature::variant` and any related conditional logic
+    calls to `$feature->variant` and any related conditional logic
     (e.g. switches on the variant name).
 
   1. Add a new config named with a `feature_` prefix and set its value
