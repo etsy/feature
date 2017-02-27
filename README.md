@@ -1,5 +1,35 @@
 [![Build Status](https://travis-ci.org/PabloJoan/feature.svg?branch=master)](https://travis-ci.org/PabloJoan/feature)
 
+Requires PHP 5.6 and above.
+
+# Installation
+
+```bash
+composer require cafemedia/feature
+```
+
+# Usage
+
+```php
+$config = [
+   'testFeature' => [
+       'description' => 'this is the description of the test feature',
+       'enabled' => [
+           'variant1' => 100, //100% chance this variable will be chosen
+           'variant2' => 0
+       ],
+    ]
+];
+$feature = (new Feature($config))->addUser([
+  'user-uaid' => 'unique identifier', //required
+  'user-id' => 'logged in user ID', // if applicable
+  'user-name' => 'logged in user name' // if applicable
+]);
+
+$feature->isEnabled('testFeature'); // true
+$feature->variant('variant1'); // true
+$feature->variant('description'); // 'this is the description of the test feature'
+```
 
 Everything below is an archive, left for reference.
 
