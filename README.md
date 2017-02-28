@@ -317,7 +317,7 @@ rather than
 so that the bleary-eyed, junior ops person at 3am can do this:
 
     $server_config['foo'] = array(
-       'enabled' => 'off', // array('foo' => 10, 'bar' => 10),
+       'enabled' => 'off' //, array('foo' => 10, 'bar' => 10),
     );
 
 rather than this, which breaks the config file:
