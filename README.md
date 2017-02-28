@@ -8,7 +8,7 @@ Requires PHP 5.6 and above.
 composer require cafemedia/feature
 ```
 
-# Usage
+# Basic Usage
 
 ```php
 $config = [
@@ -38,16 +38,9 @@ DOCUMENTATION!!!!! remove archived documentation by etsy and replace with new.
 More tests.
 Add more bucketing schemes.
 
-
-Everything below is an archive, left for reference.
-
-# This is an Archived Project
-
-Feature is no longer actively maintained and is no longer in sync with the version used internally at Etsy.
-
 # Feature API
 
-Etsy's Feature flagging API used for operational rampups and A/B
+Feature flagging API used for operational rampups and A/B
 testing.
 
 The Feature API is how we selectively enable and disable features at a
@@ -55,10 +48,6 @@ very fine grain as well as enabling features for a percentage of users
 for operational ramp-ups and for A/B tests. A feature can be
 completely enabled, completely disabled, or something in between and
 can comprise a number of related variants.
-
-For features that are not completely enabled or disabled, we log every
-time we check whether a feature is enabled and include the result,
-including what variant was selected, in the events we fire.
 
 The two main API entry points are:
 
@@ -97,7 +86,7 @@ run for each variant with something like this:
         }
     }
 
-It is an error (and will be logged as such) to ask for the variant of
+It is an error to ask for the variant of
 a feature that is not enabled. So the calls to variant should always
 be guarded by an `$feature->isEnabled` check.
 
@@ -136,13 +125,6 @@ as the bucketing ID.
 In general it is much more likely you want to use the plain old
 `isEnabled` and `variant` methods.
 
-For Smarty templates, where static methods can’t readily be called,
-there is an object, `$feature`, wired up in Tpl.php that exposes the
-same four methods as the Feature API but as instance methods, for
-instance:
-
-    {% if $feature->isEnabled("my_feature") %}
-
 ## Configuration cookbook
 
 There are a number of common configurations so before I explain the
@@ -160,7 +142,7 @@ configuration.
 
 ### Feature with winning variant turned on for everyone
 
-    $server_config['foo'] = 'blue_background';
+    $server_config['foo'] = ['enabled' => ['blue_background' => 100]];
 
 ### Feature enabled only for admins:
 
@@ -224,13 +206,10 @@ configuration.
 
 ### New feature intended only to be enabled by adding ?features=foo to a URL
 
-    $server_config['foo'] = array('enabled' => 0);
-
-This is kind of a funny edge case. It could also be written:
-
-    $server_config['foo'] = array();
-
-since a missing `'enabled'` is defaulted to 0.
+    $server_config['foo'] = array(
+         'enabled' => 0,
+         'public_url_override' => true
+   );
 
 ## Configuration details
 
@@ -241,16 +220,13 @@ Leaving aside a few shorthands that will be explained in a moment, the
 value of a feature config stanza is an array with a number of special
 keys, the most important of which is `'enabled'`.
 
-In its full form, the value of the `'enabled'` property is either the
-string `'off'`, meaning the feature is entirely disabled, any other
-string, meaning the named variant is enabled for all requests, or an
+In its full form, the value of the `'enabled'` property an
 array whose keys are names of variants and whose values are the
 percentage of requests that should see each variant.
 
 As a shorthand to support the common case of a feature with only one
 variant, `'enabled'` can also be specified as a percentage from 0 to
-100 which is equivalent to specifying an array with the variant name
-`'on'` and the given percentage.
+100.
 
 The next four most important properties of a feature config stanza
 specify a particular variant that special classes of users should see:
@@ -259,9 +235,7 @@ specify a particular variant that special classes of users should see:
 The `'admin'` and `'internal'` properties, if present, should name a
 variant that should be shown for all admin users or all internal
 requests. For single-variant features this name will almost always be
-`'on'`. (Technically you could also specify `'off'` to turn off a
-feature for admin users or internal requests that would be otherwise
-enabled. But that would be weird.) For multi-variant features it can
+`'on'`. For multi-variant features it can
 be any of the variants mentioned in the `'enabled'` array.
 
 The `'users'` and `'groups'` variants provide a mapping from variant
@@ -281,11 +255,10 @@ and:
 
     $server_config['foo'] => array('users' => 'fred');
 
-None of these four properties have any effect if `'enabled'` is a
-string since in those cases the feature is considered either entirely
-enabled or disabled. They can, however, enable a variant of a feature
-if no `'enabled'` value is provided or if the variant’s percentage is
-0.
+None of these four properties have any effect if `'enabled'` is
+entirely enabled or disabled. They can, however, enable a variant of a
+feature if no `'enabled'` value is provided or if the variant’s
+percentage is 0.
 
 On the other hand, when an array `'enabled'` value is specified, as an
 aid to detecting typos, the variant names used in the `'admin'`,
@@ -319,74 +292,12 @@ admin and internal requests, to turn on a feature and choose a variant
 via the `features` query param. Its value will almost always be true
 if it is present since it defaults to false if omitted.
 
-Finally, two last shorthands:
-
-First, a config stanza with only the key `'enabled'` and a string
-value can be replaced with just the string. So:
-
-    $server_config['foo'] = array('enabled' => 'on');
-    $server_config['bar'] = array('enabled' => 'off');
-    $server_config['baz'] = array('enabled' => 'some_variant');
-
-Can be written simply:
-
-    $server_config['foo'] = 'on';
-    $server_config['bar'] = 'off';
-    $server_config['baz'] = 'some_variant';
-
-And second, if a feature config is missing entirely, it’s equivalent
-to specifying it as `'off'`. This allows dark changes to include code
-that checks for a feature before it has been added to production.php.
-
-**Note for ops**: removing a feature config altogether, setting it to
-the string `'off'`, or setting `'enabled'` to `'off'` all completely
-disable the feature, ensuring that code guarded by
-`Feature::isEnabled` for that feature will never run. The best way to
-turn off an existing feature in an emergency would be to set
-`'enabled'` to `'off'`. To facilitate that, we should try to keep the
-`'enabled'` value on one line, whenever possible. Thus:
-
-    $server_config['foo'] = array(
-       'enabled' => array('foo' => 10, 'bar' => 10),
-    );
-
-rather than
-
-    $server_config['foo'] = array(
-       'enabled' => array(
-           'foo' => 10,
-           'bar' => 10
-        ),
-    );
-
-so that the bleary-eyed, junior ops person at 3am can do this:
-
-    $server_config['foo'] = array(
-       'enabled' => 'off', // array('foo' => 10, 'bar' => 10),
-    );
-
-rather than this, which breaks the config file:
-
-    $server_config['foo'] = array(
-       'enabled' => 'off', // array(
-           'foo' => 10,
-           'bar' => 10
-        ),
-    );
-
-Note, however, that removing the `'enabled'` property does mostly turn
-off the feature it doesn’t completely disable it as it could still be
-enabled via an `'admin'` property, etc.
-
 ## Precedence:
 
 The precedence of the various mechanisms for enabling a feature are as
 follows.
 
-  - If `'enabled'` is a string (variant name or `'off'`) the feature
-    is entirely on or off for all requests.
-
-  - Otherwise, if the request is from an admin user or is an internal
+  - If the request is from an admin user or is an internal
     request, or if `'public_url_override'` is true and the request
     contains a `features` query param that specifies a variant for the
     feature in question, that variant is used. The value of the
@@ -426,8 +337,6 @@ currently detected but may be in the future.)
   1. Calling `$feature->variant` in code not guarded by an
     `$feature->isEnabled` check.
 
-  1. Including `'on'` as a variant name in a multi-variant feature.
-
   1. Setting `'enabled'` to numeric value less than 0 or greater than
     100.
 
@@ -437,7 +346,7 @@ currently detected but may be in the future.)
   1. Setting `'enabled'` such that the sum of the variant percentages
     is greater than 100.
 
-  1. Setting `'enabled'` to a non-numeric, non-string, non-array
+  1. Setting `'enabled'` to a non-numeric, non-array
     value.
 
   1. When `'enabled'` is an array, setting the `'users'` or `'groups'`
@@ -458,7 +367,7 @@ the code, or deleting the code altogether.
 
 The basic life cycle of a feature might look like this:
 
-  1. Developer writes some code guarded by `Feature::isEnabled`
+  1. Developer writes some code guarded by `$feature->isEnabled`
     checks. In order to test the feature in development they will add
     configuration for the feature to `development.php` that turns it
     on for specific users or admin or sets `'enabled'` to 0 so they
@@ -479,8 +388,7 @@ The basic life cycle of a feature might look like this:
   1. During the rampup period the percentage of users exposed to the
     feature may be moved up and down until the developers and ops
     folks are convinced the code is fully baked. If serious problems
-    arise at any point, the new code can be completely disabled by
-    setting enabled to `'off'`.
+    arise at any point, the new code can be completely disabled.
 
   1. If the feature is going to be part of an A/B experiment, then the
     developers will (working with the data team) figure out the best
@@ -502,7 +410,7 @@ Here’s what will happen in those cases:
 ### To keep the feature as a permanent part of the web site without creating a top-level feature flag
 
   1. Change the value of the feature config to the name of the winning
-    variant (`'on'` for a single-variant feature).
+    variant.
 
   1. Delete any code that implements other variants and remove the
     calls to `Feature::variant` and any related conditional logic
@@ -513,51 +421,14 @@ Here’s what will happen in those cases:
 
   1. Remove the feature config.
 
-### To keep a feature under the control of a full-fledged feature flag. (I.e. for things that will typically be enabled but which we want to preserve the ability to turn off with a simple config change.)
-
-  1. Change the value of the feature config to the name of the winning
-    variant (`'on'` for a single-variant feature).
-
-  1. Delete any code that implements other variants and remove the
-    calls to `$feature->variant` and any related conditional logic
-    (e.g. switches on the variant name).
-
-  1. Add a new config named with a `feature_` prefix and set its value
-    to `'on'`.
-
-  1. Change all the `Feature::isEnabled` checks for the old flag name
-    to the new feature flag.
-
-  1. Remove the old config.
-
 ### To remove a feature all together
 
-  1. Change the value of the feature config to `'off'`.
+  1. Change the value of the feature config to `['enabled' => 0]`.
 
-  1. Delete all code guarded by `Feature::isEnabled` checks and then
+  1. Delete all code guarded by `$feature->isEnabled` checks and then
     remove the checks.
 
   1. Remove the feature config.
-
-### To run a new experiment based on the same code
-
-  1. Set the enabled value of the feature config to `'off'`.
-
-  1. Create a new feature config with a similar name but suffixed with
-    _vN where N is 2 if this is the second experiment, 3 if is the
-    third. Set it to `'off'`.
-
-  1. Change all the `Feature::isEnabled` checks for the old feature to
-    the new feature.
-
-  1. Delete the old config.
-
-  1. Implement the changes required for the new experiment, deleting
-    old variants and adding new ones as needed.
-
-  1. Rampup and then A/B test the new feature as normal.
-
-  1. Promote, cleanup, or re-experiment as appropriate.
 
 ## A few style guidelines
 
@@ -574,15 +445,15 @@ using the Feature API but rather simply driving your code with some
 plain old config data.
 
 Second, the results of the Feature methods should not be cached, such
-as by calling `Feature::isEnabled` once and storing the result in an
+as by calling `$feature->isEnabled` once and storing the result in an
 instance variable of some controller. The Feature machinery already
 caches the results of the computation it does so it should already be
-plenty fast to simply call `Feature::isEnabled` or `Feature::variant`
+plenty fast to simply call `$feature->isEnabled` or `$feature->variant`
 whenever needed. This will again aid in finding the places that depend
 on a particular feature.
 
 Third, as a check that you’re using the Feature API properly, whenever
-you have an if block whose test is a call to `Feature::isEnabled`,
+you have an if block whose test is a call to `$feature->isEnabled`,
 make sure that it would make sense to either remove the check and keep
 the code or to delete the check and the code together. There shouldn’t
 be bits of code within a block guarded by an isEnabled check that
