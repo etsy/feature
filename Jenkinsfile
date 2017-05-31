@@ -5,8 +5,7 @@ pipeline {
       steps {
         parallel(
           "composer_install": {
-            sh '''PATH=$PATH:/bin:/usr/local/bin:/usr/bin
-composer install'''
+            sh 'composer install'
             
           },
           "php_lint": {
@@ -18,8 +17,7 @@ composer install'''
     }
     stage('phpunit') {
       steps {
-        sh '''PATH=$PATH:/bin:/usr/local/bin:/usr/bin
-phpunit'''
+        sh 'phpunit'
       }
     }
     stage('cleanup') {
