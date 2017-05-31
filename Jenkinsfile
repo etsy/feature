@@ -18,7 +18,8 @@ composer install'''
     }
     stage('phpunit') {
       steps {
-        sh 'phpunit'
+        sh '''PATH=$PATH:/bin:/usr/local/bin:/usr/bin
+phpunit'''
       }
     }
     stage('cleanup') {
