@@ -1,11 +1,6 @@
 pipeline {
   agent any
   stages {
-    stage('Build') {
-      steps {
-        sh 'git clone https://github.com/cafemedia/feature'
-      }
-    }
     stage('composer_install') {
       steps {
         sh 'composer install'
