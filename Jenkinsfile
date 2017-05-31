@@ -1,21 +1,23 @@
-node {
-    stage('Build') {
-        sh 'git clone https://github.com/cafemedia/feature'
-    }
-    
-    stage("composer_install") {
-        sh 'composer install'
-    }
+pipeline {
+    node {
+        stage('Build') {
+            sh 'git clone https://github.com/cafemedia/feature'
+        }
 
-    stage("php_lint") {
-        sh 'find . -name "*.php" -print0 | xargs -0 -n1 php -l'
-    }
+        stage("composer_install") {
+            sh 'composer install'
+        }
 
-    stage("phpunit") {
-        sh 'phpunit'
-    }
+        stage("php_lint") {
+            sh 'find . -name "*.php" -print0 | xargs -0 -n1 php -l'
+        }
 
-    stage('cleanup') {
-        deleteDir()
-    }    
+        stage("phpunit") {
+            sh 'phpunit'
+        }
+
+        stage('cleanup') {
+            deleteDir()
+        }    
+    }
 }
