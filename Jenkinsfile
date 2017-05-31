@@ -3,7 +3,8 @@ pipeline {
   stages {
     stage('composer_install') {
       steps {
-        sh 'composer install'
+        sh '''echo $PATH
+composer install'''
       }
     }
     stage('php_lint') {
