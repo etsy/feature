@@ -18,7 +18,7 @@ composer install'''
     }
     stage('phpunit') {
       steps {
-        sh '''PATH=$PATH:/bin:/usr/local/bin:/usr/bin
+        sh '''PATH=$PATH:/bin:/usr/local/bin:/usr/bin:/home/pabloi/.config/composer/vendor/bin/
 phpunit'''
       }
     }
