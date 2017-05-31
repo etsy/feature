@@ -1,5 +1,6 @@
 pipeline {
-    node {
+    agent any
+    stages {
         stage('Build') {
             sh 'git clone https://github.com/cafemedia/feature'
         }
