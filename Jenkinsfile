@@ -5,7 +5,8 @@ pipeline {
       steps {
         parallel(
           "composer_install": {
-            sh 'composer install'
+            sh '''PATH=$PATH:/bin:/usr/local/bin:/usr/bin
+composer install'''
             
           },
           "php_lint": {
