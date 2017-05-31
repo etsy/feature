@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('composer_install') {
       steps {
-        sh '''echo $PATH
+        sh '''PATH=$PATH:/bin:/usr/local/bin:/usr/bin
 composer install'''
       }
     }
