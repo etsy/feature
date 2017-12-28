@@ -1,77 +1,94 @@
 <?php
 
-namespace CafeMedia\Feature\Tests;
+declare(strict_types=1);
 
-use CafeMedia\Feature\Feature;
+namespace PabloJoan\Feature\Tests;
+
+use PabloJoan\Feature\Feature;
 use PHPUnit\Framework\TestCase;
 
 class FeatureTest extends TestCase
 {
     private $feature;
 
-    public function setUp()
+    function setUp ()
     {
-        $this->feature = (new Feature([
-                                 'testFeature' => [
-                                     'description' => 'this is the description',
-                                     'enabled' => [
-                                         'test1' => 20,
-                                         'test2' => 30,
-                                         'test3' => 15,
-                                         'test4' => 35
-                                     ],
-                                     'users' => ['user1', 'user2', 'user3'],
-                                     'groups' => ['group1', 'group2', 'group3'],
-                                     'sources' => ['source1', 'source2'],
-                                     'admin' => 'test3',
-                                     'internal' => 'test1',
-                                     'public_url_override' => true,
-                                     'exclude_from' => [
-                                         'zips' => [10014, 10023],
-                                         'countries' => ['us', 'rd'],
-                                         'regions' => ['ny', 'nj', 'ca']
-                                     ],
-                                     'start' => 20170214,
-                                     'end' => 99990530
-                                 ]
-                             ]))
-                             ->addUrl('feature')
-                             ->addSource('')
-                             ->addUser([
-                                 'user-uaid' => 'as54gerfd',
-                                 'user-id' => 5,
-                                 'user-name' => 'testUserName',
-                                 'is-admin' => false,
-                                 'user-group' => 'group',
-                                 'internal-ip' => false
-                             ]);
-        $this->assertEquals($this->feature instanceof Feature, true);
+        $this->feature = new Feature([
+            'features' => [
+                'testFeature' => [
+                    'description' => 'this is the description',
+                    'enabled' => [
+                        'test1' => 20,
+                        'test2' => 30,
+                        'test3' => 15,
+                        'test4' => 35
+                    ],
+                    'users' => ['test1' => '2', 'test4' => '7'],
+                    'groups' => ['test1' => 'group1', 'test2' => 'group2'],
+                    'sources' => ['test3' => 'source1', 'test4' => 'source2'],
+                    'admin' => 'test3',
+                    'internal' => 'test1',
+                    'public_url_override' => true,
+                    'exclude_from' => [
+                        'zips' => ['10014', '10023'],
+                        'countries' => ['us', 'rd'],
+                        'regions' => ['ny', 'nj', 'ca']
+                    ],
+                    'start' => '20170214',
+                    'end' => '99990530'
+                ],
+                'testFeature2' => ['enabled' => 0, 'bucketing' => 'random']
+            ],
+            'url' => 'http://www.testurl.com/?feature=testFeature:test3',
+            'source' => 'source2',
+            'user' => [
+                'uaid' => 'as54gerfd',
+                'id' => '5',
+                'is-admin' => false,
+                'group' => 'group3',
+                'internal-ip' => false
+            ]
+        ]);
     }
 
-    public function testIsEnabled()
+    function testIsEnabled ()
     {
         $this->assertEquals($this->feature->isEnabled('testFeature'), true);
+        $this->assertEquals($this->feature->isEnabled('testFeature2'), false);
     }
 
-    public function testIsEnabledFor()
+    function testIsEnabledFor ()
     {
         $this->assertEquals(
             $this->feature->isEnabledFor(
-                'testFeature',
+                'testFeature2',
                 [
-                    'user-uaid' => 'as54gerfd',
-                    'user-id' => 5,
-                    'user-name' => 'testUserName',
+                    'uaid' => 'as54gerfd',
+                    'id' => '5',
                     'is-admin' => false,
-                    'user-group' => 'group',
+                    'group' => 'group',
                     'internal-ip' => false
                 ]
             ),
             false
         );
+
+        $this->assertEquals(
+            $this->feature->isEnabledFor(
+                'testFeature',
+                [
+                    'uaid' => 'kl23j4n5',
+                    'id' => '2',
+                    'is-admin' => false,
+                    'group' => 'group',
+                    'internal-ip' => false
+                ]
+            ),
+            true
+        );
     }
 
-    public function testIsEnabledBucketingBy()
+    function testIsEnabledBucketingBy ()
     {
         $this->assertEquals(
             $this->feature->isEnabledBucketingBy('testFeature', 'test'),
@@ -79,42 +96,134 @@ class FeatureTest extends TestCase
         );
     }
 
-    public function testVariant()
+    function testVariant ()
     {
-        $this->assertEquals($this->feature->variant('testFeature'), 'test1');
+        $this->assertEquals($this->feature->variant('testFeature'), 'test3');
+        $this->assertEquals($this->feature->variant('testFeature2'), '');
     }
 
-    public function testVariantFor()
+    function testVariantFor ()
     {
         $this->assertEquals(
             $this->feature->variantFor(
                 'testFeature',
                 [
-                    'user-uaid' => 'as54gerfd',
-                    'user-id' => 5,
-                    'user-name' => 'testUserName',
+                    'uaid' => 'as54gerfd',
+                    'id' => '7',
                     'is-admin' => false,
-                    'user-group' => 'group',
+                    'group' => 'group',
                     'internal-ip' => false
                 ]
             ),
-            'test4'
+            'test3'
         );
     }
 
-    public function testVariantBucketingBy()
+    function testVariantBucketingBy ()
     {
         $this->assertEquals(
             $this->feature->variantBucketingBy('testFeature', 'test'),
-            'test2'
+            'test3'
         );
     }
 
-    public function testDescription()
+    function testDescription ()
     {
         $this->assertEquals(
             $this->feature->description('testFeature'),
             'this is the description'
         );
+    }
+
+    function testChangeFeatures ()
+    {
+        $this->feature->changeFeatures([
+            'testFeature' => [
+                'description' => 'different description',
+                'enabled' => [
+                    'test1' => 0,
+                    'test2' => 0,
+                    'test3' => 0,
+                    'test4' => 0
+                ]
+            ],
+            'testFeature2' => ['enabled' => 100]
+        ]);
+
+        $this->assertEquals($this->feature->isEnabled('testFeature'), false);
+        $this->assertEquals($this->feature->isEnabled('testFeature2'), true);
+
+        $this->assertEquals($this->feature->variant('testFeature'), '');
+        $this->assertEquals($this->feature->variant('testFeature2'), 'on');
+
+        $this->assertEquals(
+            $this->feature->description('testFeature'),
+            'different description'
+        );
+    }
+
+    function testChangeFeature ()
+    {
+        $this->feature->changeFeature(
+            'testFeature2',
+            [
+                'enabled' => ['test1' => 0, 'test4' => 0],
+                'users' => ['test1' => '2', 'test4' => '7'],
+                'sources' => ['test1' => 'source3'],
+                'public_url_override' => true
+            ]
+        );
+        $this->assertEquals($this->feature->isEnabled('testFeature2'), false);
+        $this->assertEquals($this->feature->variant('testFeature2'), '');
+    }
+
+    function testChangeUser ()
+    {
+        $this->feature->changeFeature(
+            'testFeature2',
+            [
+                'enabled' => ['test1' => 0, 'test4' => 0],
+                'users' => ['test1' => '2', 'test4' => '7'],
+                'sources' => ['test1' => 'source3'],
+                'public_url_override' => true
+            ]
+        );
+        $this->feature->changeUser(['id' => '2']);
+        $this->assertEquals($this->feature->isEnabled('testFeature2'), true);
+        $this->assertEquals($this->feature->variant('testFeature2'), 'test1');
+    }
+
+    function testChangeUrl ()
+    {
+        $this->feature->changeFeature(
+            'testFeature2',
+            [
+                'enabled' => ['test1' => 0, 'test4' => 0],
+                'users' => ['test1' => '2', 'test4' => '7'],
+                'sources' => ['test1' => 'source3'],
+                'public_url_override' => true
+            ]
+        );
+        $this->feature->changeUrl(
+            'http://www.testurl.com/?feature=testFeature2:test4'
+        );
+        $this->assertEquals($this->feature->isEnabled('testFeature2'), true);
+        $this->assertEquals($this->feature->variant('testFeature2'), 'test4');
+    }
+
+    function testChangeSource ()
+    {
+        $this->feature->changeFeature(
+            'testFeature2',
+            [
+                'enabled' => ['test1' => 0, 'test4' => 0],
+                'users' => ['test1' => '2', 'test4' => '7'],
+                'sources' => ['test1' => 'source3'],
+                'public_url_override' => true
+            ]
+        );
+        $this->feature->changeSource('source3');
+        $this->assertEquals($this->feature->isEnabled('testFeature2'), true);
+        $this->assertEquals($this->feature->variant('testFeature2'), 'test1');
     }
 }

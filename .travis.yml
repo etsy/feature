@@ -1,10 +1,9 @@
 language: php
 
 php:
-  - '5.6'
   - '7.0'
   - '7.1'
-  - hhvm
+  - '7.2'
   - nightly
 
-script: composer install && composer require "phpunit/phpunit" && php vendor/bin/phpunit
+script: composer update && ./vendor/bin/phpstan analyse --level=max --debug -vvv src/ tests/ && ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/

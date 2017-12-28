@@ -1,18 +1,27 @@
 {
-  "name": "cafemedia/feature",
-  "description": "PSR-4 compliant Feature Flags library based on Etsy",
-  "authors": [
-    {
-      "name": "Pablo Iglesias",
-      "email": "piglesias@cafemedia.com"
+    "name": "pablojoan/feature",
+    "description": "PSR-4 compliant Feature Flags library based on Etsy",
+    "authors": [
+        {
+            "name": "Pablo Iglesias",
+            "email": "iglesias.pablo10@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5",
+        "phpstan/phpstan": "^0.9.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "PabloJoan\\Feature\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PabloJoan\\Feature\\Tests\\": "tests/"
+        }
     }
-  ],
-  "require": {
-    "php": ">=5.6"
-  },
-  "autoload": {
-    "psr-4": {
-      "CafeMedia\\Feature\\": "src/"
-    }
-  }
 }

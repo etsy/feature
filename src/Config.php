@@ -1,160 +1,212 @@
 <?php
 
-namespace CafeMedia\Feature;
+declare(strict_types=1);
 
-/**
- * Construct a Config object from its config stanza.
- *
- * A feature that can be enabled, disabled, ramped up, and A/B tested,
- * as well as enabled for certain classes of users. These objects
- * should not be accessed directly but rather through the API provided
- * by Feature.php which is more convenient and provides some caching.
- */
+namespace PabloJoan\Feature;
+
+use PabloJoan\Feature\Value\{
+    User,
+    Url,
+    Source,
+    Feature,
+    BucketingId,
+    CalculateBucketingId
+};
+
 class Config
 {
-    private $cache = [];
-    private $world;
-    private $stanza;
-    private $name = '';
+    private $user;
+    private $url;
+    private $source;
 
-    public function __construct(World $world)
+    function __construct (User $user, Url $url, Source $source)
     {
-        $this->world = $world;
-    }
-
-    public function addName($name)
-    {
-        $this->name = $name;
-        $this->stanza = new Stanza($this->world->configValue($name));
-        return $this;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Public API, though note that Feature.php is the only code that
-    // should be using this class directly.
-
-    /**
-     * Is this feature enabled for the default id and the logged i user, if any?
-     */
-    public function isEnabled()
-    {
-        return $this->chooseVariant($this->bucketingID()) !== 'off';
+        $this->user = $user;
+        $this->url = $url;
+        $this->source = $source;
     }
 
     /**
-     * What variant is enabled for the default id and the logged in
-     * user, if any?
+     * Is this feature enabled for the default id and the logged in user, if
+     * any?
      */
-    public function variant()
+    function isEnabled (Feature $feature) : bool
     {
-        return $this->chooseVariant($this->bucketingID());
+        $id = (new CalculateBucketingId($this->user, $feature->bucketing()))->id();
+        return $this->chooseVariant($feature, $id) !== 'off';
     }
 
     /**
-     * Is this feature enabled for the given user?
+     * What variant is enabled for the default id and the logged in user, if
+     * any?
      */
-    public function isEnabledFor(User $user)
+    function variant (Feature $feature) : string
     {
-        return $this->chooseVariant($user->id) === 'on';
+        $id = (new CalculateBucketingId($this->user, $feature->bucketing()))->id();
+        $variant = $this->chooseVariant($feature, $id);
+        return $variant !== 'off' ? $variant : '';
     }
 
     /**
-     * Is this feature enabled, bucketing on the given bucketing
-     * ID? (Other methods of enabling a feature and specifying a
-     * variant such as users, groups, and query parameters, will still
-     * work.)
+     * Is this feature enabled, bucketing on the given bucketing ID? (Other
+     * methods of enabling a feature and specifying a variant such as users,
+     * groups, and query parameters, will still work.)
      */
-    public function isEnabledBucketingBy($bucketingID)
+    function isEnabledBucketingBy (Feature $feature, BucketingId $id) : bool
     {
-        return $this->chooseVariant($bucketingID) !== 'off';
-    }
-
-    /**
-     * What variant is enabled for the given user?
-     */
-    public function variantFor(User $user)
-    {
-        return $this->chooseVariant($user->id);
+        return $this->chooseVariant($feature, $id) !== 'off';
     }
 
     /**
      * What variant is enabled, bucketing on the given bucketing ID, if any?
      */
-    public function variantBucketingBy($bucketingID)
+    function variantBucketingBy (Feature $feature, BucketingId $id) : string
     {
-        return $this->chooseVariant($bucketingID);
+        $variant = $this->chooseVariant($feature, $id);
+        return $variant !== 'off' ? $variant : '';
     }
 
     /**
-     * Description of the feature.
-     */
-    public function description()
-    {
-        return $this->stanza->description;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Internals
-
-    /**
-     * Get the name of the variant we should use. Returns OFF if the
-     * feature is not enabled for $id. When $inVariantMethod is
-     * true will also check the conditions that should hold for a
-     * correct call to variant or variantFor: they should not be
-     * called for features that are completely enabled (i.e. 'enabled'
-     * => 'on') since all such variant-specific code should have been
-     * cleaned up before changing the config and they should not be
-     * called if the feature is, in fact, disabled for the given id
-     * since those two methods should always be guarded by an
-     * isEnabled/isEnabledFor call.
+     * Get the name of the variant we should use. Returns OFF if the feature is
+     * not enabled for $id.
      *
-     * @param $bucketingID - the id used to assign a variant based on
-     * the percentage of users that should see different variants.
+     * BucketingId $id - the id used to assign a variant based on the percentage
+     * of users that should see different variants.
      */
-    private function chooseVariant($bucketingID)
+    private function chooseVariant (Feature $feature, BucketingId $id) : string
     {
-        if (!$bucketingID) {
-            throw new \InvalidArgumentException('no bucketing ID supplied.');
-        }
+        $variant = $this->variantFromURL($feature);
+        if ($variant) return $variant;
 
-        $bucketingID = (string)$bucketingID;
-        if (isset($this->cache[$bucketingID])) {
-            return $this->cache[$bucketingID];
-        }
+        $variant = $this->variantTime($feature);
+        if ($variant) return $variant;
 
-        return $this->cache[$bucketingID] = (new Variant($this->world))
-                                                 ->addStanza($this->stanza)
-                                                 ->addBucketingID($bucketingID)
-                                                 ->addName($this->name)
-						 ->getVariant();
+        $variant = $this->variantExcludedFrom($feature);
+        if ($variant) return $variant;
+
+        $variant = $this->variantForUser($feature);
+        if ($variant) return $variant;
+
+        $variant = $this->variantForGroup($feature);
+        if ($variant) return $variant;
+
+        $variant = $this->variantForSource($feature);
+        if ($variant) return $variant;
+
+        $variant = $this->variantForInternal($feature);
+        if ($variant) return $variant;
+
+        $variant = $this->variantForAdmin($feature);
+        if ($variant) return $variant;
+
+        $variant = $this->variantByPercentage($feature, $id);
+        if ($variant) return $variant;
+
+        return 'off';
     }
 
     /**
-     * Return the globally accessible ID used by the one-arg isEnabled
-     * and variant methods based on the feature's bucketing property.
+     * If the feature has public_url_override set to true, a specific variant
+     * can be specified in the 'features' query parameter. In all other cases
+     * return nothing, meaning nothing was specified. Note that foo:off will
+     * turn off the 'foo' feature.
      */
-    private function bucketingID()
+    private function variantFromURL (Feature $feature) : string
     {
-        if ($this->stanza->bucketing === 'random' ||
-            $this->stanza->bucketing === 'uaid'
-        ) {
-            // In the RANDOM case we still need a bucketing id to keep
-            // the assignment stable within a request.
-            // Note that when being run from outside of a web request
-            // (e.g. crons),
-            // there is no UAID, so we default to a static string
-            $uaid = $this->world->uaid();
-            return $uaid ? $uaid : 'no uaid';
+        $publicUrlOverride = $feature->publicUrlOverride();
+        return $publicUrlOverride->variant($feature->name(), $this->url);
+    }
+
+    /**
+     * Get the variant this user should see, if one was configured, none
+     * otherwise.
+     */
+    private function variantForUser (Feature $feature) : string
+    {
+        return $feature->users()->variant($this->user);
+    }
+
+    /**
+     * Get the variant visitor should see based on group they're currently
+     * viewing.
+     */
+    private function variantForSource (Feature $feature) : string
+    {
+        return $feature->sources()->variant($this->source);
+    }
+
+    /**
+     * Get the variant this user should see based on their group memberships, if
+     * one was configured, none otherwise. N.B. If the user is in multiple
+     * groups that are configured to see different variants, they'll get the
+     * variant for one of their groups but there's no saying which one. If this
+     * is a problem in practice we could make the configuration more complex. Or
+     * you can just provide a specific variant via the 'users' property.
+     */
+    private function variantForGroup (Feature $feature) : string
+    {
+        return $feature->groups()->variant($this->user);
+    }
+
+    /**
+     * What variant, if any, should we return if the current user is an admin.
+     */
+    private function variantForAdmin (Feature $feature) : string
+    {
+        return $feature->admin()->variant($this->user);
+    }
+
+    /**
+     * What variant, if any, should we return for internal requests.
+     */
+    private function variantForInternal (Feature $feature) : string
+    {
+        return $feature->internal()->variant($this->user);
+    }
+
+    private function variantExcludedFrom (Feature $feature) : string
+    {
+        return $feature->excludeFrom()->variant($this->user);
+    }
+
+    private function variantTime (Feature $feature) : string
+    {
+        return $feature->time()->variant();
+    }
+
+    /**
+     * Finally, the normal case: use the percentage of users who should see each
+     * variant to map a random-ish number to a particular variant.
+     */
+    private function variantByPercentage (Feature $feature, BucketingId $id) : string
+    {
+        $n = 100 * $this->randomish($feature, $id);
+        foreach ($feature->enabled()->percentages() as $variant => $percent) {
+            if ($n < $percent || $percent === 100) return $variant;
         }
-        if ($this->stanza->bucketing === 'user') {
-            $userID = $this->world->userID();
-            // Not clear if this is right. There's an argument to be
-            // made that if we're bucketing by userID and the user is
-            // not logged in we should treat the feature as disabled.
-            return $userID ? $userID : $this->world->uaid();
+        return '';
+    }
+
+    /**
+     * A random-ish number between 0 and 1 based on the feature name and $id
+     * unless we are bucketing completely at random
+     */
+    private function randomish (Feature $feature, BucketingId $id) : float
+    {
+        if ((string) $feature->bucketing() === 'random') {
+            return mt_rand(0, mt_getrandmax() - 1) / mt_getrandmax();
         }
-        throw new \InvalidArgumentException(
-            "Bad bucketing: {$this->stanza->bucketing}"
-        );
+        /**
+         * Map a hex value to the half-open interval bewtween 0 and 1 while
+         * preserving uniformity of the input distribution.
+         */
+        $id = hash('sha256', $feature->name() . "-$id");
+        $len = min(30, strlen($id));
+        $x = 0;
+        for ($i = 0; $i < $len; ++$i) {
+            $x = ($x << 1) + (hexdec($id[$i]) < 8 ? 0 : 1);
+        }
+
+        return $x / (1 << $len);
     }
 }

@@ -1,130 +1,84 @@
 <?php
 
-namespace CafeMedia\Feature\Tests;
+declare(strict_types=1);
 
-use CafeMedia\Feature\Config;
-use CafeMedia\Feature\User;
+namespace PabloJoan\Feature\Tests;
+
+use PabloJoan\Feature\Config;
+use PabloJoan\Feature\Value\{ User, BucketingId, Url, Source, Feature, Name };
 use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
 {
+    private $feature;
     private $config;
 
-    public function setUp()
+    function setUp ()
     {
-        $world = $this->getMockBuilder('CafeMedia\Feature\World')
-                      ->disableOriginalConstructor()
-                      ->setMethods([
-                          'configValue',
-                          'userID',
-                          'uaid',
-                          'isInternalRequest',
-                          'isAdmin',
-                          'urlFeatures',
-                          'userName',
-                          'viewingGroup',
-                          'isSource',
-                          'country',
-                          'region',
-                          'zipcode'
-                      ])
-                      ->getMock();
-        $world->method('configValue')->willReturn([
-            'description' => 'this is the description of the stanza',
-            'enabled' => [
-                'test1' => 20,
-                'test2' => 30,
-                'test3' => 15,
-                'test4' => 35
-            ],
-            'users' => ['user1', 'user2', 'user3'],
-            'groups' => ['group1', 'group2', 'group3'],
-            'sources' => ['source1', 'source2', 'source3'],
-            'admin' => 'test3',
-            'internal' => 'test1',
-            'public_url_override' => true,
-            'bucketing' => 'random',
-            'exclude_from' => [
-                'zips' => [10014, 10023],
-                'countries' => ['us', 'rd'],
-                'regions' => ['ny', 'nj', 'ca']
-            ],
-            'start' => 20170314,
-            'end' => 20170530
-        ]);
-        $world->method('userID')->willReturn(5);
-        $world->method('uaid')->willReturn('as54gerfd');
-        $world->method('isInternalRequest')->willReturn(false);
-        $world->method('isAdmin')->willReturn(false);
-        $world->method('urlFeatures')->willReturn('feature');
-        $world->method('userName')->willReturn('testUserName');
-        $world->method('viewingGroup')->willReturn(false);
-        $world->method('isSource')->willReturn(false);
-        $world->method('country')->willReturn('us');
-        $world->method('region')->willReturn('ny');
-        $world->method('zipcode')->willReturn('12345');
-        $this->config = (new Config($world))->addName('testFeature');
-        $this->assertEquals($this->config instanceof Config, true);
-    }
-
-    public function testIsEnabled()
-    {
-        $this->assertEquals($this->config->isEnabled('testFeature'), false);
-    }
-
-    public function testVariant()
-    {
-        $this->assertEquals($this->config->variant(), 'off');
-    }
-
-    public function testIsEnabledFor()
-    {
-        $this->assertEquals(
-            $this->config->isEnabledFor(new User([
-                'user-uaid' => 'as54gerfd',
-                'user-id' => 5,
-                'user-name' => 'testUserName',
-                'is-admin' => false,
-                'user-group' => 'group',
-                'internal-ip' => false
-            ])),
-            false
+        $this->config = new Config(new User([]), new Url(''), new Source(''));
+        $this->feature = new Feature(
+            new Name('test'),
+            [
+                'description' => 'this is the description',
+                'enabled' => [
+                    'test1' => 20,
+                    'test2' => 30,
+                    'test3' => 15,
+                    'test4' => 35
+                ],
+                'users' => ['test1' => '2', 'test4' => '7'],
+                'groups' => ['test1' => 'group1', 'test2' => 'group2'],
+                'sources' => ['test3' => 'source1', 'test4' => 'source2'],
+                'admin' => 'test3',
+                'internal' => 'test1',
+                'public_url_override' => true,
+                'exclude_from' => [
+                    'zips' => ['10014', '10023'],
+                    'countries' => ['us', 'rd'],
+                    'regions' => ['ny', 'nj', 'ca']
+                ],
+                'start' => '20170214',
+                'end' => '99990530'
+            ]
         );
     }
 
-    public function testIsEnabledBucketingBy()
+    function testIsEnabled ()
     {
-        $this->assertEquals($this->config->isEnabledBucketingBy('test'), false);
+        $this->assertEquals($this->config->isEnabled($this->feature), true);
     }
 
-    public function testVariantFor()
+    function testVariant ()
+    {
+        $variant = in_array(
+            $this->config->variant($this->feature),
+            ['test1', 'test2', 'test3', 'test4'],
+            true
+        );
+        $this->assertEquals($variant, true);
+    }
+
+    function testIsEnabledBucketingBy ()
     {
         $this->assertEquals(
-            $this->config->variantFor(new User([
-                'user-uaid' => 'as54gerfd',
-                'user-id' => 5,
-                'user-name' => 'testUserName',
-                'is-admin' => false,
-                'user-group' => 'group',
-                'internal-ip' => false
-            ])),
-            'off'
+            $this->config->isEnabledBucketingBy(
+                $this->feature,
+                new BucketingId('test')
+            ),
+            true
         );
     }
 
-    public function testVariantBucketingBy()
+    function testVariantBucketingBy ()
     {
-        $this->assertEquals(
-            $this->config->variantBucketingBy('test', 'test'),
-            'off'
+        $variant = in_array(
+            $this->config->variantBucketingBy(
+                $this->feature,
+                new BucketingId('as54gerfd')
+            ),
+            ['test1', 'test2', 'test3', 'test4'],
+            true
         );
-    }
-
-    public function testDescription()
-    {
-        $this->assertEquals(
-            $this->config->description('test'),
-            'this is the description of the stanza'
-        );
+        $this->assertEquals($variant, true);
     }
 }
