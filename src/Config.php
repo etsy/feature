@@ -182,7 +182,7 @@ class Config
     {
         $n = 100 * $this->randomish($feature, $id);
         foreach ($feature->enabled()->percentages() as $variant => $percent) {
-            if ($n < $percent || $percent === 100) return $variant;
+            if ($n < $percent) return $variant;
         }
         return '';
     }
@@ -194,19 +194,19 @@ class Config
     private function randomish (Feature $feature, BucketingId $id) : float
     {
         if ((string) $feature->bucketing() === 'random') {
-            return mt_rand(0, mt_getrandmax() - 1) / mt_getrandmax();
+            $max = mt_getrandmax();
+            return mt_rand(0, $max - 1) / $max;
         }
         /**
          * Map a hex value to the half-open interval bewtween 0 and 1 while
          * preserving uniformity of the input distribution.
          */
         $id = hash('sha256', $feature->name() . "-$id");
-        $len = min(30, strlen($id));
         $x = 0;
-        for ($i = 0; $i < $len; ++$i) {
+        for ($i = 0; $i < 30; ++$i) {
             $x = ($x << 1) + (hexdec($id[$i]) < 8 ? 0 : 1);
         }
 
-        return $x / (1 << $len);
+        return $x / 1073741824; // $x / 1 << 30
     }
 }
