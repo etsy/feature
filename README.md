@@ -58,6 +58,9 @@ Improve Unit Tests. Use Mock Objects.
 Depend on Interface Injecting to decouple code.
 Add more bucketing schemes.
 
+Feature is no longer actively maintained and is no longer in sync with the version used internally at Etsy.
+
+
 # Feature API
 
 Feature flagging API used for operational rampups and A/B testing.
