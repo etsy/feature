@@ -129,7 +129,7 @@ class Feature
      */
     function isEnabledBucketingBy (string $name, string $id) : bool
     {
-        $config = new Config($this->user, $this->url, $this->source);
+        $config = new Config(new User([]), $this->url, $this->source);
         $feature = $this->features->get(new Name($name));
         return $config->isEnabledBucketingBy($feature, new BucketingId($id));
     }
@@ -164,7 +164,7 @@ class Feature
      */
     function variantBucketingBy (string $name, string $id) : string
     {
-        $config = new Config($this->user, $this->url, $this->source);
+        $config = new Config(new User([]), $this->url, $this->source);
         $feature = $this->features->get(new Name($name));
         return $config->variantBucketingBy($feature, new BucketingId($id));
     }

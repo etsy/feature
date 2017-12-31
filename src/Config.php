@@ -194,8 +194,7 @@ class Config
     private function randomish (Feature $feature, BucketingId $id) : float
     {
         if ((string) $feature->bucketing() === 'random') {
-            $max = mt_getrandmax();
-            return mt_rand(0, $max - 1) / $max;
+            return random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX;
         }
         /**
          * Map a hex value to the half-open interval bewtween 0 and 1 while

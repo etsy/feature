@@ -16,6 +16,9 @@ composer require pablojoan/feature
 # Basic Usage
 
 ```php
+
+use PabloJoan\Feature\Feature; // Import the namespace.
+
 $config = [
     'features' => [
         'foo' => [
@@ -43,8 +46,8 @@ $config = [
 
 $feature = new Feature($config);
 
-$feature->isEnabled('foo'); // true
-$feature->variant('foo'); // 'variant1'
+$feature->isEnabled('foo');   // true
+$feature->variant('foo');     // 'variant1'
 $feature->description('foo'); // 'this is the description of the "foo" feature'
 ```
 

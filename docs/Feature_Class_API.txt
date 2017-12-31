@@ -1,0 +1,399 @@
+The Feature Class
+
+This is the API entry point to the application. Here we will document all of the
+public functions and state their purpose.
+
+
+
+How to create a Feature Class Instance?
+Feature::__construct ( array ) : void
+
+use PabloJoan\Feature\Feature; // Import the namespace.
+
+$config_array = [
+    'features' => [ /* the $config_array['features'] array. */ ],
+    // See the $config_array['features'] section for documentation.
+
+    'user' => [ /* the $config_array['user'] array. */ ],
+    // See the $config_array['user'] section for documentation.
+
+    'url' => 'a valid URL string according to http://www.faqs.org/rfcs/rfc2396',
+    // See the $config_array['url'] section for documentation.
+
+    'source' => 'any string that categorizes the source of origin or entry.'
+    // See the $config_array['source'] section for documentation.
+];
+
+$feature = new Feature( $config_array );
+
+The Feature Class requires the $config_array to initiate. Please refer to the
+config document to learn more about the $config_array and how to construct it.
+
+
+
+Feature::changeFeatures ( array ) : void
+
+$feature = new Feature( $config_array );
+$feature->changeFeatures( $config_array['features'] );
+
+The Feature::changeFeatures function allows you to replace the entire
+$config_array['features'] at runtime without having to reconstruct the Feature
+Class.
+
+
+
+Feature::changeFeature ( string , array ) : void
+
+$feature_array = [
+    'description' => 'string describing the feature',
+    // See the $feature_array['description'] section for documentation.
+
+    'enabled' => 0,
+    // the $feature_array['enabled'] array or an integer between 0 and 100.
+    // See the $feature_array['enabled'] section for documentation.
+
+    'users' => [ /* the $feature_array['users'] array */ ],
+    // See the $feature_array['users'] section for documentation.
+
+    'groups' => [ /* the $feature_array['groups'] array */ ],
+    // See the $feature_array['groups'] section for documentation.
+
+    'sources' => [ /* the $feature_array['sources'] array */ ],
+    // See the $feature_array['sources'] section for documentation.
+
+    'admin' => 'the variant for an admin user',
+    // See the $feature_array['admin'] section for documentation.
+
+    'internal' => 'the variant for an internal request',
+    // See the $feature_array['internal'] section for documentation.
+
+    'public_url_override' => false, // boolean value enabling overide from URL.
+    // See the $feature_array['public_url_override'] section for documentation.
+
+    'exclude_from' => [ /* the $feature_array['exclude_from'] array */ ],
+    // See the $feature_array['exclude_from'] section for documentation.
+
+    'start' => 'a supported date or time formatted string according to php.net',
+    // See the $feature_array['start'] section for documentation.
+
+    'end' => 'a supported date or time formatted string according to php.net',
+    // See the $feature_array['end'] section for documentation.
+
+    'bucketing' => 'either "random" (default), "uaid", or "user" is supported.'
+    // See the $feature_array['bucketing'] section for documentation.
+];
+
+$feature = new Feature( $config_array );
+$feature->changeFeature( 'feature_name', $feature_array );
+
+The Feature::changeFeature function allows you to replace one existing feature
+configuration from your $config_array['features'] array, using the
+$feature_array, at runtime without having to reconstruct the Feature Class. If
+the 'feature_name' given is a feature name that is not registered, an exception
+will be thrown. Please refer to the feature document to learn more about the
+$feature_array and how to construct it.
+
+
+
+Feature::addFeature ( string , array ) : void
+
+$feature_array = [
+    'description' => 'string describing the feature',
+    // See the $feature_array['description'] section for documentation.
+
+    'enabled' => 0,
+    // the $feature_array['enabled'] array or an integer between 0 and 100.
+    // See the $feature_array['enabled'] section for documentation.
+
+    'users' => [ /* the $feature_array['users'] array */ ],
+    // See the $feature_array['users'] section for documentation.
+
+    'groups' => [ /* the $feature_array['groups'] array */ ],
+    // See the $feature_array['groups'] section for documentation.
+
+    'sources' => [ /* the $feature_array['sources'] array */ ],
+    // See the $feature_array['sources'] section for documentation.
+
+    'admin' => 'the variant for an admin user',
+    // See the $feature_array['admin'] section for documentation.
+
+    'internal' => 'the variant for an internal request',
+    // See the $feature_array['internal'] section for documentation.
+
+    'public_url_override' => false, // boolean value enabling overide from URL.
+    // See the $feature_array['public_url_override'] section for documentation.
+
+    'exclude_from' => [ /* the $feature_array['exclude_from'] array */ ],
+    // See the $feature_array['exclude_from'] section for documentation.
+
+    'start' => 'a supported date or time formatted string according to php.net',
+    // See the $feature_array['start'] section for documentation.
+
+    'end' => 'a supported date or time formatted string according to php.net',
+    // See the $feature_array['end'] section for documentation.
+
+    'bucketing' => 'either "random" (default), "uaid", or "user" is supported.'
+    // See the $feature_array['bucketing'] section for documentation.
+];
+
+$feature = new Feature( $config_array );
+$feature->addFeature( 'feature_name', $feature_array );
+
+The Feature::addFeature function allows you to add one new feature configuration
+from that did not exist in your $config_array['features'] array, using the
+$feature_array, at runtime without having to reconstruct the Feature Class. If
+the 'feature_name' given is a feature name that already exists as a registered
+feature, an exception will be thrown. Please refer to the feature document to
+learn more about the $feature_array and how to construct it.
+
+
+
+Feature::removeFeature ( string ) : void
+
+$feature = new Feature( $config_array );
+$feature->removeFeature( 'feature_name' );
+
+The Feature::removeFeature function allows you to remove one existing feature
+configuration from your $config_array['features'] array at runtime without
+having to reconstruct the Feature Class.
+
+
+
+Feature::changeUser ( array ) : void
+
+$user_array = [
+    'uaid' => 'the UAID of the user. Could be a cookie, session_id, etc.',
+    // See the $user_array['uaid'] section for documentation.
+
+    'id' => 'the ID of a user registered in a database. Could be user_name.',
+    // See the $user_array['id'] section for documentation.
+
+    'group' => 'a group the user is a part of.',
+    // See the $user_array['group'] section for documentation.
+
+    'zipcode' => 'the zipcode the user is from, or the zipcode of the request.',
+    // See the $user_array['zipcode'] section for documentation.
+
+    'region' => 'the region the user is from, or the region of the request.',
+    // See the $user_array['region'] section for documentation.
+
+    'country' => 'the country the user is from, or the country of the request.'
+    // See the $user_array['country'] section for documentation.
+
+    'is-admin' => false, // boolean value answering "is this an admin user?"
+    // See the $user_array['is-admin'] section for documentation.
+
+    'internal-ip' => false // boolean value answering "is the request internal?"
+    // See the $user_array['internal-ip'] section for documentation.
+];
+
+$feature = new Feature( $config_array );
+$feature->changeUser( $user_array );
+
+The Feature::changeUser function allows you to replace the $config_array['user']
+array, used to calculate variants, at runtime without having to reconstruct the
+Feature Class. Please refer to the user document to learn more about the
+$user_array and how to construct it.
+
+
+
+Feature::changeUrl ( string ) : void
+
+$url_string = 'http://www.example.com/test/?feature=feature_name:variant';
+// 'a valid URL string according to http://www.faqs.org/rfcs/rfc2396';
+
+$feature = new Feature( $config_array );
+$feature->changeUrl( $url_string );
+
+The Feature::changeUrl function allows you to replace the $config_array['url']
+string, used to calculate variants, at runtime without having to reconstruct the
+Feature Class. Please refer to the Url document to learn more about the
+$url_string and how to construct it.
+
+
+
+Feature::changeSource ( string ) : void
+
+$source_string = 'twitter';
+// A string labling where is the source from the request from. Like utm_source.
+
+$feature = new Feature( $config_array );
+$feature->changeSource( $source_string );
+
+The Feature::changeSource function allows you to replace the
+$config_array['source'] string, used to calculate variants, at runtime without
+having to reconstruct the Feature Class. Please refer to the Url document to
+learn more about the $url_string and how to construct it.
+
+
+
+Feature::isEnabled ( string ) : boolean
+
+$config_array = [
+    'features' => [
+        'foo' => [ 'enabled' => 100 ],
+        'bar' => [ 'enabled' => 0 ]
+    ]
+];
+
+$feature = new Feature( $config_array );
+echo $feature->isEnabled( 'foo' ); // true
+echo $feature->isEnabled( 'bar' ); // false
+
+The Feature::isEnabled function checks weather a feature_name is enabled after
+percentage calculation or by its $feature_array configuration. Please refer to
+the feature document to learn more about the $feature_array and how to construct
+it.
+
+
+
+Feature::isEnabledFor ( string, array ) : boolean
+
+$config_array = [
+    'features' => [
+        'foo' => [
+            'enabled' => 0,
+            'users' => [ 'on' => [ 'user_1', 'user_2' ] ]
+        ],
+        'bar' => [
+            'enabled' => 100,
+            'users' => [ 'off' => [ 'user_3' ] ]
+        ],
+    ]
+];
+
+$feature = new Feature( $config_array );
+
+echo $feature->isEnabled( 'foo' ); // false
+echo $feature->isEnabled( 'bar' ); // true
+
+$user_array = [ 'id' => 'user_1' ];
+echo $feature->isEnabledFor( 'foo', $user_array ); // true
+echo $feature->isEnabledFor( 'bar', $user_array ); // true
+
+$user_array = [ 'id' => 'user_2' ];
+echo $feature->isEnabledFor( 'foo', $user_array ); // true
+echo $feature->isEnabledFor( 'bar', $user_array ); // true
+
+$user_array = [ 'id' => 'user_3' ];
+echo $feature->isEnabledFor( 'foo', $user_array ); // false
+echo $feature->isEnabledFor( 'bar', $user_array ); // false
+
+The Feature::isEnabledFor function checks weather a feature_name is enabled to
+a different $user_array that is not the one registered with
+$config_array['user']. Please refer to the user document to learn more about the
+$user_array and how to construct it.
+
+
+
+Feature::isEnabledBucketingBy ( string, string ) : boolean
+
+$bucketing_id = 'custom bucketing string used to calculate variants';
+
+$feature = new Feature( $config_array );
+echo $feature->isEnabledBucketingBy( 'feature_name', $bucketing_id ); // boolean
+
+The Feature::isEnabledBucketingBy function checks weather a feature_name is
+enabled using a custom $bucketing_id string instead of the bucketing id the
+library uses for you. Please refer to the bucketing document to learn more about
+the $bucketing_id string.
+
+
+
+Feature::variant ( string ) : string
+
+$config_array = [
+    'features' => [
+        'foo'  => [ 'variant1' => 0, 'variant2' => 100 ],
+        'bar'  => [ 'enabled'  => 100 ],
+        'test' => [ 'enabled'  => 0 ]
+    ]
+];
+
+$feature = new Feature( $config_array );
+echo $feature->variant( 'foo' );  // 'variant2'
+echo $feature->variant( 'bar' );  // 'on'
+echo $feature->variant( 'test' ); // ''
+
+The Feature::variant function returns the enabled variant string of a given
+feature_name after percentage calculation or by its $feature_array
+configuration. If none are enabled, an empty string is returned. Please refer to
+the feature document to learn more about the $feature_array and how to construct
+it.
+
+
+
+Feature::variantFor ( string, array ) : string
+
+$config_array = [
+    'features' => [
+        'foo' => [
+            'enabled' => [ 'variant1' => 0, 'variant2' => 100 ],
+            'users'   => [ 'variant1' => [ 'user_1', 'user_2' ] ]
+        ],
+        'bar' => [
+            'enabled' => 0,
+            'users'   => [ 'on' => [ 'user_3' ] ]
+        ],
+    ]
+];
+
+$feature = new Feature( $config_array );
+
+echo $feature->variant( 'foo' ); // 'variant2'
+echo $feature->variant( 'bar' ); // ''
+
+$user_array = [ 'id' => 'user_1' ];
+echo $feature->variantFor( 'foo', $user_array ); // 'variant1'
+echo $feature->variantFor( 'bar', $user_array ); // ''
+
+$user_array = [ 'id' => 'user_2' ];
+echo $feature->variantFor( 'foo', $user_array ); // 'variant1'
+echo $feature->variantFor( 'bar', $user_array ); // ''
+
+$user_array = [ 'id' => 'user_3' ];
+echo $feature->variantFor( 'foo', $user_array ); // 'variant2'
+echo $feature->variantFor( 'bar', $user_array ); // 'on'
+
+The Feature::variantFor function returns the enabled variant string of a given
+feature_name to a different $user_array that is not the one registered with
+$config_array['user']. If none are enabled, an empty string is returned. Please
+refer to the user document to learn more about the $user_array and how to
+construct it.
+
+
+
+Feature::variantBucketingBy ( string, string ) : string
+
+$bucketing_id = 'custom bucketing string used to calculate variants';
+
+$feature = new Feature( $config_array );
+echo $feature->variantBucketingBy( 'feature_name', $bucketing_id ); // 'variant'
+
+The Feature::variantBucketingBy function returns the enabled variant string of a
+given feature_name using a custom $bucketing_id string instead of the bucketing
+id the library uses for you. If none are enabled, an empty string is returned.
+Please refer to the bucketing document to learn more about the $bucketing_id
+string.
+
+
+
+Feature::description ( string ) : string
+
+$config_array = [
+    'features' => [
+        'foo'  => [ 'description' => 'foo description' ],
+        'bar'  => [ 'enabled' => 100 ],
+        'test' => [ 'description' => 'test deacription' ]
+    ]
+];
+
+$feature = new Feature( $config_array );
+echo $feature->description( 'foo' );  // 'foo description'
+echo $feature->description( 'bar' );  // ''
+echo $feature->description( 'test' ); // 'test deacription'
+
+The Feature::description function returns the description string of a
+feature_name. If none is provided, an empty string is returned. Please refer to
+the feature document to learn more about the $feature_array and how to construct
+it.

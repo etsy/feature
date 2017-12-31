@@ -601,15 +601,15 @@ class ApiTest extends TestCase
 
         $this->assertEquals(
             $feature->isEnabledBucketingBy('testFeature', 'testid1'),
-            false
+            true
         );
         $this->assertEquals(
             $feature->isEnabledBucketingBy('testFeature2', 'testid2'),
-            false
+            true
         );
         $this->assertEquals(
-            $feature->isEnabledBucketingBy('testFeature2', 'testid3'),
-            false
+            $feature->isEnabledBucketingBy('testFeature3', 'testid3'),
+            true
         );
 
         $this->assertEquals($feature->variant('testFeature'), '');
@@ -622,15 +622,15 @@ class ApiTest extends TestCase
 
         $this->assertEquals(
             $feature->variantBucketingBy('testFeature', 'testid1'),
-            ''
+            'on'
         );
         $this->assertEquals(
             $feature->variantBucketingBy('testFeature2', 'testid2'),
-            ''
+            'on'
         );
         $this->assertEquals(
-            $feature->variantBucketingBy('testFeature2', 'testid3'),
-            ''
+            $feature->variantBucketingBy('testFeature3', 'testid3'),
+            'on'
         );
     }
 
