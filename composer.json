@@ -10,8 +10,9 @@
     "keywords": [
         "feature-flags",
         "ab-testing",
-        "a/b",
-        "feature"
+        "ab-test",
+        "feature",
+        "feature-flagging"
     ],
     "require": {
         "php": ">=7.0"
