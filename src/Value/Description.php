@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class Description
+use PabloJoan\Feature\Contract\Description as DescriptionContract;
+
+class Description implements DescriptionContract
 {
     private $description = '';
 

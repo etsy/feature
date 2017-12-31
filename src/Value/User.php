@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class User
+use PabloJoan\Feature\Contract\User as UserContract;
+
+class User implements UserContract
 {
     private $uaid = '';
     private $id = '';

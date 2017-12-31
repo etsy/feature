@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class ExcludeFrom
+use PabloJoan\Feature\Contract\{ ExcludeFrom as ExcludeFromContract, User };
+
+class ExcludeFrom implements ExcludeFromContract
 {
     private $zips = [];
     private $regions = [];

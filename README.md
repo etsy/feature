@@ -17,7 +17,7 @@ composer require pablojoan/feature
 
 ```php
 $config = [
-    features => [
+    'features' => [
         'foo' => [
             'description' => 'this is the description of the "foo" feature',
             'enabled' => [
@@ -50,9 +50,9 @@ $feature->description('foo'); // 'this is the description of the "foo" feature'
 
 # TODO
 
-DOCUMENTATION!!!!! remove archived documentation by etsy and replace with new.
-Improve Unit Tests. Use Mock Objects.
-Depend on Interface Injecting to decouple code.
+DOCUMENTATION!!!!! Especially for new features.
+Replace magic strings with constants.
+Write more usefull error messages.
 Add more bucketing schemes.
 
 # Feature API
@@ -114,14 +114,14 @@ and
 These methods exist only to support a couple very specific use-cases: when we
 want to enable or disable a feature based not on the user making the request but
 on some other user or when we want to bucket a percentage of executions based on
-something entirely other than a user.) The canonical case for the former, at
-Etsy, is if we wanted to change something about how we deal with listings and
-instead of enabling the feature for only some users but for all listings those
-users see, but instead we want to enable it for all users but for only some of
-the listings. Then we could use `isEnabledFor` and `variantFor` and pass in the
-user object representing the owner of the listing. That would also allow us to
-enable the feature for specific listing owners. The `bucketingBy` methods serve
-a similar purpose except when there either is no relevant user or where we don't
+something entirely other than a user.) The canonical case for the former is if
+we wanted to change something about how we deal with listings and instead of
+enabling the feature for only some users but for all listings those users see,
+but instead we want to enable it for all users but for only some of the
+listings. Then we could use `isEnabledFor` and `variantFor` and pass in the user
+object representing the owner of the listing. That would also allow us to enable
+the feature for specific listing owners. The `bucketingBy` methods serve a
+similar purpose except when there either is no relevant user or where we don't
 want to always put the same user in the same bucket. Thus if we wanted to enable
 a certain feature for 10% of all listings displayed, independent of both the
 user making the request and the user who owned the listing, we could use `isEnabledBucketingBy` with the listing id as the bucketing ID.
@@ -298,33 +298,32 @@ defaults to false if omitted.
 
 The precedence of the various mechanisms for enabling a feature are as follows.
 
-  - If the request is from an admin user or is an internal
-    request, or if `'public_url_override'` is true and the request
-    contains a `features` query param that specifies a variant for the
-    feature in question, that variant is used. The value of the
-    `features` param is a comma-delimited list of features where each
-    feature is either simply the name of the feature, indicating the
-    feature should be enabled with variant `'on'` or the name of a
-    feature, a colon, and the variant name. E.g. a request with
-    `features=foo,bar:x,baz:off` would turn on feature `foo`, turn on
-    feature `bar` with variant `x`, and turn off feature `baz`.
+  - If the request is from an admin user or is an internal request, or if
+     `'public_url_override'` is true and the request contains a `features` query
+     param that specifies a variant for the feature in question, that variant is
+     used. The value of the `features` param is a comma-delimited list of
+     features where each feature is either simply the name of the feature,
+     indicating the feature should be enabled with variant `'on'` or the name of
+     a feature, a colon, and the variant name. E.g. a request with
+     `features=foo,bar:x,baz:off` would turn on feature `foo`, turn on feature
+     `bar` with variant `x`, and turn off feature `baz`.
 
-  - Otherwise, if the request is from a user specified in the
-    `'users'` property, the specified variant is enabled.
+  - Otherwise, if the request is from a user specified in the `'users'`
+     property, the specified variant is enabled.
 
-  - Otherwise, if the request is from a member of a group specified in
-    the `'groups'` property the specified variant is enabled. (The
-    behavior when the user is a member of multiple groups that have
-    been assigned different variants is undefined. Beware nasal demons.)
+  - Otherwise, if the request is from a member of a group specified in the
+     `'groups'` property the specified variant is enabled. (The behavior when
+     the user is a member of multiple groups that have been assigned different
+     variants is undefined. Beware nasal demons.)
 
-  - Otherwise, if the request is from an admin, the `'admin'` variant
-    is enabled.
+  - Otherwise, if the request is from an admin, the `'admin'` variant is
+     enabled.
 
-  - Otherwise, if the request is an internal request, the `'internal'`
-    variant is enabled.
+  - Otherwise, if the request is an internal request, the `'internal'` variant
+     is enabled.
 
-  - Otherwise, the request is bucketed and a variant is chosen so that
-    the correct percentage of bucketed requests will see each variant.
+  - Otherwise, the request is bucketed and a variant is chosen so that the
+     correct percentage of bucketed requests will see each variant.
 
 ## Errors
 
@@ -332,14 +331,13 @@ There are a few ways to misuse the Feature API or misconfigure a feature that
 may be detected. (Some of these are not currently detected but may be in the
 future.)
 
-  1. Setting `'enabled'` to numeric value less than 0 or greater than
-    100.
+  1. Setting `'enabled'` to numeric value less than 0 or greater than 100.
 
-  2. Setting the percentage value of a variant in `'enabled'` to a
-    value less than 0 or greater than 100.
+  2. Setting the percentage value of a variant in `'enabled'` to a value less
+     than 0 or greater than 100.
 
-  3. Setting `'enabled'` such that the sum of the variant percentages
-    is greater than 100.
+  3. Setting `'enabled'` such that the sum of the variant percentages is greater
+     than 100.
 
   4. Setting `'enabled'` to a non-numeric, non-array value.
 
@@ -353,37 +351,33 @@ feature checks but keeping the code, or deleting the code altogether.
 
 The basic life cycle of a feature might look like this:
 
-  1. Developer writes some code guarded by `$feature->isEnabled`
-    checks. In order to test the feature in development they will add
-    configuration for the feature to `development.php` that turns it
-    on for specific users or admin or sets `'enabled'` to 0 so they
-    can test it with a URL query param.
+  1. Developer writes some code guarded by `$feature->isEnabled` checks. In
+     order to test the feature in development they will add configuration for
+     the feature to `development.php` that turns it on for specific users or
+     admin or sets `'enabled'` to 0 so they can test it with a URL query param.
 
-  2. At some point the developer will add a config stanza to
-    `production.php`. Initially this may just be a place holder that
-    leaves the feature entirely disabled or it may turn it on for
-    admin, etc.
+  2. At some point the developer will add a config stanza to `production.php`.
+     Initially this may just be a place holder that leaves the feature entirely
+     disabled or it may turn it on for admin, etc.
 
-  3. Once the feature is done, the `production.php` config will be
-    changed to enable the feature for a small percentage of users for
-    an operational smoke test. For a single-variant feature this means
-    setting `'enabled'` to a small numeric value; for a multi-variant
-    feature it means setting `'enabled'` to an array that specifies a
-    small percentage for each variant.
+  3. Once the feature is done, the `production.php` config will be changed to
+     enable the feature for a small percentage of users for an operational smoke
+     test. For a single-variant feature this means setting `'enabled'` to a
+     small numeric value; for a multi-variant feature it means setting
+     `'enabled'` to an array that specifies a small percentage for each variant.
 
-  4. During the rampup period the percentage of users exposed to the
-    feature may be moved up and down until the developers and ops
-    folks are convinced the code is fully baked. If serious problems
-    arise at any point, the new code can be completely disabled.
+  4. During the rampup period the percentage of users exposed to the feature may
+     be moved up and down until the developers and ops folks are convinced the
+     code is fully baked. If serious problems arise at any point, the new code
+     can be completely disabled.
 
   5. If the feature is going to be part of an A/B experiment, then the
-    developers will (working with the data team) figure out the best
-    percentage of users to expose the feature to and how long the
-    experiment will have to run in order to gather good experimental
-    data. To launch the experiment the production config will be
-    changed to enable the feature or its variants for the appropriate
-    percentage of users. After this point the percentages should be
-    left alone until the experiment is complete.
+     developers will (working with the data team) figure out the best percentage
+     of users to expose the feature to and how long the experiment will have to
+     run in order to gather good experimental data. To launch the experiment the
+     production config will be changed to enable the feature or its variants for
+     the appropriate percentage of users. After this point the percentages
+     should be left alone until the experiment is complete.
 
 At this point there are a number of things that can happen: if the experiment
 revealed a clear winner we may simply want to keep the code, possibly putting it
@@ -394,15 +388,13 @@ learned from this one. Here’s what will happen in those cases:
 
 ### To keep the feature as a permanent part of the web site without creating a top-level feature flag
 
-  1. Change the value of the feature config to the name of the winning
-    variant.
+  1. Change the value of the feature config to the name of the winning variant.
 
-  2. Delete any code that implements other variants and remove the
-    calls to `Feature::variant` and any related conditional logic
-    (e.g. switches on the variant name).
+  2. Delete any code that implements other variants and remove the calls to
+     `Feature::variant` and any related conditional logic (e.g. switches on the
+     variant name).
 
-  3. Remove the `Feature::isEnabled` checks but keep the code they
-    guarded.
+  3. Remove the `Feature::isEnabled` checks but keep the code they guarded.
 
   4. Remove the feature config.
 
@@ -410,8 +402,8 @@ learned from this one. Here’s what will happen in those cases:
 
   1. Change the value of the feature config to `['enabled' => 0]`.
 
-  2. Delete all code guarded by `Feature::isEnabled` checks and then
-    remove the checks.
+  2. Delete all code guarded by `Feature::isEnabled` checks and then remove the
+     checks.
 
   3. Remove the feature config.
 

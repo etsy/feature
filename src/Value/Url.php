@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class Url
+use PabloJoan\Feature\Contract\{ Url as UrlContract, Name };
+
+class Url implements UrlContract
 {
-    private $features = '';
+    private $features = [];
 
     function __construct (string $url)
     {
@@ -25,16 +27,18 @@ class Url
             $query[$x[0]] = $x[1] ?? '';
         }
 
-        $this->features = $query['feature'] ?? '';
+        foreach (explode(',', $query['feature'] ?? '') as $feature) {
+            $parts = explode(':', $feature);
+            $this->features[$parts[0]] = $parts[1] ?? 'on';
+        }
     }
 
     function variant (Name $name) : string
     {
         $name = (string) $name;
 
-        foreach (explode(',', $this->features) as $feature) {
-            $parts = explode(':', $feature);
-            if ($parts[0] === $name) return $parts[1] ?? 'on';
+        foreach ($this->features as $feature => $variant) {
+            if ($feature === $name) return $variant ?? 'on';
         }
 
         return '';

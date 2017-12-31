@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class Admin
+use PabloJoan\Feature\Contract\{ Admin as AdminContract, User };
+
+class Admin implements AdminContract
 {
     private $variant = '';
 

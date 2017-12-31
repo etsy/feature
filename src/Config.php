@@ -4,14 +4,8 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature;
 
-use PabloJoan\Feature\Value\{
-    User,
-    Url,
-    Source,
-    Feature,
-    BucketingId,
-    CalculateBucketingId
-};
+use PabloJoan\Feature\Value\CalculateBucketingId;
+use PabloJoan\Feature\Contract\{ User, Url, Source, Feature, BucketingId };
 
 class Config
 {
@@ -164,11 +158,17 @@ class Config
         return $feature->internal()->variant($this->user);
     }
 
+    /**
+     * Is this user excluded from seeing this feature because of their location?
+     */
     private function variantExcludedFrom (Feature $feature) : string
     {
         return $feature->excludeFrom()->variant($this->user);
     }
 
+    /**
+     * Is this feature within the enabled time it was configured?
+     */
     private function variantTime (Feature $feature) : string
     {
         return $feature->time()->variant();
@@ -207,6 +207,6 @@ class Config
             $x = ($x << 1) + (hexdec($id[$i]) < 8 ? 0 : 1);
         }
 
-        return $x / 1073741824; // $x / 1 << 30
+        return $x / 1073741824; // $x / ( 1 << 30 )
     }
 }

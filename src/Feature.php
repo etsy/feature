@@ -67,6 +67,23 @@ class Feature
     }
 
     /*
+     * Adds one new feature config to the collection of features. Feature name
+     * must be unique.
+     */
+    function addFeature (string $name, array $feature)
+    {
+        $this->features->add(new Name($name), $feature);
+    }
+
+    /*
+     * Removes one existing feature from the collection.
+     */
+    function removeFeature (string $name)
+    {
+        $this->features->remove(new Name($name));
+    }
+
+    /*
      * Replaces the user used to calculate variants.
      */
     function changeUser (array $user) { $this->user = new User($user); }

@@ -135,6 +135,30 @@ class FeatureTest extends TestCase
         );
     }
 
+    function testAddFeature ()
+    {
+        $this->assertEquals($this->feature->isEnabled('newFeature'), false);
+        $this->assertEquals($this->feature->variant('newFeature'), '');
+
+        $this->feature->addFeature('newFeature', ['enabled' => 100]);
+        $this->assertEquals($this->feature->isEnabled('newFeature'), true);
+        $this->assertEquals($this->feature->variant('newFeature'), 'on');
+    }
+
+    function testRemoveFeature ()
+    {
+        $this->assertEquals($this->feature->isEnabled('newFeature2'), false);
+        $this->assertEquals($this->feature->variant('newFeature2'), '');
+
+        $this->feature->addFeature('newFeature2', ['enabled' => 100]);
+        $this->assertEquals($this->feature->isEnabled('newFeature2'), true);
+        $this->assertEquals($this->feature->variant('newFeature2'), 'on');
+
+        $this->feature->removeFeature('newFeature2');
+        $this->assertEquals($this->feature->isEnabled('newFeature2'), false);
+        $this->assertEquals($this->feature->variant('newFeature2'), '');
+    }
+
     function testChangeFeatures ()
     {
         $this->feature->changeFeatures([

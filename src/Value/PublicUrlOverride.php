@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class PublicUrlOverride
+use PabloJoan\Feature\Contract\{
+    PublicUrlOverride as PublicUrlOverrideContract,
+    Name,
+    Url
+};
+
+class PublicUrlOverride implements PublicUrlOverrideContract
 {
     private $on = false;
 

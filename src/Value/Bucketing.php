@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class Bucketing
+use PabloJoan\Feature\Contract\Bucketing as BucketingContract;
+
+class Bucketing implements BucketingContract
 {
     private $by = 'random';
 

@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class FeatureCollection
+use PabloJoan\Feature\Contract\{
+    FeatureCollection as FeatureCollectionContract,
+    Feature as FeatureContract,
+    Name as NameContract
+};
+
+class FeatureCollection implements FeatureCollectionContract
 {
     private $features = [];
 
@@ -15,17 +21,30 @@ class FeatureCollection
         }
     }
 
-    function get (Name $name) : Feature
+    function get (NameContract $name) : FeatureContract
     {
-        return $this->features[(string) $name];
+        return $this->features[(string) $name] ?? new Feature($name, []);
     }
 
-    function change (Name $name, array $feature)
+    function change (NameContract $name, array $feature)
     {
         if (!isset($this->features[(string) $name])) {
             throw new \Exception("feature '$name' does not exist.");
         }
 
         $this->features[(string) $name] = new Feature($name, $feature);
+    }
+
+    function add (NameContract $name, array $feature)
+    {
+        if (isset($this->features[(string) $name])) {
+            throw new \Exception("feature '$name' already exists.");
+        }
+        $this->features[(string) $name] = new Feature($name, $feature);
+    }
+
+    function remove (NameContract $name)
+    {
+        unset($this->features[(string) $name]);
     }
 }

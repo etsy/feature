@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PabloJoan\Feature\Tests;
+namespace PabloJoan\Feature\Tests\Value;
 
 use PabloJoan\Feature\Value\Enabled;
 use PHPUnit\Framework\TestCase;

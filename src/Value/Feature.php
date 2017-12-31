@@ -4,11 +4,27 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
+use PabloJoan\Feature\Contract\{
+    Feature as FeatureContract,
+    Name as NameContract,
+    Enabled as EnabledContract,
+    Description as DescriptionContract,
+    Users as UsersContract,
+    Groups as GroupsContract,
+    Sources as SourcesContract,
+    Admin as AdminContract,
+    Internal as InternalContract,
+    PublicUrlOverride as PublicUrlOverrideContract,
+    ExcludeFrom as ExcludeFromContract,
+    Time as TimeContract,
+    Bucketing as BucketingContract
+};
+
 /**
  * A feature that can be enabled, disabled, ramped up, and A/B tested, as well
  * as enabled for certain classes of users.
  */
-class Feature
+class Feature implements FeatureContract
 {
     private $name;
     private $enabled;
@@ -23,7 +39,7 @@ class Feature
     private $time;
     private $bucketing;
 
-    function __construct (Name $name, array $feature)
+    function __construct (NameContract $name, array $feature)
     {
         $enabled = $feature['enabled'] ?? 0;
         $description = $feature['description'] ?? '';
@@ -52,30 +68,33 @@ class Feature
         $this->bucketing = new Bucketing($bucketing);
     }
 
-    function name () : Name { return $this->name; }
+    function name () : NameContract { return $this->name; }
 
-    function enabled () : Enabled { return $this->enabled; }
+    function enabled () : EnabledContract { return $this->enabled; }
 
-    function description () : Description { return $this->description; }
+    function description () : DescriptionContract
+    {
+        return $this->description;
+    }
 
-    function users () : Users { return $this->users; }
+    function users () : UsersContract { return $this->users; }
 
-    function groups () : Groups { return $this->groups; }
+    function groups () : GroupsContract { return $this->groups; }
 
-    function sources () : Sources { return $this->sources; }
+    function sources () : SourcesContract { return $this->sources; }
 
-    function admin () : Admin { return $this->admin; }
+    function admin () : AdminContract { return $this->admin; }
 
-    function internal () : Internal { return $this->internal; }
+    function internal () : InternalContract { return $this->internal; }
 
-    function publicUrlOverride () : PublicUrlOverride
+    function publicUrlOverride () : PublicUrlOverrideContract
     {
         return $this->publicUrlOverride;
     }
 
-    function excludeFrom () : ExcludeFrom { return $this->excludeFrom; }
+    function excludeFrom () : ExcludeFromContract { return $this->excludeFrom; }
 
-    function time () : Time { return $this->time; }
+    function time () : TimeContract { return $this->time; }
 
-    function bucketing () : Bucketing { return $this->bucketing; }
+    function bucketing () : BucketingContract { return $this->bucketing; }
 }

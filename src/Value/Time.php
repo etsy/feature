@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class Time
+use PabloJoan\Feature\Contract\Time as TimeContract;
+
+class Time implements TimeContract
 {
     private $start = 0;
     private $end = 0;

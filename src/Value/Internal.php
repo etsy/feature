@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class Internal
+use PabloJoan\Feature\Contract\{ Internal as InternalContract, User };
+
+class Internal implements InternalContract
 {
     private $variant = '';
 

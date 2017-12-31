@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
+use PabloJoan\Feature\Contract\{ Sources as SourcesContract, Source };
+
 /**
  * Parse the value of the 'sources' properties of the feature's config stanza,
  * returning an array mappinng the source names to the variant they should see.
  */
-class Sources
+class Sources implements SourcesContract
 {
     private $sources = [];
 

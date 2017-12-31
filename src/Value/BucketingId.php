@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class BucketingId
+use PabloJoan\Feature\Contract\BucketingId as BucketingIdContract;
+
+class BucketingId implements BucketingIdContract
 {
     private $id = '';
 

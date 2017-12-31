@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class Source
+use PabloJoan\Feature\Contract\Source as SourceContract;
+
+class Source implements SourceContract
 {
     private $source = '';
 

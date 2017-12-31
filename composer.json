@@ -7,6 +7,12 @@
             "email": "iglesias.pablo10@gmail.com"
         }
     ],
+    "keywords": [
+        "feature-flags",
+        "ab-testing",
+        "a/b",
+        "feature"
+    ],
     "require": {
         "php": ">=7.0"
     },

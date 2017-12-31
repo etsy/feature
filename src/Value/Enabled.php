@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
+use PabloJoan\Feature\Contract\Enabled as EnabledContract;
+
 /**
  * Parse the 'enabled' property of the feature's config stanza.
  * Returns the upper-boundary of the variants percentage.
  */
-class Enabled
+class Enabled implements EnabledContract
 {
     private $percentages = [];
 

@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
+use PabloJoan\Feature\Contract\{
+    User,
+    Bucketing,
+    BucketingId as BucketingIdContract
+};
+
 class CalculateBucketingId
 {
     private $user;
@@ -15,7 +21,7 @@ class CalculateBucketingId
         $this->bucketing = (string) $bucketing;
     }
 
-    function id () : BucketingId
+    function id () : BucketingIdContract
     {
         if ($this->bucketing === 'user' && !$this->user->id()) {
             $error = 'user id must be provided if user bucketing is enabled.';
@@ -35,8 +41,12 @@ class CalculateBucketingId
             return new BucketingId($this->user->uaid());
         }
 
-        if (!$this->user->uaid()) return new BucketingId('no uaid');
+        if ($this->bucketing === 'random' && !$this->user->uaid()) {
+            return new BucketingId('no uaid');
+        }
 
-        return new BucketingId($this->user->uaid());
+        if ($this->bucketing === 'random') {
+            return new BucketingId($this->user->uaid());
+        }
     }
 }
