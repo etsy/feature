@@ -61,9 +61,6 @@ Replace magic strings with constants.
 Write more usefull error messages.
 Add more bucketing schemes.
 
-Feature is no longer actively maintained and is no longer in sync with the version used internally at Etsy.
-
-
 # Feature API
 
 Feature flagging API used for operational rampups and A/B testing.
