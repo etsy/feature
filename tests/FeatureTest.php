@@ -250,4 +250,12 @@ class FeatureTest extends TestCase
         $this->assertEquals($this->feature->isEnabled('testFeature2'), true);
         $this->assertEquals($this->feature->variant('testFeature2'), 'test1');
     }
+
+    function emptyTest ()
+    {
+        $feature = new Feature();
+        $this->assertEquals($feature->isEnabled('testFeature2'), false);
+        $this->assertEquals($feature->variant('testFeature2'), '');
+        $this->assertEquals($feature->description('testFeature'), '');
+    }
 }
