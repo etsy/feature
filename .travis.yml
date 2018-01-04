@@ -6,4 +6,4 @@ php:
   - '7.2'
   - nightly
 
-script: composer update && ./vendor/bin/phpstan analyse --level=max --debug -vvv src/ tests/ && ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/
+script: composer install --no-interaction && ./vendor/bin/phpstan analyse --level=max --debug -vvv src/ tests/ && ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/
