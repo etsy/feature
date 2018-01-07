@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/PabloJoan/feature.svg?branch=master)](https://travis-ci.org/PabloJoan/feature)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PabloJoan/feature/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PabloJoan/feature/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/PabloJoan/feature/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/PabloJoan/feature/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/PabloJoan/feature/badges/build.png?b=master)](https://scrutinizer-ci.com/g/PabloJoan/feature/build-status/master)
 
 Requires PHP 7.0 and above.
 
