@@ -291,8 +291,7 @@ defaults to false if omitted.
 
 The precedence of the various mechanisms for enabling a feature are as follows.
 
-  - If the request is from an admin user or is an internal request, or if
-     `'public_url_override'` is true and the request contains a `features` query
+  - If `'public_url_override'` is true and the request contains a `features` query
      param that specifies a variant for the feature in question, that variant is
      used. The value of the `features` param is a comma-delimited list of
      features where each feature is either simply the name of the feature,
