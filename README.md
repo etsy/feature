@@ -56,10 +56,51 @@ $feature->description('foo'); // 'this is the description of the "foo" feature'
 
 # TODO
 
-DOCUMENTATION!!!!! Especially for new features.
 Replace magic strings with constants.
 Write more usefull error messages.
 Add more bucketing schemes.
+
+# Documentation
+
+For a quick summary and common use cases, please read the rest of this README.
+For full documentation, check [the wiki page](https://github.com/PabloJoan/feature/wiki)
+
+## Full list of features
+
+* [Feature Class](https://github.com/PabloJoan/feature/wiki/The-Feature-Class)
+* * [Feature::__construct ( array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#how-to-create-a-feature-class-instance)
+* * [Feature::changeFeatures ( array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangefeatures--array---void)
+* * [Feature::changeFeature ( string , array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangefeature--string--array---void)
+* * [Feature::addFeature ( string , array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureaddfeature--string--array---void)
+* * [Feature::removeFeature ( string ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureremovefeature--string---void)
+* * [Feature::changeUser ( array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangeuser--array---void)
+* * [Feature::changeUrl ( string ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangeurl--string---void)
+* * [Feature::changeSource ( string ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangesource--string---void)
+* * [Feature::isEnabled ( string ) : boolean](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureisenabled--string---boolean)
+* * [Feature::isEnabledFor ( string, array ) : boolean](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureisenabledfor--string-array---boolean)
+* * [Feature::isEnabledBucketingBy ( string, string ) : boolean](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureisenabledbucketingby--string-string---boolean)
+* * [Feature::variant ( string ) : string](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurevariant--string---string)
+* * [Feature::variantFor ( string, array ) : string](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurevariantfor--string-array---string)
+* * [Feature::variantBucketingBy ( string, string ) : string](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurevariantbucketingby--string-string---string)
+* * [Feature::description ( string ) : string](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featuredescription--string---string)
+
+* [The Config Array API](https://github.com/PabloJoan/feature/wiki/Config-API)
+* * [$config_array['features']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeatures)
+* * * [$config_array['features']['feature_name']['description']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namedescription)
+* * * [$config_array['features']['feature_name']['enabled']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameenabled)
+* * * [$config_array['features']['feature_name']['users']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameusers)
+* * * [$config_array['features']['feature_name']['groups']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namegroups)
+* * * [$config_array['features']['feature_name']['sources']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namesources)
+* * * [$config_array['features']['feature_name']['admin']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameadmin)
+* * * [$config_array['features']['feature_name']['internal']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameinternal)
+* * * [$config_array['features']['feature_name']['public_url_override']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namepublic_url_override)
+* * * [$config_array['features']['feature_name']['bucketing']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namebucketing)
+* * * [$config_array['features']['feature_name']['exclude_from']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameexclude_from)
+* * * [$config_array['features']['feature_name']['start']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namestart)
+* * * [$config_array['features']['feature_name']['end']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameend)
+* * [$config_array['user']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayuser)
+* * [$config_array['url']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayurl)
+* * [$config_array['source']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arraysource)
 
 # Feature API
 
