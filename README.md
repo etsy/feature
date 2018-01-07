@@ -270,15 +270,8 @@ and:
 ```php
     $server_config['foo'] => ['users' => 'fred'];
 ```
-None of these four properties have any effect if `'enabled'` is entirely enabled
-or disabled. They can, however, enable a variant of a feature if no `'enabled'`
-value is provided or if the variant’s percentage is 0.
-
-On the other hand, when an array `'enabled'` value is specified, as an aid to
-detecting typos, the variant names used in the `'admin'`, `'internal'`,
-`'users'`, and `'groups'` properties must also be keys in the `'enabled'` array.
-So if any variants are specified via `'enabled'`, they should all be, even if
-their percentage is set to 0.
+They can enable a variant of a feature if no `'enabled'` value is provided or
+if the variant’s percentage is 0.
 
 The two remaining feature config properties are `'bucketing'` and
 `'public_url_override'`. Bucketing specifies how users are bucketed when a
