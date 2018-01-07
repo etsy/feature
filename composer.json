@@ -7,12 +7,18 @@
             "email": "iglesias.pablo10@gmail.com"
         }
     ],
+    "license": "MIT",
     "keywords": [
         "feature-flags",
         "ab-testing",
         "ab-test",
         "feature",
-        "feature-flagging"
+        "feature-flagging",
+        "feature-toggles",
+        "feature-toggle",
+        "ab-tests",
+        "a-b-testing",
+        "a-b-test"
     ],
     "require": {
         "php": ">=7.0"
