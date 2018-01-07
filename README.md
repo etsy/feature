@@ -144,27 +144,27 @@ cases along with the most concise way to write the configuration.
 
 ### A totally enabled feature:
 ```php
-    $server_config['foo'] = ['enabled' => 100];
+    $server_config['features']['foo'] = ['enabled' => 100];
 ```
 ### A totally disabled feature:
 ```php
-    $server_config['foo'] = ['enabled' => 0];
+    $server_config['features']['foo'] = ['enabled' => 0];
 ```
 ### Feature with winning variant turned on for everyone
 ```php
-    $server_config['foo'] = ['enabled' => ['blue_background' => 100]];
+    $server_config['features']['foo'] = ['enabled' => ['blue_background' => 100]];
 ```
 ### Feature enabled only for admins:
 ```php
-    $server_config['foo'] = ['admin' => 'on'];
+    $server_config['features']['foo'] = ['admin' => 'on'];
 ```
 ### Single-variant feature ramped up to 1% of users.
 ```php
-    $server_config['foo'] = ['enabled' => 1];
+    $server_config['features']['foo'] = ['enabled' => 1];
 ```
 ### Multi-variant feature ramped up to 1% of users for each variant.
 ```php
-    $server_config['foo'] = [
+    $server_config['features']['foo'] = [
        'enabled' => [
            'blue_background'   => 1,
            'orange_background' => 1,
@@ -174,46 +174,46 @@ cases along with the most concise way to write the configuration.
 ```
 ### Enabled for a single specific user.
 ```php
-    $server_config['foo'] = ['users' => 'fred'];
+    $server_config['features']['foo'] = ['users' => 'fred'];
 ```
 ### Enabled for a few specific users.
 ```php
-    $server_config['foo'] = [
+    $server_config['features']['foo'] = [
        'users' => ['fred', 'barney', 'wilma', 'betty'],
     ];
 ```
 ### Enabled for a specific group
 ```php
-    $server_config['foo'] = ['groups' => '1234'];
+    $server_config['features']['foo'] = ['groups' => '1234'];
 ```
 ### Enabled for 10% of regular users and all admin.
 ```php
-    $server_config['foo'] = [
+    $server_config['features']['foo'] = [
        'enabled' => 10,
        'admin' => 'on',
     ];
 ```
 ### Feature ramped up to 1% of requests, bucketing at random rather than by user
 ```php
-    $server_config['foo'] = [
+    $server_config['features']['foo'] = [
        'enabled' => 1,
        'bucketing' => 'random',
     ];
 ```
 ### Feature ramped up to 40% of requests, bucketing by user rather than at random
 ```php
-    $server_config['foo'] = [
+    $server_config['features']['foo'] = [
        'enabled' => 40,
        'bucketing' => 'user',
     ];
 ```
 ### Single-variant feature in 50/50 A/B test
 ```php
-    $server_config['foo'] = ['enabled' => 50];
+    $server_config['features']['foo'] = ['enabled' => 50];
 ```
 ### Multi-variant feature in A/B test with 20% of users seeing each variant (and 40% left in control group).
 ```php
-    $server_config['foo'] = [
+    $server_config['features']['foo'] = [
        'enabled' => [
            'blue_background'   => 20,
            'orange_background' => 20,
@@ -223,7 +223,7 @@ cases along with the most concise way to write the configuration.
 ```
 ### New feature intended only to be enabled by adding ?features=foo to a URL
 ```php
-    $server_config['foo'] = [
+    $server_config['features']['foo'] = [
          'enabled' => 0,
          'public_url_override' => true
    ];
@@ -264,11 +264,11 @@ feature, the value of the `'users'` or `'groups'` property can simply be the
 value that should be assigned to the `'on'` variant. So using both shorthands,
 these are equivalent:
 ```php
-    $server_config['foo'] => ['users' => ['on' => ['fred']]];
+    $server_config['features']['foo'] => ['users' => ['on' => ['fred']]];
 ```
 and:
 ```php
-    $server_config['foo'] => ['users' => 'fred'];
+    $server_config['features']['foo'] => ['users' => 'fred'];
 ```
 They can enable a variant of a feature if no `'enabled'` value is provided or
 if the variant’s percentage is 0.
