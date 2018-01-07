@@ -18,7 +18,8 @@
         "feature-toggle",
         "ab-tests",
         "a-b-testing",
-        "a-b-test"
+        "a-b-test",
+        "toggle"
     ],
     "require": {
         "php": ">=7.0"
