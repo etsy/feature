@@ -174,17 +174,17 @@ cases along with the most concise way to write the configuration.
 ```
 ### Enabled for a single specific user.
 ```php
-    $server_config['features']['foo'] = ['users' => 'fred'];
+    $server_config['features']['foo'] = ['users' => ['on' => 'fred']];
 ```
 ### Enabled for a few specific users.
 ```php
     $server_config['features']['foo'] = [
-       'users' => ['fred', 'barney', 'wilma', 'betty'],
+       'users' => ['on' => ['fred', 'barney', 'wilma', 'betty']]
     ];
 ```
 ### Enabled for a specific group
 ```php
-    $server_config['features']['foo'] = ['groups' => '1234'];
+    $server_config['features']['foo'] = ['groups' => ['on' => '1234']];
 ```
 ### Enabled for 10% of regular users and all admin.
 ```php
@@ -259,16 +259,9 @@ lists of users or numeric group ids. In the fully specified case, the value will
 be an array whose keys are the names of variants and whose values are lists of
 user names or group ids, as appropriate. As a shorthand, if the list of user
 names or group ids is a single element it can be specified with just the name or
-id. And as a further shorthand, in the configuration of a single-variant
-feature, the value of the `'users'` or `'groups'` property can simply be the
-value that should be assigned to the `'on'` variant. So using both shorthands,
-these are equivalent:
+id.
 ```php
-    $server_config['features']['foo'] => ['users' => ['on' => ['fred']]];
-```
-and:
-```php
-    $server_config['features']['foo'] => ['users' => 'fred'];
+    $server_config['features']['foo'] => ['users' => ['on' => 'fred']];
 ```
 They can enable a variant of a feature if no `'enabled'` value is provided or
 if the variant’s percentage is 0.
