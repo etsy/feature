@@ -7,7 +7,7 @@
             "email": "iglesias.pablo10@gmail.com"
         }
     ],
-    "license": "MIT",
+    "license": "Unlicense",
     "keywords": [
         "feature-flags",
         "ab-testing",
