@@ -200,12 +200,12 @@ class Config
          * Map a hex value to the half-open interval bewtween 0 and 1 while
          * preserving uniformity of the input distribution.
          */
-        $id = hash('sha256', $feature->name() . "-$id");
+        $id = hash('haval192,3', $feature->name() . "-$id");
         $x = 0;
-        for ($i = 0; $i < 30; ++$i) {
-            $x = ($x << 1) + (hexdec($id[$i]) < 8 ? 0 : 1);
+        for ($i = 0; $i < 47; ++$i) {
+            $x = ($x * 2) + (hexdec($id[$i]) < 8 ? 0 : 1);
         }
 
-        return $x / 1073741824; // $x / ( 1 << 30 )
+        return $x / 140737488355328; // ( 2 ** 47 ) is the max value of $x
     }
 }
