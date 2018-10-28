@@ -56,8 +56,6 @@ $feature->description('foo'); // 'this is the description of the "foo" feature'
 
 # TODO
 
-Replace magic strings with constants.
-Write more usefull error messages.
 Add more bucketing schemes.
 
 # Documentation
