@@ -39,4 +39,24 @@ class Bucketing
     {
         return $this->by;
     }
+
+    function id (User $user) : string
+    {
+        $id = '';
+        switch ($this->by) {
+            case Bucketing::USER:
+                $id = $user->id();
+                break;
+
+            case Bucketing::UAID:
+                $id = $user->uaid();
+                break;
+    
+            case Bucketing::RANDOM:
+                $id = $user->uaid() ? $user->uaid() : 'no uaid';
+                break;
+        }
+
+        return $id;
+    }
 }

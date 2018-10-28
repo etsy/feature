@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PabloJoan\Feature;
 
 use PabloJoan\Feature\Value\{
-    CalculateBucketingId,
     User,
     Url,
     Feature,
@@ -32,8 +31,8 @@ class Config
      */
     function isEnabled (Feature $feature) : bool
     {
-        $id = new CalculateBucketingId($this->user, $feature->bucketing());
-        return Variant::OFF !== $this->chooseVariant($feature, $id->id());
+        $id = $feature->bucketing()->id($this->user);
+        return Variant::OFF !== $this->chooseVariant($feature, $id);
     }
 
     /**
@@ -42,8 +41,8 @@ class Config
      */
     function variant (Feature $feature) : string
     {
-        $id = new CalculateBucketingId($this->user, $feature->bucketing());
-        $variant = $this->chooseVariant($feature, $id->id());
+        $id = $feature->bucketing()->id($this->user);
+        $variant = $this->chooseVariant($feature, $id);
         return $variant !== Variant::OFF ? $variant : '';
     }
 
