@@ -5,7 +5,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/PabloJoan/feature/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/PabloJoan/feature/?branch=master)
 [![GitHub license](https://img.shields.io/github/license/PabloJoan/feature.svg)](https://github.com/PabloJoan/feature/blob/master/LICENSE)
 
-Requires PHP 7.0 and above.
+Requires PHP 7.2 and above.
 
 # Installation
 
