@@ -4,22 +4,39 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\Bucketing as BucketingContract;
-
-class Bucketing implements BucketingContract
+class Bucketing
 {
-    private $by = 'random';
+    private $by;
+
+    const RANDOM = 0;
+    const UAID   = 1;
+    const USER   = 2;
 
     function __construct (string $bucketBy)
     {
+        switch ($bucketBy) {
+            case 'random':
+                $bucketBy = self::RANDOM;
+                break;
+
+            case 'uaid':
+                $bucketBy = self::RANDOM;
+                break;
+
+            case 'user':
+                $bucketBy = self::RANDOM;
+                break;
+            
+            default:
+                $bucketBy = self::RANDOM;
+                break;
+        }
+
         $this->by = $bucketBy;
-
-        if (in_array($bucketBy, ['random', 'uaid', 'user'], true)) return;
-
-        $error = 'bucketing must be either "random", "uaid" or "user". ';
-        $error .= $bucketBy;
-        throw new \Exception($error);
     }
 
-    function __toString () : string { return $this->by; }
+    function by () : int
+    {
+        return $this->by;
+    }
 }

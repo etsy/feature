@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\Time as TimeContract;
-
-class Time implements TimeContract
+class Time
 {
-    private $start = 0;
-    private $end = 0;
+    private $start;
+    private $end;
 
     function __construct (string $start, string $end)
     {
-        if ($start) $this->start = $this->timeValue($start);
-        if ($end) $this->end = $this->timeValue($end);
+        $start = strtotime($start);
+        $this->start = $start ? $start : 0;
+
+        $end = strtotime($end);
+        $this->end = $end ? $end : 0;
     }
 
     function variant () : string
@@ -24,13 +25,6 @@ class Time implements TimeContract
         $startNotValid = $this->start && $this->start > $time;
         $endNotValid = $this->end && $this->end < $time;
 
-        return $startNotValid || $endNotValid ? 'off' : '';
-    }
-
-    private function timeValue (string $time) : int
-    {
-        $time = strtotime($time);
-        if (!$time) throw new \Exception("$time is not a valid time format");
-        return $time;
+        return $startNotValid || $endNotValid ? Variant::OFF : '';
     }
 }

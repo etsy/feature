@@ -1,9 +1,7 @@
 language: php
 
 php:
-  - '7.0'
-  - '7.1'
   - '7.2'
   - nightly
 
-script: composer install --no-interaction && ./vendor/bin/phpstan analyse --level=max --debug -vvv src/ tests/ && ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/
+script: composer install --no-interaction && composer phpstan && composer phpunit

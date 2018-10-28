@@ -83,7 +83,7 @@ class ApiTest extends TestCase
             'on'
         );
         
-        $feature->changeFeature('testFeature2', ['enabled' => 0]);
+        $feature->setFeature('testFeature2', ['enabled' => 0]);
 
         $this->assertEquals($feature->isEnabled('testFeature'), false);
         $this->assertEquals($feature->isEnabled('testFeature2'), false);

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\{ Admin as AdminContract, User };
-
-class Admin implements AdminContract
+class Admin
 {
-    private $variant = '';
+    private $variant;
 
-    function __construct (string $variant) { $this->variant = $variant; }
+    function __construct (string $variant)
+    {
+        $this->variant = $variant;
+    }
 
     function variant (User $user) : string
     {

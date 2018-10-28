@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature;
 
-use PabloJoan\Feature\Value\CalculateBucketingId;
-use PabloJoan\Feature\Contract\{ User, Url, Source, Feature, BucketingId };
+use PabloJoan\Feature\Value\{
+    CalculateBucketingId,
+    User,
+    Url,
+    Feature,
+    Bucketing,
+    Variant
+};
 
 class Config
 {
@@ -13,7 +19,7 @@ class Config
     private $url;
     private $source;
 
-    function __construct (User $user, Url $url, Source $source)
+    function __construct (User $user, Url $url, string $source)
     {
         $this->user = $user;
         $this->url = $url;
@@ -26,8 +32,8 @@ class Config
      */
     function isEnabled (Feature $feature) : bool
     {
-        $id = (new CalculateBucketingId($this->user, $feature->bucketing()))->id();
-        return $this->chooseVariant($feature, $id) !== 'off';
+        $id = new CalculateBucketingId($this->user, $feature->bucketing());
+        return Variant::OFF !== $this->chooseVariant($feature, $id->id());
     }
 
     /**
@@ -36,9 +42,9 @@ class Config
      */
     function variant (Feature $feature) : string
     {
-        $id = (new CalculateBucketingId($this->user, $feature->bucketing()))->id();
-        $variant = $this->chooseVariant($feature, $id);
-        return $variant !== 'off' ? $variant : '';
+        $id = new CalculateBucketingId($this->user, $feature->bucketing());
+        $variant = $this->chooseVariant($feature, $id->id());
+        return $variant !== Variant::OFF ? $variant : '';
     }
 
     /**
@@ -46,18 +52,18 @@ class Config
      * methods of enabling a feature and specifying a variant such as users,
      * groups, and query parameters, will still work.)
      */
-    function isEnabledBucketingBy (Feature $feature, BucketingId $id) : bool
+    function isEnabledBucketingBy (Feature $feature, string $id) : bool
     {
-        return $this->chooseVariant($feature, $id) !== 'off';
+        return $this->chooseVariant($feature, $id) !== Variant::OFF;
     }
 
     /**
      * What variant is enabled, bucketing on the given bucketing ID, if any?
      */
-    function variantBucketingBy (Feature $feature, BucketingId $id) : string
+    function variantBucketingBy (Feature $feature, string $id) : string
     {
         $variant = $this->chooseVariant($feature, $id);
-        return $variant !== 'off' ? $variant : '';
+        return $variant !== Variant::OFF ? $variant : '';
     }
 
     /**
@@ -67,36 +73,18 @@ class Config
      * BucketingId $id - the id used to assign a variant based on the percentage
      * of users that should see different variants.
      */
-    private function chooseVariant (Feature $feature, BucketingId $id) : string
+    private function chooseVariant (Feature $feature, string $id) : string
     {
-        $variant = $this->variantFromURL($feature);
-        if ($variant) return $variant;
-
-        $variant = $this->variantTime($feature);
-        if ($variant) return $variant;
-
-        $variant = $this->variantExcludedFrom($feature);
-        if ($variant) return $variant;
-
-        $variant = $this->variantForUser($feature);
-        if ($variant) return $variant;
-
-        $variant = $this->variantForGroup($feature);
-        if ($variant) return $variant;
-
-        $variant = $this->variantForSource($feature);
-        if ($variant) return $variant;
-
-        $variant = $this->variantForInternal($feature);
-        if ($variant) return $variant;
-
-        $variant = $this->variantForAdmin($feature);
-        if ($variant) return $variant;
-
-        $variant = $this->variantByPercentage($feature, $id);
-        if ($variant) return $variant;
-
-        return 'off';
+        return $this->variantFromURL($feature)           ?:
+               $this->variantTime($feature)              ?:
+               $this->variantExcludedFrom($feature)      ?:
+               $this->variantForUser($feature)           ?:
+               $this->variantForGroup($feature)          ?:
+               $this->variantForSource($feature)         ?:
+               $this->variantForInternal($feature)       ?:
+               $this->variantForAdmin($feature)          ?:
+               $this->variantByPercentage($feature, $id) ?:
+               Variant::OFF;
     }
 
     /**
@@ -107,8 +95,10 @@ class Config
      */
     private function variantFromURL (Feature $feature) : string
     {
-        $publicUrlOverride = $feature->publicUrlOverride();
-        return $publicUrlOverride->variant($feature->name(), $this->url);
+        return $feature->publicUrlOverride()->variant(
+            $feature->name(),
+            $this->url
+        );
     }
 
     /**
@@ -178,32 +168,40 @@ class Config
      * Finally, the normal case: use the percentage of users who should see each
      * variant to map a random-ish number to a particular variant.
      */
-    private function variantByPercentage (Feature $feature, BucketingId $id) : string
+    private function variantByPercentage (Feature $feature, string $id) : string
     {
-        $n = 100 * $this->randomish($feature, $id);
-        foreach ($feature->enabled()->percentages() as $variant => $percent) {
-            if ($n < $percent) return $variant;
-        }
-        return '';
+        return $feature->enabled()->variantByPercentage(
+            $this->randomish($feature, $id)
+        );
     }
 
     /**
-     * A random-ish number between 0 and 1 based on the feature name and $id
+     * A random-ish number between 0 and 100 based on the feature name and $id
      * unless we are bucketing completely at random
      */
-    private function randomish (Feature $feature, BucketingId $id) : float
+    private function randomish (Feature $feature, string $id) : float
     {
-        if ((string) $feature->bucketing() === 'random') {
-            return random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX;
+        switch ($feature->bucketing()->by()) {
+            case Bucketing::RANDOM:
+                $x = random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX;
+
+            default:
+                $x = $this->numberFromHash($feature, $id);
         }
-        /**
-         * Map a hex value to the half-open interval bewtween 0 and 1 while
-         * preserving uniformity of the input distribution.
-         */
-        $id = hash('haval192,3', $feature->name() . "-$id");
+
+        return $x * 100;
+    }
+
+    /**
+     * Map a hex value to the half-open interval between 0 and 1 while
+     * preserving uniformity of the input distribution.
+     */
+    private function numberFromHash (Feature $feature, string $id) : float
+    {
+        $hash = hash('haval192,3', $feature->name() . "-$id");
         $x = 0;
         for ($i = 0; $i < 47; ++$i) {
-            $x = ($x * 2) + (hexdec($id[$i]) < 8 ? 0 : 1);
+            $x = ($x * 2) + (hexdec($hash[$i]) < 8 ? 0 : 1);
         }
 
         return $x / 140737488355328; // ( 2 ** 47 ) is the max value of $x

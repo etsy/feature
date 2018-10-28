@@ -1,6 +1,6 @@
 {
     "name": "pablojoan/feature",
-    "description": "PSR-4 compliant Feature Flags library based on Etsy",
+    "description": "PSR-4 compliant Feature Flags library",
     "authors": [
         {
             "name": "Pablo Iglesias",
@@ -22,11 +22,15 @@
         "toggle"
     ],
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5",
-        "phpstan/phpstan": "^0.9.1"
+        "phpunit/phpunit": "*",
+        "phpstan/phpstan": "*"
+    },
+    "scripts": {
+        "phpstan": "./vendor/bin/phpstan analyse --level=max --debug -vvv src/ tests/",
+        "phpunit": "./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/"
     },
     "autoload": {
         "psr-4": {

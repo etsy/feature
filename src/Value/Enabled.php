@@ -4,48 +4,39 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\Enabled as EnabledContract;
-
 /**
  * Parse the 'enabled' property of the feature's config stanza.
  * Returns the upper-boundary of the variants percentage.
  */
-class Enabled implements EnabledContract
+class Enabled
 {
-    private $percentages = [];
+    private $percentages;
 
     function __construct ($enabled)
     {
-        $this->checkValueType($enabled);
-
-        if (is_int($enabled)) $enabled = ['on' => $enabled];
-
         $total = 0;
-        foreach ($enabled as $variant => $percent) {
-            $this->checkPercentage($percent);
-
-            $total += $percent;
+        foreach ((array) $enabled as $variant => $percent) {
+            $total += $this->percentage($percent);
+            $variant = is_int($variant) ? Variant::ON : $variant;
             $this->percentages[$variant] = $total;
         }
-
-        if ($total <= 100) return;
-
-        throw new \Exception("Total of percentages > 100: $total");
     }
 
-    function percentages () : array { return $this->percentages; }
-
-    private function checkValueType ($enabled)
+    function variantByPercentage (float $number) : string
     {
-        if (is_int($enabled) || is_array($enabled)) return;
-
-        $error = 'Malformed enabled property ' . json_encode($enabled);
-        throw new \Exception($error);
+        foreach ($this->percentages as $variant => $percent) {
+            $withinThreshold = $number < $percent;
+            switch ($withinThreshold) {
+                case true:
+                    return $variant;
+                    break;
+            }
+        }
+        return '';
     }
 
-    private function checkPercentage (int $percent)
+    private function percentage (int $percent) : int
     {
-        if ($percent >= 0 && $percent <= 100) return;
-        throw new \Exception('Bad percentage ' . json_encode($percent));
+        return ($percent >= 0 && $percent <= 100) ? $percent : 0;
     }
 }

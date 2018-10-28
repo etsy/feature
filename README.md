@@ -15,7 +15,7 @@ composer require pablojoan/feature
 
 # Running tests
 ```bash
-./vendor/bin/phpstan analyse --level=max --debug -vvv src/ tests/ && ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/
+composer phpstan && composer phpunit
 ```
 
 # Basic Usage
@@ -70,14 +70,13 @@ For full documentation, check [the wiki page](https://github.com/PabloJoan/featu
 ## Full list of features
 
 * [Feature Class](https://github.com/PabloJoan/feature/wiki/The-Feature-Class)
-* * [Feature::__construct ( array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#how-to-create-a-feature-class-instance)
-* * [Feature::changeFeatures ( array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangefeatures--array---void)
-* * [Feature::changeFeature ( string , array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangefeature--string--array---void)
-* * [Feature::addFeature ( string , array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureaddfeature--string--array---void)
-* * [Feature::removeFeature ( string ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureremovefeature--string---void)
-* * [Feature::changeUser ( array ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangeuser--array---void)
-* * [Feature::changeUrl ( string ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangeurl--string---void)
-* * [Feature::changeSource ( string ) : void](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangesource--string---void)
+* * [Feature::__construct ( array ) : Feature](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#how-to-create-a-feature-class-instance)
+* * [Feature::changeFeatures ( array ) : Feature](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangefeatures--array---Feature)
+* * [Feature::setFeature ( string , array ) : Feature](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featuresetfeature--string--array---Feature)
+* * [Feature::removeFeature ( string ) : Feature](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureremovefeature--string---Feature)
+* * [Feature::changeUser ( array ) : Feature](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangeuser--array---Feature)
+* * [Feature::changeUrl ( string ) : Feature](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangeurl--string---Feature)
+* * [Feature::changeSource ( string ) : Feature](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featurechangesource--string---Feature)
 * * [Feature::isEnabled ( string ) : boolean](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureisenabled--string---boolean)
 * * [Feature::isEnabledFor ( string, array ) : boolean](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureisenabledfor--string-array---boolean)
 * * [Feature::isEnabledBucketingBy ( string, string ) : boolean](https://github.com/PabloJoan/feature/wiki/The-Feature-Class#featureisenabledbucketingby--string-string---boolean)

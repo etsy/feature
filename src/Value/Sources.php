@@ -4,26 +4,25 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\{ Sources as SourcesContract, Source };
-
 /**
  * Parse the value of the 'sources' properties of the feature's config stanza,
  * returning an array mappinng the source names to the variant they should see.
  */
-class Sources implements SourcesContract
+class Sources
 {
-    private $sources = [];
+    private $sources;
 
     function __construct (array $stanza)
     {
         foreach ($stanza as $variant => $sources) {
-            if (!is_array($sources)) $sources = [$sources];
-            foreach ($sources as $source) $this->sources[$source] = $variant;
+            foreach ((array) $sources as $source) {
+                $this->sources[$source] = $variant;
+            }
         }
     }
 
-    function variant (Source $source) : string
+    function variant (string $source) : string
     {
-        return $this->sources[$source->variant()] ?? '';
+        return $this->sources[$source] ?? '';
     }
 }

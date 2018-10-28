@@ -4,49 +4,34 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\{
-    User,
-    Bucketing,
-    BucketingId as BucketingIdContract
-};
-
 class CalculateBucketingId
 {
     private $user;
-    private $bucketing = 'random';
+    private $bucketing;
 
     function __construct (User $user, Bucketing $bucketing)
     {
         $this->user = $user;
-        $this->bucketing = (string) $bucketing;
+        $this->bucketing = $bucketing;
     }
 
-    function id () : BucketingIdContract
+    function id () : string
     {
-        if ($this->bucketing === 'user' && !$this->user->id()) {
-            $error = 'user id must be provided if user bucketing is enabled.';
-            throw new \Exception($error);
+        $id = '';
+        switch ($this->bucketing->by()) {
+            case Bucketing::USER:
+                $id = $this->user->id();
+                break;
+
+            case Bucketing::UAID:
+                $id = $this->user->uaid();
+                break;
+    
+            case Bucketing::RANDOM:
+                $id = $this->user->uaid() ? $this->user->uaid() : 'no uaid';
+                break;
         }
 
-        if ($this->bucketing === 'uaid' && !$this->user->uaid()) {
-            $error = 'user uaid must be provided if uaid bucketing is enabled.';
-            throw new \Exception($error);
-        }
-
-        if ($this->bucketing === 'user') {
-            return new BucketingId($this->user->id());
-        }
-
-        if ($this->bucketing === 'uaid') {
-            return new BucketingId($this->user->uaid());
-        }
-
-        if ($this->bucketing === 'random' && !$this->user->uaid()) {
-            return new BucketingId('no uaid');
-        }
-
-        if ($this->bucketing === 'random') {
-            return new BucketingId($this->user->uaid());
-        }
+        return $id;
     }
 }

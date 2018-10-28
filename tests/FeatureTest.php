@@ -140,7 +140,7 @@ class FeatureTest extends TestCase
         $this->assertEquals($this->feature->isEnabled('newFeature'), false);
         $this->assertEquals($this->feature->variant('newFeature'), '');
 
-        $this->feature->addFeature('newFeature', ['enabled' => 100]);
+        $this->feature->setFeature('newFeature', ['enabled' => 100]);
         $this->assertEquals($this->feature->isEnabled('newFeature'), true);
         $this->assertEquals($this->feature->variant('newFeature'), 'on');
     }
@@ -150,7 +150,7 @@ class FeatureTest extends TestCase
         $this->assertEquals($this->feature->isEnabled('newFeature2'), false);
         $this->assertEquals($this->feature->variant('newFeature2'), '');
 
-        $this->feature->addFeature('newFeature2', ['enabled' => 100]);
+        $this->feature->setFeature('newFeature2', ['enabled' => 100]);
         $this->assertEquals($this->feature->isEnabled('newFeature2'), true);
         $this->assertEquals($this->feature->variant('newFeature2'), 'on');
 
@@ -186,9 +186,9 @@ class FeatureTest extends TestCase
         );
     }
 
-    function testChangeFeature ()
+    function testSetFeature ()
     {
-        $this->feature->changeFeature(
+        $this->feature->setFeature(
             'testFeature2',
             [
                 'enabled' => ['test1' => 0, 'test4' => 0],
@@ -203,7 +203,7 @@ class FeatureTest extends TestCase
 
     function testChangeUser ()
     {
-        $this->feature->changeFeature(
+        $this->feature->setFeature(
             'testFeature2',
             [
                 'enabled' => ['test1' => 0, 'test4' => 0],
@@ -219,7 +219,7 @@ class FeatureTest extends TestCase
 
     function testChangeUrl ()
     {
-        $this->feature->changeFeature(
+        $this->feature->setFeature(
             'testFeature2',
             [
                 'enabled' => ['test1' => 0, 'test4' => 0],
@@ -237,7 +237,7 @@ class FeatureTest extends TestCase
 
     function testChangeSource ()
     {
-        $this->feature->changeFeature(
+        $this->feature->setFeature(
             'testFeature2',
             [
                 'enabled' => ['test1' => 0, 'test4' => 0],

@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\User as UserContract;
-
-class User implements UserContract
+class User
 {
-    private $uaid = '';
-    private $id = '';
-    private $country = '';
-    private $zipcode = '';
-    private $region = '';
-    private $isAdmin = false;
-    private $internalIP = false;
-    private $group = '';
+    private $uaid;
+    private $id;
+    private $country;
+    private $zipcode;
+    private $region;
+    private $isAdmin;
+    private $internalIP;
+    private $group;
 
     function __construct (array $user)
     {
@@ -29,19 +27,43 @@ class User implements UserContract
         $this->internalIP = $user['internal-ip'] ?? false;
     }
 
-    function uaid () : string { return $this->uaid; }
+    function uaid () : string
+    {
+        return $this->uaid;
+    }
 
-    function id () : string { return $this->id; }
+    function id () : string
+    {
+        return $this->id;
+    }
 
-    function country () : string { return $this->country; }
+    function country () : string
+    {
+        return $this->country;
+    }
 
-    function zipcode () : string { return $this->zipcode; }
+    function zipcode () : string
+    {
+        return $this->zipcode;
+    }
 
-    function region () : string { return $this->region; }
+    function region () : string
+    {
+        return $this->region;
+    }
 
-    function isAdmin () : bool { return $this->isAdmin; }
+    function isAdmin () : bool
+    {
+        return $this->isAdmin;
+    }
 
-    function internalIP () : bool { return $this->internalIP; }
+    function internalIP () : bool
+    {
+        return $this->internalIP;
+    }
 
-    function group () : string { return $this->group; }
+    function group () : string
+    {
+        return $this->group;
+    }
 }

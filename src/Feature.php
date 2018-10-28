@@ -7,10 +7,7 @@ namespace PabloJoan\Feature;
 use PabloJoan\Feature\Value\{
     FeatureCollection,
     User,
-    Url,
-    Source,
-    Name,
-    BucketingId
+    Url
 };
 
 /**
@@ -42,63 +39,68 @@ class Feature
     private $url;
     private $source;
 
-    function __construct (array $input = [])
+    function __construct (array $input = null)
     {
         $this->features = new FeatureCollection($input['features'] ?? []);
         $this->user = new User($input['user'] ?? []);
         $this->url = new Url($input['url'] ?? '');
-        $this->source = new Source($input['source'] ?? '');
+        $this->source = $input['source'] ?? '';
     }
 
-    /*
+    /**
      * Replaces all features with a new set of features.
      */
-    function changeFeatures (array $features)
+    function changeFeatures (array $features) : Feature
     {
         $this->features = new FeatureCollection($features);
+        return $this;
     }
 
-    /*
+    /**
      * Replaces one existing feature with a new feature config of the same name.
+     * If feature does not exist, it adds one new feature config to the
+     * collection of features.
      */
-    function changeFeature (string $name, array $feature)
+    function setFeature (string $name, array $feature) : Feature
     {
-        $this->features->change(new Name($name), $feature);
+        $this->features->set($name, $feature);
+        return $this;
     }
 
-    /*
-     * Adds one new feature config to the collection of features. Feature name
-     * must be unique.
-     */
-    function addFeature (string $name, array $feature)
-    {
-        $this->features->add(new Name($name), $feature);
-    }
-
-    /*
+    /**
      * Removes one existing feature from the collection.
      */
-    function removeFeature (string $name)
+    function removeFeature (string $name) : Feature
     {
-        $this->features->remove(new Name($name));
+        $this->features->remove($name);
+        return $this;
     }
 
-    /*
+    /**
      * Replaces the user used to calculate variants.
      */
-    function changeUser (array $user) { $this->user = new User($user); }
+    function changeUser (array $user) : Feature
+    {
+        $this->user = new User($user);
+        return $this;
+    }
 
-    /*
+    /**
      * Replaces the url used to calculate variants.
      */
-    function changeUrl (string $url) { $this->url = new Url($url); }
+    function changeUrl (string $url) : Feature
+    {
+        $this->url = new Url($url);
+        return $this;
+    }
 
-    /*
+    /**
      * Replaces the source used to calculate variants.
      */
-    function changeSource (string $source)
+    function changeSource (string $source) : Feature
     {
-        $this->source = new Source($source);
+        $this->source = $source;
+        return $this;
     }
 
     /**
@@ -107,7 +109,7 @@ class Feature
     function isEnabled (string $name) : bool
     {
         $config = new Config($this->user, $this->url, $this->source);
-        return $config->isEnabled($this->features->get(new Name($name)));
+        return $config->isEnabled($this->features->get($name));
     }
 
     /**
@@ -119,7 +121,7 @@ class Feature
     function isEnabledFor (string $name, array $user) : bool
     {
         $config = new Config(new User($user), $this->url, $this->source);
-        return $config->isEnabled($this->features->get(new Name($name)));
+        return $config->isEnabled($this->features->get($name));
     }
 
     /**
@@ -129,9 +131,11 @@ class Feature
      */
     function isEnabledBucketingBy (string $name, string $id) : bool
     {
-        $config = new Config(new User([]), $this->url, $this->source);
-        $feature = $this->features->get(new Name($name));
-        return $config->isEnabledBucketingBy($feature, new BucketingId($id));
+        $config = new Config(new User([]), $this->url, $this->source); 
+        return $config->isEnabledBucketingBy(
+            $this->features->get($name),
+            $id
+        );
     }
 
     /**
@@ -141,7 +145,7 @@ class Feature
     function variant (string $name) : string
     {
         $config = new Config($this->user, $this->url, $this->source);
-        return $config->variant($this->features->get(new Name($name)));
+        return $config->variant($this->features->get($name));
     }
 
     /**
@@ -153,7 +157,7 @@ class Feature
     function variantFor (string $name, array $user) : string
     {
         $config = new Config(new User($user), $this->url, $this->source);
-        return $config->variant($this->features->get(new Name($name)));
+        return $config->variant($this->features->get($name));
     }
 
     /**
@@ -165,12 +169,14 @@ class Feature
     function variantBucketingBy (string $name, string $id) : string
     {
         $config = new Config(new User([]), $this->url, $this->source);
-        $feature = $this->features->get(new Name($name));
-        return $config->variantBucketingBy($feature, new BucketingId($id));
+        return $config->variantBucketingBy(
+            $this->features->get($name),
+            $id
+        );
     }
 
     function description (string $name) : string
     {
-        return (string) $this->features->get(new Name($name))->description();
+        return (string) $this->features->get($name)->description();
     }
 }

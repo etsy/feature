@@ -4,47 +4,31 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\{
-    FeatureCollection as FeatureCollectionContract,
-    Feature as FeatureContract,
-    Name as NameContract
-};
-
-class FeatureCollection implements FeatureCollectionContract
+class FeatureCollection
 {
     private $features = [];
 
     function __construct (array $features)
     {
         foreach ($features as $name => $feature) {
-            $this->features[$name] = new Feature(new Name($name), $feature);
+            $this->features[$name] = new Feature($name, $feature);
         }
     }
 
-    function get (NameContract $name) : FeatureContract
+    function get (string $name) : Feature
     {
-        return $this->features[(string) $name] ?? new Feature($name, []);
+        return $this->features[$name] ?? new Feature($name, []);
     }
 
-    function change (NameContract $name, array $feature)
+    function set (string $name, array $feature) : FeatureCollection
     {
-        if (!isset($this->features[(string) $name])) {
-            throw new \Exception("feature '$name' does not exist.");
-        }
-
-        $this->features[(string) $name] = new Feature($name, $feature);
+        $this->features[$name] = new Feature($name, $feature);
+        return $this;
     }
 
-    function add (NameContract $name, array $feature)
+    function remove (string $name) : FeatureCollection
     {
-        if (isset($this->features[(string) $name])) {
-            throw new \Exception("feature '$name' already exists.");
-        }
-        $this->features[(string) $name] = new Feature($name, $feature);
-    }
-
-    function remove (NameContract $name)
-    {
-        unset($this->features[(string) $name]);
+        unset($this->features[$name]);
+        return $this;
     }
 }

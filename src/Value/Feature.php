@@ -4,27 +4,11 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-use PabloJoan\Feature\Contract\{
-    Feature as FeatureContract,
-    Name as NameContract,
-    Enabled as EnabledContract,
-    Description as DescriptionContract,
-    Users as UsersContract,
-    Groups as GroupsContract,
-    Sources as SourcesContract,
-    Admin as AdminContract,
-    Internal as InternalContract,
-    PublicUrlOverride as PublicUrlOverrideContract,
-    ExcludeFrom as ExcludeFromContract,
-    Time as TimeContract,
-    Bucketing as BucketingContract
-};
-
 /**
  * A feature that can be enabled, disabled, ramped up, and A/B tested, as well
  * as enabled for certain classes of users.
  */
-class Feature implements FeatureContract
+class Feature
 {
     private $name;
     private $enabled;
@@ -39,7 +23,7 @@ class Feature implements FeatureContract
     private $time;
     private $bucketing;
 
-    function __construct (NameContract $name, array $feature)
+    function __construct (string $name, array $feature)
     {
         $enabled = $feature['enabled'] ?? 0;
         $description = $feature['description'] ?? '';
@@ -52,11 +36,11 @@ class Feature implements FeatureContract
         $excludeFrom = $feature['exclude_from'] ?? [];
         $start = $feature['start'] ?? '';
         $end = $feature['end'] ?? '';
-        $bucketing = $feature['bucketing'] ?? 'random';
+        $bucketing = $feature['bucketing'] ?? '';
 
         $this->name = $name;
         $this->enabled = new Enabled($enabled);
-        $this->description = new Description($description);
+        $this->description = $description;
         $this->users = new Users($users);
         $this->groups = new Groups($groups);
         $this->sources = new Sources($sources);
@@ -68,33 +52,63 @@ class Feature implements FeatureContract
         $this->bucketing = new Bucketing($bucketing);
     }
 
-    function name () : NameContract { return $this->name; }
+    function name () : string
+    { 
+        return $this->name;
+    }
 
-    function enabled () : EnabledContract { return $this->enabled; }
+    function enabled () : Enabled
+    {
+        return $this->enabled;
+    }
 
-    function description () : DescriptionContract
+    function description () : string
     {
         return $this->description;
     }
 
-    function users () : UsersContract { return $this->users; }
+    function users () : Users
+    {
+        return $this->users;
+    }
 
-    function groups () : GroupsContract { return $this->groups; }
+    function groups () : Groups
+    {
+        return $this->groups;
+    }
 
-    function sources () : SourcesContract { return $this->sources; }
+    function sources () : Sources
+    {
+        return $this->sources;
+    }
 
-    function admin () : AdminContract { return $this->admin; }
+    function admin () : Admin
+    {
+        return $this->admin;
+    }
 
-    function internal () : InternalContract { return $this->internal; }
+    function internal () : Internal
+    {
+        return $this->internal;
+    }
 
-    function publicUrlOverride () : PublicUrlOverrideContract
+    function publicUrlOverride () : PublicUrlOverride
     {
         return $this->publicUrlOverride;
     }
 
-    function excludeFrom () : ExcludeFromContract { return $this->excludeFrom; }
+    function excludeFrom () : ExcludeFrom
+    {
+        return $this->excludeFrom;
+    }
 
-    function time () : TimeContract { return $this->time; }
+    function time () : Time
+    {
+        return $this->time;
+    }
 
-    function bucketing () : BucketingContract { return $this->bucketing; }
+    function bucketing () : Bucketing
+    {
+        return $this->bucketing;
+    }
 }
