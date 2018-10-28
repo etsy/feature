@@ -177,6 +177,6 @@ class Feature
 
     function description (string $name) : string
     {
-        return (string) $this->features->get($name)->description();
+        return $this->features->get($name)->description();
     }
 }
