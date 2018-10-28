@@ -1,4 +1,3 @@
-[![Latest Stable Version](https://poser.pugx.org/pablojoan/feature/v/stable)](https://packagist.org/packages/pablojoan/feature)
 [![Build Status](https://travis-ci.org/PabloJoan/feature.svg?branch=master)](https://travis-ci.org/PabloJoan/feature)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PabloJoan/feature/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PabloJoan/feature/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/PabloJoan/feature/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/PabloJoan/feature/?branch=master)
@@ -57,8 +56,6 @@ $feature->description('foo'); // 'this is the description of the "foo" feature'
 
 # TODO
 
-Replace magic strings with constants.
-Write more usefull error messages.
 Add more bucketing schemes.
 
 # Documentation
