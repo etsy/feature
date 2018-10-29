@@ -17,13 +17,13 @@ class User
 
     function __construct (array $user)
     {
-        $this->uaid = $user['uaid'] ?? '';
-        $this->id = $user['id'] ?? '';
-        $this->group = $user['group'] ?? '';
-        $this->zipcode = $user['zipcode'] ?? '';
-        $this->region = $user['region'] ?? '';
-        $this->country = $user['country'] ?? '';
-        $this->isAdmin = $user['is-admin'] ?? false;
+        $this->uaid       = $user['uaid']        ?? '';
+        $this->id         = $user['id']          ?? '';
+        $this->group      = $user['group']       ?? '';
+        $this->zipcode    = $user['zipcode']     ?? '';
+        $this->region     = $user['region']      ?? '';
+        $this->country    = $user['country']     ?? '';
+        $this->isAdmin    = $user['is-admin']    ?? false;
         $this->internalIP = $user['internal-ip'] ?? false;
     }
 

@@ -28,7 +28,7 @@ class FeatureTest extends TestCase
                     'sources' => ['test3' => 'source1', 'test4' => 'source2'],
                     'admin' => 'test3',
                     'internal' => 'test1',
-                    'public_url_override' => true,
+                    'url_override' => true,
                     'exclude_from' => [
                         'zips' => ['10014', '10023'],
                         'countries' => ['us', 'rd'],
@@ -194,7 +194,7 @@ class FeatureTest extends TestCase
                 'enabled' => ['test1' => 0, 'test4' => 0],
                 'users' => ['test1' => '2', 'test4' => '7'],
                 'sources' => ['test1' => 'source3'],
-                'public_url_override' => true
+                'url_override' => true
             ]
         );
         $this->assertEquals($this->feature->isEnabled('testFeature2'), false);
@@ -209,7 +209,7 @@ class FeatureTest extends TestCase
                 'enabled' => ['test1' => 0, 'test4' => 0],
                 'users' => ['test1' => '2', 'test4' => '7'],
                 'sources' => ['test1' => 'source3'],
-                'public_url_override' => true
+                'url_override' => true
             ]
         );
         $this->feature->changeUser(['id' => '2']);
@@ -225,7 +225,7 @@ class FeatureTest extends TestCase
                 'enabled' => ['test1' => 0, 'test4' => 0],
                 'users' => ['test1' => '2', 'test4' => '7'],
                 'sources' => ['test1' => 'source3'],
-                'public_url_override' => true
+                'url_override' => true
             ]
         );
         $this->feature->changeUrl(
@@ -243,7 +243,7 @@ class FeatureTest extends TestCase
                 'enabled' => ['test1' => 0, 'test4' => 0],
                 'users' => ['test1' => '2', 'test4' => '7'],
                 'sources' => ['test1' => 'source3'],
-                'public_url_override' => true
+                'url_override' => true
             ]
         );
         $this->feature->changeSource('source3');

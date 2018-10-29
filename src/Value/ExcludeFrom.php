@@ -20,15 +20,15 @@ class ExcludeFrom
         $countries = isset($excludeFrom['countries']);
         $countries = $countries && \is_array($excludeFrom['countries']);
 
-        $this->zips = $zips ? $excludeFrom['zips'] : [];
-        $this->regions = $regions ? $excludeFrom['regions'] : [];
+        $this->zips      = $zips      ? $excludeFrom['zips']      : [];
+        $this->regions   = $regions   ? $excludeFrom['regions']   : [];
         $this->countries = $countries ? $excludeFrom['countries'] : [];
     }
 
     function variant (User $user) : string
     {
-        $zips = \in_array($user->zipcode(), $this->zips, true);
-        $regions = \in_array($user->region(), $this->regions, true);
+        $zips      = \in_array($user->zipcode(), $this->zips, true);
+        $regions   = \in_array($user->region(),  $this->regions, true);
         $countries = \in_array($user->country(), $this->countries, true);
 
         return $zips || $regions || $countries ? Variant::OFF : '';

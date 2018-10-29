@@ -634,17 +634,17 @@ class ApiTest extends TestCase
         );
     }
 
-    function testPublicUrlOverride ()
+    function testUrlOverride ()
     {
         $feature = new Feature([
             'features' => [
                 'testFeature' => [
                     'enabled' => ['variant1' => 0, 'variant2' => 0],
-                    'public_url_override' => true
+                    'url_override' => true
                 ],
                 'testFeature2' => [
                     'enabled' => ['variant3' => 0, 'variant4' => 0],
-                    'public_url_override' => true
+                    'url_override' => true
                 ]
             ],
             'url' => 'http://www.testurl.com/?feature=testFeature:variant1,testFeature2:variant4'

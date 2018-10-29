@@ -90,7 +90,7 @@ For full documentation, check [the wiki page](https://github.com/PabloJoan/featu
 * * * [$config_array['features']['feature_name']['sources']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namesources)
 * * * [$config_array['features']['feature_name']['admin']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameadmin)
 * * * [$config_array['features']['feature_name']['internal']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameinternal)
-* * * [$config_array['features']['feature_name']['public_url_override']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namepublic_url_override)
+* * * [$config_array['features']['feature_name']['url_override']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameurl_override)
 * * * [$config_array['features']['feature_name']['bucketing']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namebucketing)
 * * * [$config_array['features']['feature_name']['exclude_from']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_nameexclude_from)
 * * * [$config_array['features']['feature_name']['start']](https://github.com/PabloJoan/feature/wiki/Config-API#config_arrayfeaturesfeature_namestart)
@@ -263,7 +263,7 @@ cases along with the most concise way to write the configuration.
 ```php
     $server_config['features']['foo'] = [
          'enabled' => 0,
-         'public_url_override' => true
+         'url_override' => true
    ];
 ```
 ## Configuration details
@@ -305,7 +305,7 @@ They can enable a variant of a feature if no `'enabled'` value is provided or
 if the variant’s percentage is 0.
 
 The two remaining feature config properties are `'bucketing'` and
-`'public_url_override'`. Bucketing specifies how users are bucketed when a
+`'url_override'`. Bucketing specifies how users are bucketed when a
 feature is enabled for only a percentage of users. The default value,
 `'random'`, causes each request to be bucketed independently meaning that the
 same user will be in different buckets on different requests. This is typically
@@ -320,7 +320,7 @@ Finally the bucketing value, `'uaid'`, causes bucketing via the UAID cookie
 which means a user will be in the same bucket regardless of whether they are
 signed in or not.
 
-The `'public_url_override'` property allows all requests, not just admin and
+The `'url_override'` property allows all requests, not just admin and
 internal requests, to turn on a feature and choose a variant via the `features`
 query param. Its value will almost always be true if it is present since it
 defaults to false if omitted.
@@ -329,7 +329,7 @@ defaults to false if omitted.
 
 The precedence of the various mechanisms for enabling a feature are as follows.
 
-  - If `'public_url_override'` is true and the request contains a `features` query
+  - If `'url_override'` is true and the request contains a `features` query
      param that specifies a variant for the feature in question, that variant is
      used. The value of the `features` param is a comma-delimited list of
      features where each feature is either simply the name of the feature,

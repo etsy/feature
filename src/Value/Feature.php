@@ -18,38 +18,38 @@ class Feature
     private $sources;
     private $admin;
     private $internal;
-    private $publicUrlOverride;
+    private $urlOverride;
     private $excludeFrom;
     private $time;
     private $bucketing;
 
     function __construct (string $name, array $feature)
     {
-        $enabled = $feature['enabled'] ?? 0;
-        $description = $feature['description'] ?? '';
-        $users = $feature['users'] ?? [];
-        $groups = $feature['groups'] ?? [];
-        $sources = $feature['sources'] ?? [];
-        $admin = $feature['admin'] ?? '';
-        $internal = $feature['internal'] ?? '';
-        $publicUrlOverride = $feature['public_url_override'] ?? false;
+        $enabled     = $feature['enabled']      ?? 0;
+        $users       = $feature['users']        ?? [];
+        $groups      = $feature['groups']       ?? [];
+        $sources     = $feature['sources']      ?? [];
         $excludeFrom = $feature['exclude_from'] ?? [];
-        $start = $feature['start'] ?? '';
-        $end = $feature['end'] ?? '';
-        $bucketing = $feature['bucketing'] ?? '';
+        $description = $feature['description']  ?? '';
+        $admin       = $feature['admin']        ?? '';
+        $internal    = $feature['internal']     ?? '';
+        $start       = $feature['start']        ?? '';
+        $end         = $feature['end']          ?? '';
+        $bucketing   = $feature['bucketing']    ?? '';
+        $urlOverride = $feature['url_override'] ?? false;
 
-        $this->name = $name;
-        $this->enabled = new Enabled($enabled);
+        $this->name        = $name;
         $this->description = $description;
-        $this->users = new Users($users);
-        $this->groups = new Groups($groups);
-        $this->sources = new Sources($sources);
-        $this->admin = new Admin($admin);
-        $this->internal = new Internal($internal);
-        $this->publicUrlOverride = new PublicUrlOverride($publicUrlOverride);
+        $this->enabled     = new Enabled($enabled);
+        $this->users       = new Users($users);
+        $this->groups      = new Groups($groups);
+        $this->sources     = new Sources($sources);
+        $this->admin       = new Admin($admin);
+        $this->internal    = new Internal($internal);
+        $this->urlOverride = new UrlOverride($urlOverride);
         $this->excludeFrom = new ExcludeFrom($excludeFrom);
-        $this->time = new Time($start, $end);
-        $this->bucketing = new Bucketing($bucketing);
+        $this->time        = new Time($start, $end);
+        $this->bucketing   = new Bucketing($bucketing);
     }
 
     function name () : string
@@ -92,9 +92,9 @@ class Feature
         return $this->internal;
     }
 
-    function publicUrlOverride () : PublicUrlOverride
+    function urlOverride () : UrlOverride
     {
-        return $this->publicUrlOverride;
+        return $this->urlOverride;
     }
 
     function excludeFrom () : ExcludeFrom

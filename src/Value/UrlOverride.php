@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
-class PublicUrlOverride
+class UrlOverride
 {
     private $on;
 

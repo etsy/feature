@@ -20,8 +20,8 @@ class Config
 
     function __construct (User $user, Url $url, string $source)
     {
-        $this->user = $user;
-        $this->url = $url;
+        $this->user   = $user;
+        $this->url    = $url;
         $this->source = $source;
     }
 
@@ -74,27 +74,27 @@ class Config
      */
     private function chooseVariant (Feature $feature, string $id) : string
     {
-        return $this->variantFromURL($feature)           ?:
-               $this->variantTime($feature)              ?:
-               $this->variantExcludedFrom($feature)      ?:
-               $this->variantForUser($feature)           ?:
-               $this->variantForGroup($feature)          ?:
-               $this->variantForSource($feature)         ?:
-               $this->variantForInternal($feature)       ?:
-               $this->variantForAdmin($feature)          ?:
-               $this->variantByPercentage($feature, $id) ?:
+        return $this->variantFromURL      ($feature)      ?:
+               $this->variantTime         ($feature)      ?:
+               $this->variantExcludedFrom ($feature)      ?:
+               $this->variantForUser      ($feature)      ?:
+               $this->variantForGroup     ($feature)      ?:
+               $this->variantForSource    ($feature)      ?:
+               $this->variantForInternal  ($feature)      ?:
+               $this->variantForAdmin     ($feature)      ?:
+               $this->variantByPercentage ($feature, $id) ?:
                Variant::OFF;
     }
 
     /**
-     * If the feature has public_url_override set to true, a specific variant
+     * If the feature has url_override set to true, a specific variant
      * can be specified in the 'features' query parameter. In all other cases
      * return nothing, meaning nothing was specified. Note that foo:off will
      * turn off the 'foo' feature.
      */
     private function variantFromURL (Feature $feature) : string
     {
-        return $feature->publicUrlOverride()->variant(
+        return $feature->urlOverride()->variant(
             $feature->name(),
             $this->url
         );
@@ -185,7 +185,7 @@ class Config
                 $x = random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX;
 
             default:
-                $x = $this->numberFromHash($feature, $id);
+                $x = $this->numberFromHash($feature->name() . "-$id");
         }
 
         return $x * 100;
@@ -195,9 +195,9 @@ class Config
      * Map a hex value to the half-open interval between 0 and 1 while
      * preserving uniformity of the input distribution.
      */
-    private function numberFromHash (Feature $feature, string $id) : float
+    private function numberFromHash (string $strToHash) : float
     {
-        $hash = hash('haval192,3', $feature->name() . "-$id");
+        $hash = hash('haval192,3', $strToHash);
         $x = 0;
         for ($i = 0; $i < 47; ++$i) {
             $x = ($x * 2) + (hexdec($hash[$i]) < 8 ? 0 : 1);

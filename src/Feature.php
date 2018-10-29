@@ -42,9 +42,9 @@ class Feature
     function __construct (array $input = null)
     {
         $this->features = new FeatureCollection($input['features'] ?? []);
-        $this->user = new User($input['user'] ?? []);
-        $this->url = new Url($input['url'] ?? '');
-        $this->source = $input['source'] ?? '';
+        $this->user     = new User($input['user'] ?? []);
+        $this->url      = new Url($input['url'] ?? '');
+        $this->source   = $input['source'] ?? '';
     }
 
     /**
