@@ -701,8 +701,8 @@ class ApiTest extends TestCase
             true
         );
         $this->assertEquals($variant, true);
-        $this->assertEquals($feature->variant('testFeature2'), 'variant3');
-        $this->assertEquals($feature->variant('testFeature3'), 'variant5');
+        $this->assertEquals($feature->variant('testFeature2'), 'variant4');
+        $this->assertEquals($feature->variant('testFeature3'), 'variant6');
 
         $this->assertEquals(
             $feature->variantBucketingBy('testFeature2', 'testid1'),
@@ -715,7 +715,7 @@ class ApiTest extends TestCase
 
         $feature->changeUser(['id' => 'anotheruser', 'uaid' => 'string3']);
 
-        $this->assertEquals($feature->variant('testFeature2'), 'variant3');
-        $this->assertEquals($feature->variant('testFeature3'), 'variant5');
+        $this->assertEquals($feature->variant('testFeature2'), 'variant4');
+        $this->assertEquals($feature->variant('testFeature3'), 'variant6');
     }
 }

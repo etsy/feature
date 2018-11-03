@@ -20,19 +20,18 @@ class Enabled
             $variant = is_int($variant) ? Variant::ON : $variant;
             $this->percentages[$variant] = $total;
         }
+        asort($this->percentages, SORT_NUMERIC);
     }
 
     function variantByPercentage (float $number) : string
     {
-        foreach ($this->percentages as $variant => $percent) {
-            $withinThreshold = $number < $percent;
-            switch ($withinThreshold) {
-                case true:
-                    return $variant;
-                    break;
-            }
-        }
-        return '';
+        $threshHold = function ($percent) use ($number) {
+            return $number < $percent;
+        };
+
+        $variant = key(array_filter($this->percentages, $threshHold));
+
+        return (string) ($variant ?: '');
     }
 
     private function percentage (int $percent) : int

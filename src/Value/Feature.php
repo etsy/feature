@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Value;
 
+use PabloJoan\Feature\Bucketing\Type as BucketType;
+
 /**
  * A feature that can be enabled, disabled, ramped up, and A/B tested, as well
  * as enabled for certain classes of users.
@@ -35,8 +37,8 @@ class Feature
         $internal    = $feature['internal']     ?? '';
         $start       = $feature['start']        ?? '';
         $end         = $feature['end']          ?? '';
-        $bucketing   = $feature['bucketing']    ?? '';
         $urlOverride = $feature['url_override'] ?? false;
+        $bucketing   = $feature['bucketing']    ?? 'Random';
 
         $this->name        = $name;
         $this->description = $description;
@@ -49,7 +51,7 @@ class Feature
         $this->urlOverride = new UrlOverride($urlOverride);
         $this->excludeFrom = new ExcludeFrom($excludeFrom);
         $this->time        = new Time($start, $end);
-        $this->bucketing   = new Bucketing($bucketing);
+        $this->bucketing   = $this->bucketingClass($bucketing);
     }
 
     function name () : string
@@ -107,8 +109,15 @@ class Feature
         return $this->time;
     }
 
-    function bucketing () : Bucketing
+    function bucketing () : BucketType
     {
         return $this->bucketing;
+    }
+
+    private function bucketingClass (string $bucketing) : BucketType
+    {
+        $namespace = "PabloJoan\\Feature\\Bucketing\\";
+        $bucketing = $namespace . ucfirst($bucketing);
+        return new $bucketing;
     }
 }

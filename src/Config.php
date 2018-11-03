@@ -8,7 +8,6 @@ use PabloJoan\Feature\Value\{
     User,
     Url,
     Feature,
-    Bucketing,
     Variant
 };
 
@@ -170,39 +169,7 @@ class Config
     private function variantByPercentage (Feature $feature, string $id) : string
     {
         return $feature->enabled()->variantByPercentage(
-            $this->randomish($feature, $id)
+            $feature->bucketing()->number($id)
         );
-    }
-
-    /**
-     * A random-ish number between 0 and 100 based on the feature name and $id
-     * unless we are bucketing completely at random
-     */
-    private function randomish (Feature $feature, string $id) : float
-    {
-        switch ($feature->bucketing()->by()) {
-            case Bucketing::RANDOM:
-                $x = random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX;
-
-            default:
-                $x = $this->numberFromHash($feature->name() . "-$id");
-        }
-
-        return $x * 100;
-    }
-
-    /**
-     * Map a hex value to the half-open interval between 0 and 1 while
-     * preserving uniformity of the input distribution.
-     */
-    private function numberFromHash (string $strToHash) : float
-    {
-        $hash = hash('haval192,3', $strToHash);
-        $x = 0;
-        for ($i = 0; $i < 47; ++$i) {
-            $x = ($x * 2) + (hexdec($hash[$i]) < 8 ? 0 : 1);
-        }
-
-        return $x / 140737488355328; // ( 2 ** 47 ) is the max value of $x
     }
 }
