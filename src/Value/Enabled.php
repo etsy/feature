@@ -25,7 +25,7 @@ class Enabled
 
     function variantByPercentage (float $number) : string
     {
-        $threshHold = function ($percent) use ($number) {
+        $threshHold = function (int $percent) use ($number) : bool {
             return $number < $percent;
         };
 
