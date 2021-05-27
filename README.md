@@ -1,6 +1,3 @@
-[![Build Status](https://travis-ci.org/PabloJoan/feature.svg?branch=master)](https://travis-ci.org/PabloJoan/feature)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PabloJoan/feature/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PabloJoan/feature/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/PabloJoan/feature/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/PabloJoan/feature/?branch=master)
 [![GitHub license](https://img.shields.io/github/license/PabloJoan/feature.svg)](https://github.com/PabloJoan/feature/blob/master/LICENSE)
 
 Requires PHP 8.0 and above.
