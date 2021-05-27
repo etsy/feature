@@ -4,18 +4,11 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Bucketing;
 
-use PabloJoan\Feature\Value\User;
-use PabloJoan\Feature\Bucketing\Calculator\Random as Calculator;
-
-class Random implements Type
+final class Random implements Type
 {
-    function id (User $user) : string
+    public function randomIshNumber(string $idToHash = ''): float
     {
-        return $user->uaid() ?: 'no uaid';
-    }
-
-    function number (string $idToHash) : float
-    {
-        return (new Calculator)->number();
+        $x = random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX;
+        return $x * 100;
     }
 }

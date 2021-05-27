@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature;
 
-use PabloJoan\Feature\Value\{
-    Features,
-    User,
-    Url
-};
+use PabloJoan\Feature\Configurations\Collection;
 
 /**
  * The public API testing whether a specific feature is enabled and, if so, what
@@ -16,167 +12,46 @@ use PabloJoan\Feature\Value\{
  *
  * Primary public API:
  *
- *   Feature->isEnabled('foo');
- *   Feature->variant('foo');
+ *   Feature->isEnabled(featureName: 'foo');
+ *   Feature->variant(featureName: 'foo');
  *
  * For cases when we want to bucket on a user other than the currently logged in
- * user (e.g. to bucket how we treat listings by their owners) this secondary
- * API is available:
+ * user, on something else entirely (such as a shop ID), or any arbitrary
+ * string, pass the string value as a second parameter.
  *
- *   Feature->isEnabledFor('foo', $user);
- *   Feature->variantFor('foo', $user);
- *
- * And for case when we want to bucket on something else entirely (such as a
- * shop ID), we provide these two methods:
- *
- *   Feature->isEnabledBucketingBy('foo', $bucketingID);
- *   Feature->variantBucketingBy('foo', $bucketingID);
+ *   Feature->isEnabled(featureName: 'foo', id: $id);
+ *   Feature->variant(featureName: 'foo', id: $id);
  */
-class Feature
+final class Feature
 {
-    private $features;
-    private $user;
-    private $url;
-    private $source;
+    private Collection $features;
 
-    function __construct (array $input = null)
+    /**
+     * @param array<string|int, array{enabled: int|array, bucketing?: string}> $features
+     */
+    public function __construct(array $features)
     {
-        $this->features = new Features($input['features'] ?? []);
-        $this->user     = new User($input['user'] ?? []);
-        $this->url      = new Url($input['url'] ?? '');
-        $this->source   = $input['source'] ?? '';
+        $this->features = new Collection(configurations: $features);
     }
 
     /**
-     * Replaces all features with a new set of features.
+     * Test whether the named feature is enabled for a given user
+     * or arbitrary string.
      */
-    function changeFeatures (array $features) : Feature
+    public function isEnabled(string $featureName, string $id = ''): bool
     {
-        $this->features = new Features($features);
-        return $this;
+        return '' !== $this->variant(featureName: $featureName, id: $id);
     }
 
     /**
-     * Replaces one existing feature with a new feature config of the same name.
-     * If feature does not exist, it adds one new feature config to the
-     * collection of features.
+     * Get the name of the A/B variant for the named feature for
+     * the given user or arbitrary string. Returns an empty string
+     * if the feature is not enabled for $userId.
      */
-    function setFeature (string $name, array $feature) : Feature
+    public function variant(string $featureName, string $id = ''): string
     {
-        $this->features[$name] = $feature;
-        return $this;
-    }
-
-    /**
-     * Removes one existing feature from the collection.
-     */
-    function removeFeature (string $name) : Feature
-    {
-        unset($this->features[$name]);
-        return $this;
-    }
-
-    /**
-     * Replaces the user used to calculate variants.
-     */
-    function changeUser (array $user) : Feature
-    {
-        $this->user = new User($user);
-        return $this;
-    }
-
-    /**
-     * Replaces the url used to calculate variants.
-     */
-    function changeUrl (string $url) : Feature
-    {
-        $this->url = new Url($url);
-        return $this;
-    }
-
-    /**
-     * Replaces the source used to calculate variants.
-     */
-    function changeSource (string $source) : Feature
-    {
-        $this->source = $source;
-        return $this;
-    }
-
-    /**
-     * Test whether the named feature is enabled for the current user.
-     */
-    function isEnabled (string $name) : bool
-    {
-        $config = new Config($this->user, $this->url, $this->source);
-        return $config->isEnabled($this->features[$name]);
-    }
-
-    /**
-     * Test whether the named feature is enabled for a given user. This method
-     * should only be used when we want to bucket based on a user other than the
-     * current logged in user, e.g. if we are bucketing different listings based
-     * on their owner.
-     */
-    function isEnabledFor (string $name, array $user) : bool
-    {
-        $config = new Config(new User($user), $this->url, $this->source);
-        return $config->isEnabled($this->features[$name]);
-    }
-
-    /**
-     * Test whether the named feature is enabled for a given arbitrary string.
-     * This method should only be used when we want to bucket based on something
-     * other than a user, e.g. shops, teams, treasuries, tags, etc.
-     */
-    function isEnabledBucketingBy (string $name, string $id) : bool
-    {
-        $config = new Config(new User([]), $this->url, $this->source); 
-        return $config->isEnabledBucketingBy(
-            $this->features[$name],
-            $id
-        );
-    }
-
-    /**
-     * Get the name of the A/B variant for the named feature for the current
-     * user.
-     */
-    function variant (string $name) : string
-    {
-        $config = new Config($this->user, $this->url, $this->source);
-        return $config->variant($this->features[$name]);
-    }
-
-    /**
-     * Get the name of the A/B variant for the named feature for the given user.
-     * This method should only be used when we want to bucket based on a user
-     * other than the current logged in user, e.g. if we are bucketing different
-     * listings based on their owner.
-     */
-    function variantFor (string $name, array $user) : string
-    {
-        $config = new Config(new User($user), $this->url, $this->source);
-        return $config->variant($this->features[$name]);
-    }
-
-    /**
-     * Get the name of the A/B variant for the named feature, bucketing by the
-     * given bucketing ID. (For other checks such as admin, and user whitelists
-     * uses the current user which may or may not make sense. If it doesn't
-     * make sense, don't configure the feature to use those mechanisms.)
-     */
-    function variantBucketingBy (string $name, string $id) : string
-    {
-        $config = new Config(new User([]), $this->url, $this->source);
-        return $config->variantBucketingBy(
-            $this->features[$name],
-            $id
-        );
-    }
-
-    function description (string $name) : string
-    {
-        return $this->features[$name]->description();
+        return $this->features
+            ->get(featureName: $featureName)
+            ->variantByPercentage(id: $id);
     }
 }

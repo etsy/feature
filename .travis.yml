@@ -1,7 +1,7 @@
 language: php
 
 php:
-  - '7.2'
+  - '8.0'
   - nightly
 
-script: composer install --no-interaction && composer phpstan && composer phpunit
+script: composer install --no-interaction && composer test
