@@ -1,7 +1,0 @@
-language: php
-
-php:
-  - '8.0'
-  - nightly
-
-script: composer install --no-interaction && composer test
