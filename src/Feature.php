@@ -27,7 +27,7 @@ final class Feature
     private Collection $features;
 
     /**
-     * @param array<string|int, array{enabled: int|array, bucketing?: string}> $features
+     * @param array<string, array{enabled: int|array, bucketing?: string}> $features
      */
     public function __construct(array $features)
     {
@@ -40,7 +40,7 @@ final class Feature
      */
     public function isEnabled(string $featureName, string $id = ''): bool
     {
-        return '' !== $this->variant(featureName: $featureName, id: $id);
+        return (bool) $this->variant(featureName: $featureName, id: $id);
     }
 
     /**

@@ -12,12 +12,12 @@ final class Collection
     private array $configurations;
 
     /**
-     * @param array<string|int, array{enabled: int|array, bucketing?: string}> $configurations
+     * @param array<string, array{enabled: int|array, bucketing?: string}> $configurations
      */
     public function __construct(array $configurations)
     {
         foreach ($configurations as $featureName => $config) {
-            $this->configurations[(string)$featureName] = new Config(config: $config);
+            $this->configurations[$featureName] = new Config(featureName: $featureName, config: $config);
         }
     }
 

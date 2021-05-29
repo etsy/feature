@@ -31,7 +31,7 @@
         "squizlabs/php_codesniffer": "*"
     },
     "scripts": {
-        "test": "./vendor/bin/phpcbf --standard=PSR12 src/ tests/ && ./vendor/bin/phpstan analyse --level=max --debug -vvv src/ tests/ && ./vendor/bin/psalm && php -d xdebug.mode=coverage ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/ && ./vendor/bin/phpcs --standard=PSR12 src/ tests/"
+        "test": "./vendor/bin/phpcbf --standard=PSR12 src/ tests/ && ./vendor/bin/phpstan analyse --level=max --debug -vvv src/ && ./vendor/bin/psalm && php -d xdebug.mode=coverage ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/ && ./vendor/bin/phpcs --standard=PSR12 src/ tests/"
     },
     "autoload": {
         "psr-4": {

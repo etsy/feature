@@ -12,17 +12,17 @@ class FeatureTest extends TestCase
     public function testFeatures(): void
     {
         $feature = new Feature([
-            '1' => [
+            'test_feature_1' => [
                 'enabled' => 100
             ],
-            '2' => [
+            'test_feature_2' => [
                 'enabled' => 0
             ],
-            '3' => [
+            'test_feature_3' => [
                 'enabled' => 50,
                 'bucketing' => 'id'
             ],
-            '4' => [
+            'test_feature_4' => [
                 'enabled' => [
                     'test1' => 20,
                     'test2' => 30,
@@ -31,63 +31,63 @@ class FeatureTest extends TestCase
                 ],
                 'bucketing' => 'id'
             ],
-            '5' => [
+            'test_feature_5' => [
                 'enabled' => 0,
                 'bucketing' => 'random'
             ],
-            '6' => [
+            'test_feature_6' => [
                 'enabled' => 0,
                 'bucketing' => 'id'
             ],
-            '7' => [
+            'test_feature_7' => [
                 'enabled' => 100,
                 'bucketing' => 'random'
             ],
-            '8' => [
+            'test_feature_8' => [
                 'enabled' => 100,
                 'bucketing' => 'id'
             ]
         ]);
 
-        $this->assertEquals($feature->isEnabled('1'), true);
-        $this->assertEquals($feature->isEnabled('2'), false);
-        $this->assertEquals($feature->isEnabled('3'), false);
-        $this->assertEquals($feature->isEnabled('4'), true);
-        $this->assertEquals($feature->isEnabled('5'), false);
-        $this->assertEquals($feature->isEnabled('6'), false);
-        $this->assertEquals($feature->isEnabled('7'), true);
-        $this->assertEquals($feature->isEnabled('8'), true);
+        $this->assertEquals($feature->isEnabled('test_feature_1'), true);
+        $this->assertEquals($feature->isEnabled('test_feature_2'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_3'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_4'), true);
+        $this->assertEquals($feature->isEnabled('test_feature_5'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_6'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_7'), true);
+        $this->assertEquals($feature->isEnabled('test_feature_8'), true);
 
-        $this->assertEquals($feature->isEnabled('1', 'test'), true);
-        $this->assertEquals($feature->isEnabled('2', 'test'), false);
-        $this->assertEquals($feature->isEnabled('3', 'test'), false);
-        $this->assertEquals($feature->isEnabled('4', 'test'), true);
-        $this->assertEquals($feature->isEnabled('5', 'test'), false);
-        $this->assertEquals($feature->isEnabled('6', 'test'), false);
-        $this->assertEquals($feature->isEnabled('7', 'test'), true);
-        $this->assertEquals($feature->isEnabled('8', 'test'), true);
+        $this->assertEquals($feature->isEnabled('test_feature_1', 'test'), true);
+        $this->assertEquals($feature->isEnabled('test_feature_2', 'test'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_3', 'test'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_4', 'test'), true);
+        $this->assertEquals($feature->isEnabled('test_feature_5', 'test'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_6', 'test'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_7', 'test'), true);
+        $this->assertEquals($feature->isEnabled('test_feature_8', 'test'), true);
 
-        $this->assertEquals($feature->variant('1'), '0');
-        $this->assertEquals($feature->variant('2'), '');
-        $this->assertEquals($feature->variant('3'), '');
-        $this->assertEquals($feature->variant('4'), 'test4');
-        $this->assertEquals($feature->variant('5'), '');
-        $this->assertEquals($feature->variant('6'), '');
-        $this->assertEquals($feature->variant('7'), '0');
-        $this->assertEquals($feature->variant('8'), '0');
+        $this->assertEquals($feature->variant('test_feature_1'), 'test_feature_1');
+        $this->assertEquals($feature->variant('test_feature_2'), '');
+        $this->assertEquals($feature->variant('test_feature_3'), '');
+        $this->assertEquals($feature->variant('test_feature_4'), 'test4');
+        $this->assertEquals($feature->variant('test_feature_5'), '');
+        $this->assertEquals($feature->variant('test_feature_6'), '');
+        $this->assertEquals($feature->variant('test_feature_7'), 'test_feature_7');
+        $this->assertEquals($feature->variant('test_feature_8'), 'test_feature_8');
 
-        $this->assertEquals($feature->variant('1', 'test'), '0');
-        $this->assertEquals($feature->variant('2', 'test'), '');
-        $this->assertEquals($feature->variant('3', 'test'), '');
-        $this->assertEquals($feature->variant('4', 'test'), 'test4');
-        $this->assertEquals($feature->variant('5', 'test'), '');
-        $this->assertEquals($feature->variant('6', 'test'), '');
-        $this->assertEquals($feature->variant('7', 'test'), '0');
-        $this->assertEquals($feature->variant('8', 'test'), '0');
+        $this->assertEquals($feature->variant('test_feature_1', 'test'), 'test_feature_1');
+        $this->assertEquals($feature->variant('test_feature_2', 'test'), '');
+        $this->assertEquals($feature->variant('test_feature_3', 'test'), '');
+        $this->assertEquals($feature->variant('test_feature_4', 'test'), 'test4');
+        $this->assertEquals($feature->variant('test_feature_5', 'test'), '');
+        $this->assertEquals($feature->variant('test_feature_6', 'test'), '');
+        $this->assertEquals($feature->variant('test_feature_7', 'test'), 'test_feature_7');
+        $this->assertEquals($feature->variant('test_feature_8', 'test'), 'test_feature_8');
 
         try {
             $feature = new Feature([
-                '3' => [
+                'test_feature_3' => [
                     'enabled' => 50,
                     'bucketing' => 'not supported bucketing'
                 ]

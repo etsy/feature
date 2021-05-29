@@ -15,7 +15,7 @@ use PabloJoan\Feature\Bucketing\Random as BucketRandom;
 final class Config
 {
     /**
-     * @var int[]
+     * @var array<string, int>
      */
     private array $percentages;
 
@@ -24,16 +24,10 @@ final class Config
     /**
      * @param array{enabled: int|array, bucketing?: string} $config
      */
-    public function __construct(array $config = ['enabled' => 0])
+    public function __construct(string $featureName, array $config = ['enabled' => 0])
     {
-        $bucketing = $config['bucketing'] ?? 'random';
-        $this->bucketing = match ($bucketing) {
-            'random' => new BucketRandom(),
-            'id' => new BucketId(),
-            default => throw new \Exception("bucketing option: $bucketing not supported.")
-        };
-
-        $this->parseEnabled(enabled: $config['enabled'] ?? 0);
+        $this->percentages = $this->parseEnabled(featureName: $featureName, enabled: $config['enabled']);
+        $this->bucketing = $this->parseBucketing(bucketing: $config['bucketing'] ?? 'random');
     }
 
     /**
@@ -43,12 +37,10 @@ final class Config
     public function variantByPercentage(string $id): string
     {
         $number = $this->bucketing->randomIshNumber(idToHash: $id);
-
         $percentRange = fn (int $percent): bool => $number < $percent;
 
-        $variant = (string) key(array_filter($this->percentages, $percentRange));
-
-        return ($variant || $variant === '0') ? $variant : '';
+        $variant = key(array_filter($this->percentages, $percentRange));
+        return $variant ? $variant : '';
     }
 
     /**
@@ -56,15 +48,36 @@ final class Config
      * Returns the upper-boundary of the variants percentage.
      *
      * @param int|array<string,int> $enabled
+     * @return array<string, int>
      */
-    private function parseEnabled(int|array $enabled): void
+    private function parseEnabled(string $featureName, int|array $enabled): array
     {
         $total = 0;
-        foreach ((array) $enabled as $variant => $percent) {
+        $percentages = [];
+
+        $enabled = is_int($enabled) ? [$featureName => $enabled] : $enabled;
+
+        foreach ($enabled as $variant => $percent) {
             $total += $this->percentage(percent: $percent);
-            $this->percentages[(string)$variant] = $total;
+            $percentages[$variant] = $total;
         }
-        asort($this->percentages, SORT_NUMERIC);
+
+        asort($percentages, SORT_NUMERIC);
+
+        return $percentages;
+    }
+
+    /**
+     * Parse the 'bucketing' property of the feature's config stanza.
+     * Determines how the variants will be bucketed.
+     */
+    private function parseBucketing(string $bucketing): BucketType
+    {
+        return match ($bucketing) {
+            'random' => new BucketRandom(),
+            'id' => new BucketId(),
+            default => throw new \Exception("bucketing option: $bucketing not supported.")
+        };
     }
 
     private function percentage(int $percent): int
