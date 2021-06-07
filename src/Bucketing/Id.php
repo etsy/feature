@@ -12,17 +12,14 @@ final class Id implements Type
      */
     public function randomIshNumber(string $idToHash = ''): float
     {
-        $hash = hash('haval192,3', $idToHash);
-
-        $maxIterations = strlen($hash) - 1;
-        $maxValueOfX = 2 ** $maxIterations;
+        $hash = hash('ripemd256', $idToHash);
 
         $x = 0;
-        for ($i = 0; $i < $maxIterations; ++$i) {
+        for ($i = 0; $i < 63; ++$i) {
             $x = ($x * 2) + (hexdec($hash[$i]) < 8 ? 0 : 1);
         }
 
-        $x = $x / $maxValueOfX;
+        $x = $x / PHP_INT_MAX;
 
         return $x * 100;
     }

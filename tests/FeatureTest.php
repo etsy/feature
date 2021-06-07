@@ -51,7 +51,7 @@ class FeatureTest extends TestCase
 
         $this->assertEquals($feature->isEnabled('test_feature_1'), true);
         $this->assertEquals($feature->isEnabled('test_feature_2'), false);
-        $this->assertEquals($feature->isEnabled('test_feature_3'), false);
+        $this->assertEquals($feature->isEnabled('test_feature_3'), true);
         $this->assertEquals($feature->isEnabled('test_feature_4'), true);
         $this->assertEquals($feature->isEnabled('test_feature_5'), false);
         $this->assertEquals($feature->isEnabled('test_feature_6'), false);
@@ -69,8 +69,8 @@ class FeatureTest extends TestCase
 
         $this->assertEquals($feature->variant('test_feature_1'), 'test_feature_1');
         $this->assertEquals($feature->variant('test_feature_2'), '');
-        $this->assertEquals($feature->variant('test_feature_3'), '');
-        $this->assertEquals($feature->variant('test_feature_4'), 'test4');
+        $this->assertEquals($feature->variant('test_feature_3'), 'test_feature_3');
+        $this->assertEquals($feature->variant('test_feature_4'), 'test2');
         $this->assertEquals($feature->variant('test_feature_5'), '');
         $this->assertEquals($feature->variant('test_feature_6'), '');
         $this->assertEquals($feature->variant('test_feature_7'), 'test_feature_7');
