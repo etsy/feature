@@ -7,20 +7,22 @@ namespace PabloJoan\Feature\Bucketing;
 final class Id implements Type
 {
     /**
-     * Map a hex value to the half-open interval between 0 and 1 while
-     * preserving uniformity of the input distribution.
+     * hexdec('ffffffff') is the largest possible outcome
+     * of hash('crc32c', $idToHash)
+     */
+    private const TOTAL = 4294967295;
+
+    /**
+     * Convert Id string to a Hex
+     * Convert Hex to Dec int
+     * Get a percentage float
      */
     public function randomIshNumber(string $idToHash = ''): float
     {
-        $hash = hash('ripemd256', $idToHash);
+        $hex = hash('crc32c', $idToHash);
+        $dec = hexdec($hex);
 
-        $x = 0;
-        for ($i = 0; $i < 63; ++$i) {
-            $x = ($x * 2) + (hexdec($hash[$i]) < 8 ? 0 : 1);
-        }
-
-        $x = $x / PHP_INT_MAX;
-
+        $x = $dec / self::TOTAL;
         return $x * 100;
     }
 }
