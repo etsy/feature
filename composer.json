@@ -1,0 +1,46 @@
+{
+    "name": "pablojoan/feature",
+    "description": "PSR-4 compliant Feature Flags library",
+    "authors": [
+        {
+            "name": "Pablo Iglesias",
+            "email": "iglesias.pablo10@gmail.com"
+        }
+    ],
+    "license": "Unlicense",
+    "keywords": [
+        "feature-flags",
+        "ab-testing",
+        "ab-test",
+        "feature",
+        "feature-flagging",
+        "feature-toggles",
+        "feature-toggle",
+        "ab-tests",
+        "a-b-testing",
+        "a-b-test",
+        "toggle"
+    ],
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "phpstan/phpstan": "*",
+        "vimeo/psalm": "*",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpcbf --standard=PSR12 src/ tests/ && ./vendor/bin/phpstan analyse --level=max --debug -vvv src/ && ./vendor/bin/psalm && php -d xdebug.mode=coverage ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/ && ./vendor/bin/phpcs --standard=PSR12 src/ tests/"
+    },
+    "autoload": {
+        "psr-4": {
+            "PabloJoan\\Feature\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PabloJoan\\Feature\\Tests\\": "tests/"
+        }
+    }
+}
