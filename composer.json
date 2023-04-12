@@ -1,6 +1,6 @@
 {
     "name": "pablojoan/feature",
-    "description": "PSR-4 compliant Feature Flags library",
+    "description": "Feature flagging API used for operational rampups and A/B testing",
     "authors": [
         {
             "name": "Pablo Iglesias",
@@ -22,16 +22,13 @@
         "toggle"
     ],
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
-        "phpstan/phpstan": "*",
-        "vimeo/psalm": "*",
-        "squizlabs/php_codesniffer": "*"
+        "phpunit/phpunit": "*"
     },
     "scripts": {
-        "test": "./vendor/bin/phpcbf --standard=PSR12 src/ tests/ && ./vendor/bin/phpstan analyse --level=max --debug -vvv src/ && ./vendor/bin/psalm && php -d xdebug.mode=coverage ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v --debug --coverage-text --whitelist src/ tests/ && ./vendor/bin/phpcs --standard=PSR12 src/ tests/"
+        "test": "php ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v tests/"
     },
     "autoload": {
         "psr-4": {

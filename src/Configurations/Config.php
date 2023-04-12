@@ -4,84 +4,62 @@ declare(strict_types=1);
 
 namespace PabloJoan\Feature\Configurations;
 
+use PabloJoan\Feature\Bucketing\Enum as BucketOptions;
 use PabloJoan\Feature\Bucketing\Type as BucketType;
-use PabloJoan\Feature\Bucketing\Id as BucketId;
-use PabloJoan\Feature\Bucketing\Random as BucketRandom;
 
 /**
- * A feature that can be enabled, disabled, ramped up, and
- * A/B tested.
+ * A feature that can be enabled, disabled, ramped up, and A/B tested.
  */
-final class Config
+final readonly class Config
 {
-    /**
-     * @var array<string, int>
-     */
-    private array $percentages;
-
+    private array      $variantIntegerRanges;
     private BucketType $bucketing;
 
-    /**
-     * @param array{enabled: int|array, bucketing?: string} $config
-     */
-    public function __construct(string $featureName, array $config = ['enabled' => 0])
+    public function __construct(array $config = ['variants' => ['' => 100]])
     {
-        $this->percentages = $this->parseEnabled(featureName: $featureName, enabled: $config['enabled']);
-        $this->bucketing = $this->parseBucketing(bucketing: $config['bucketing'] ?? 'random');
+        $this->variantIntegerRanges = $this->calculateIntegerRangeFromVariants(
+            $config['variants'] ?? []
+        );
+
+        $bucketingOption = BucketOptions::tryFrom($config['bucketing'] ?? '');
+        $bucketingOption ??= BucketOptions::RANDOM;
+        $this->bucketing = $bucketingOption->getBucketingClass();
     }
 
     /**
-     * The percentage of users who should see each variant to
-     * map a random-ish number to a particular variant.
+     * Using a random 0 - 100 number or a 0 - 100 number hashed from an id,
+     * Select the variant where this random or hashed integer falls within it's
+     * calculated integer range.
      */
-    public function variantByPercentage(string $id): string
+    public function pickVariantOutOfHat(string $id): string
     {
-        $number = $this->bucketing->randomIshNumber(idToHash: $id);
-        $percentRange = fn (int $percent): bool => $number < $percent;
+        $hashOrRandomNumber = $this->bucketing->strToIntHash($id);
 
-        $variant = key(array_filter($this->percentages, $percentRange));
-        return $variant ? $variant : '';
+        $variant = key(array_filter(
+            $this->variantIntegerRanges,
+            fn (int $variantRange): bool => $hashOrRandomNumber < $variantRange
+        ));
+
+        return $variant ?? '';
     }
 
     /**
-     * Parse the 'enabled' property of the feature's config stanza.
-     * Returns the upper-boundary of the variants percentage.
-     *
-     * @param int|array<string,int> $enabled
-     * @return array<string, int>
+     * Parse the 'variants' property of the feature's config stanza.
+     * Returns the upper-boundary of the variants percentage and uses that
+     * upper-boundary integer as its range of integers.
      */
-    private function parseEnabled(string $featureName, int|array $enabled): array
+    private function calculateIntegerRangeFromVariants(array $variants): array
     {
         $total = 0;
         $percentages = [];
 
-        $enabled = is_int($enabled) ? [$featureName => $enabled] : $enabled;
-
-        foreach ($enabled as $variant => $percent) {
-            $total += $this->percentage(percent: $percent);
+        foreach ($variants as $variant => $percent) {
+            $total += $percent;
             $percentages[$variant] = $total;
         }
 
         asort($percentages, SORT_NUMERIC);
 
         return $percentages;
-    }
-
-    /**
-     * Parse the 'bucketing' property of the feature's config stanza.
-     * Determines how the variants will be bucketed.
-     */
-    private function parseBucketing(string $bucketing): BucketType
-    {
-        return match ($bucketing) {
-            'random' => new BucketRandom(),
-            'id' => new BucketId(),
-            default => throw new \Exception("bucketing option: $bucketing not supported.")
-        };
-    }
-
-    private function percentage(int $percent): int
-    {
-        return ($percent >= 0 && $percent <= 100) ? $percent : 0;
     }
 }

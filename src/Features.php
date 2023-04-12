@@ -20,18 +20,15 @@ use PabloJoan\Feature\Configurations\Collection;
  * string, pass the string value as a second parameter.
  *
  *   Feature->isEnabled(featureName: 'foo', id: $id);
- *   Feature->variant(featureName: 'foo', id: $id);
+ *   Feature->getEnabledVariant(featureName: 'foo', id: $id);
  */
-final class Feature
+final readonly class Features
 {
     private Collection $features;
 
-    /**
-     * @param array<string, array{enabled: int|array, bucketing?: string}> $features
-     */
     public function __construct(array $features)
     {
-        $this->features = new Collection(configurations: $features);
+        $this->features = new Collection($features);
     }
 
     /**
@@ -40,18 +37,21 @@ final class Feature
      */
     public function isEnabled(string $featureName, string $id = ''): bool
     {
-        return (bool) $this->variant(featureName: $featureName, id: $id);
+        return (bool) $this->getEnabledVariant(
+            featureName: $featureName,
+            id: $id
+        );
     }
 
     /**
-     * Get the name of the A/B variant for the named feature for
-     * the given user or arbitrary string. Returns an empty string
-     * if the feature is not enabled for $userId.
+     * Get the name of the enabled variant for the named feature for the given
+     * id. Returns an empty string if the feature is not enabled.
      */
-    public function variant(string $featureName, string $id = ''): string
+    public function getEnabledVariant(
+        string $featureName,
+        string $id = ''
+    ): string
     {
-        return $this->features
-            ->get(featureName: $featureName)
-            ->variantByPercentage(id: $id);
+        return $this->features->get($featureName)->pickVariantOutOfHat($id);
     }
 }

@@ -12,17 +12,17 @@ composer require pablojoan/feature
 
 ```php
 
-use PabloJoan\Feature\Feature; // Import the namespace.
+use PabloJoan\Feature\Features; // Import the namespace.
 
-$config = [
+$featureConfigs = [
     'foo' => [
-        'enabled' => [
+        'variants' => [
             'variant1' => 100, //100% chance this variable will be chosen
-            'variant2' => 0 //0% chance this variable will be chosen
+            'variant2' => 0    //0% chance this variable will be chosen
         ]
     ],
     'bar' => [
-        'enabled' => [
+        'variants' => [
             'variant1' => 25, //25% chance this variable will be chosen
             'variant2' => 25, //25% chance this variable will be chosen
             'variant3' => 50 //50% chance this variable will be chosen
@@ -31,10 +31,10 @@ $config = [
     ]
 ];
 
-$feature = new Feature($config);
+$features = new Features($featureConfigs);
 
-$feature->isEnabled('foo');   // true
-$feature->variant('foo');     // 'variant1'
+$features->isEnabled(featureName: 'foo');      // true
+$features->enabledVariant(featureName: 'foo'); // 'variant1'
 ```
 
 For a quick summary and common use cases, please read the rest of this README.
@@ -51,28 +51,28 @@ between and can comprise a number of related variants.
 
 The two main API entry points are:
 ```php
-    $feature->isEnabled('my_feature')
+    $features->isEnabled(featureName: 'my_feature')
 ```
 which returns true when `my_feature` is enabled and, for multi-variant features:
 ```php
-    $feature->variant('my_feature')
+    $features->getEnabledVariant(featureName: 'my_feature')
 ```
 which returns the name of the particular variant which should be used.
 
 The single argument to each of these methods is the name of the
 feature to test.
 
-A typical use of `$feature->isEnabled` for a single-variant feature
+A typical use of `$features->isEnabled` for a single-variant feature
 would look something like this:
 ```php
-    if ($feature->isEnabled('my_feature')) {
+    if ($features->isEnabled(featureName: 'my_feature')) {
         // do stuff
     }
 ```
 For a multi-variant feature, we can determine the appropriate code to run for
 each variant with something like this:
 ```php
-    switch ($feature->variant('my_feature')) {
+    switch ($features->getEnabledVariant(featureName: 'my_feature')) {
       case 'foo':
           // do stuff appropriate for the 'foo' variant
           break;
@@ -81,6 +81,20 @@ each variant with something like this:
           break;
     }
 ```
+If a feature is bucketed by id, then we pass the id string to
+`$features->isEnabled` and `$features->getEnabledVariant` as a second parameter
+```php
+    $isMyFeatureEnabled = $features->isEnabled(
+        featureName: 'my_feature',
+        id: 'unique_id_string'
+    );
+
+    $variant = $features->getEnabledVariant(
+        featureName: 'my_feature',
+        id: 'unique_id_string'
+    );
+```
+
 
 ## Configuration cookbook
 
@@ -90,24 +104,24 @@ cases along with the most concise way to write the configuration.
 
 ### A totally enabled feature:
 ```php
-    $server_config['foo'] = ['enabled' => 100];
+    $server_config['foo'] = ['variants' => ['enabled' => 100]];
 ```
 ### A totally disabled feature:
 ```php
-    $server_config['foo'] = ['enabled' => 0];
+    $server_config['foo'] = ['variants' => ['enabled' => 0]];
 ```
 ### Feature with winning variant turned on for everyone
 ```php
-    $server_config['foo'] = ['enabled' => ['blue_background' => 100]];
+    $server_config['foo'] = ['variants' => ['blue_background' => 100]];
 ```
 ### Single-variant feature ramped up to 1% of users.
 ```php
-    $server_config['foo'] = ['enabled' => 1];
+    $server_config['foo'] = ['variants' => ['enabled' => 1]];
 ```
 ### Multi-variant feature ramped up to 1% of users for each variant.
 ```php
     $server_config['foo'] = [
-       'enabled' => [
+       'variants' => [
            'blue_background'   => 1,
            'orange_background' => 1,
            'pink_background'   => 1,
@@ -117,31 +131,31 @@ cases along with the most concise way to write the configuration.
 ### Enabled for 10% of regular users.
 ```php
     $server_config['foo'] = [
-       'enabled' => 10
+       'variants' => ['enabled' => 10]
     ];
 ```
 ### Feature ramped up to 1% of requests, bucketing at random rather than by id
 ```php
     $server_config['foo'] = [
-       'enabled' => 1,
+       'variants' => ['enabled' => 1],
        'bucketing' => 'random'
     ];
 ```
 ### Feature ramped up to 40% of requests, bucketing by id rather than at random
 ```php
     $server_config['foo'] = [
-       'enabled' => 40,
+       'variants' => ['enabled' => 40],
        'bucketing' => 'id'
     ];
 ```
 ### Single-variant feature in 50/50 A/B test
 ```php
-    $server_config['foo'] = ['enabled' => 50];
+    $server_config['foo'] = ['variants' => ['enabled' => 50]];
 ```
 ### Multi-variant feature in A/B test with 20% of users seeing each variant (and 40% left in control group).
 ```php
     $server_config['foo'] = [
-       'enabled' => [
+       'variants' => [
            'blue_background'   => 20,
            'orange_background' => 20,
            'pink_background'   => 20
@@ -154,14 +168,10 @@ Each feature’s config stanza controls when the feature is enabled and what
 variant should be used when it is.
 
 The value of a feature config stanza is an array with a number of special
-keys, the most important of which is `'enabled'`.
+keys, the most important of which is `'variants'`.
 
-In its full form, the value of the `'enabled'` property an array whose keys are
-names of variants and whose values are the percentage of requests that should
-see each variant.
-
-As a shorthand to support the common case of a feature with only one variant,
-`'enabled'` can also be specified as a percentage from 0 to 100.
+The value of the `'variants'` property an array whose keys are names of variants
+and whose values are the percentage of requests that should see each variant.
 
 The remaining feature config property is `'bucketing'`. Bucketing specifies 
 how users are bucketed when a feature is enabled for only a percentage of users.
@@ -179,15 +189,12 @@ There are a few ways to misuse the Feature API or misconfigure a feature that
 may be detected. (Some of these are not currently detected but may be in the
 future.)
 
-  1. Setting `'enabled'` to numeric value less than 0 or greater than 100.
-
-  2. Setting the percentage value of a variant in `'enabled'` to a value less
+  1. Setting the percentage value of a variant in `'variants'` to a value less
      than 0 or greater than 100.
 
-  3. Setting `'enabled'` such that the sum of the variant percentages is greater
-     than 100.
+  2. Setting `'variants'` such that the sum of the variant percentages is 
+     greater than 100.
 
-  4. Setting `'enabled'` to a non-numeric, non-array value.
+  3. Setting `'variants'` to a non-array value.
 
-  5. Setting `'bucketing'` to `'id'` and not providing an id string to the
-     `$feature->variant` or the `$feature->isEnabled` function.
+  4. Setting `'bucketing'` to any value that is not `'id'` or `'random'`.
