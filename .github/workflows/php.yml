@@ -15,9 +15,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: "Checkout"
     - uses: actions/checkout@v3
+
+    - name: "Install PHP"
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
+        tools: composer
 
     - name: Install dependencies
       run: composer install --no-interaction
