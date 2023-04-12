@@ -1,6 +1,6 @@
 [![GitHub license](https://img.shields.io/github/license/PabloJoan/feature.svg)](https://github.com/PabloJoan/feature/blob/master/LICENSE)
 
-Requires PHP 8.0 and above.
+Requires PHP 8.2 and above.
 
 # Installation
 
