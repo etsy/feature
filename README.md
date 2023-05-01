@@ -34,7 +34,7 @@ $featureConfigs = [
 $features = new Features($featureConfigs);
 
 $features->isEnabled(featureName: 'foo');      // true
-$features->enabledVariant(featureName: 'foo'); // 'variant1'
+$features->getEnabledVariant(featureName: 'foo'); // 'variant1'
 ```
 
 For a quick summary and common use cases, please read the rest of this README.
