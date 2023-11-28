@@ -22,13 +22,13 @@
         "toggle"
     ],
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.3"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
     },
     "scripts": {
-        "test": "php ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky -v tests/"
+        "test": "php ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky tests/"
     },
     "autoload": {
         "psr-4": {

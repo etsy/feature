@@ -1,31 +1,30 @@
 name: PHP Composer
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    push:
+        branches: ["master"]
+    pull_request:
+        branches: ["master"]
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
-  build:
+    build:
+        runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
+        steps:
+            - name: "Checkout"
+              uses: actions/checkout@v3
 
-    steps:
-    - name: "Checkout"
-      uses: actions/checkout@v3
+            - name: "Install PHP"
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.3"
+                  tools: composer
 
-    - name: "Install PHP"
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        tools: composer
+            - name: Install dependencies
+              run: composer install --no-interaction
 
-    - name: Install dependencies
-      run: composer install --no-interaction
-
-    - name: Run test suite
-      run: composer test
+            - name: Run test suite
+              run: composer test

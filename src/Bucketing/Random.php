@@ -16,9 +16,8 @@ final readonly class Random implements Type
         $this->randomizer = new Randomizer(new Xoshiro256StarStar());
     }
 
-    public function strToIntHash(string $idToHash = ''): float
+    public function strToIntHash(string $idToHash): int
     {
-        $decimal = $this->randomizer->getInt(0, PHP_INT_MAX) / PHP_INT_MAX;
-        return $decimal * 100;
+        return $this->randomizer->getInt(0, 100);
     }
 }

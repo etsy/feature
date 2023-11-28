@@ -7,8 +7,8 @@ namespace PabloJoan\Feature\Bucketing;
 interface Type
 {
     /**
-     * A hash number between 0 and 100 based on an id string
+     * A hash that maps the given string to a number between 0 and 100 
      * unless we are bucketing completely at random
      */
-    public function strToIntHash(string $idToHash = ''): float;
+    public function strToIntHash(string $idToHash): int;
 }

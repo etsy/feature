@@ -10,20 +10,20 @@ final readonly class Id implements Type
      * hexdec('ffffffff') is the largest possible outcome
      * of hash('crc32c', $idToHash)
      */
-    private const TOTAL     = 4294967295;
-    private const HASH_ALGO = 'crc32c';
+    private const int    TOTAL     = 4294967295;
+    private const string HASH_ALGO = 'crc32c';
 
     /**
      * Convert Id string to a Hex
      * Convert Hex to Dec int
-     * Get a percentage float
+     * Get a percentage int
      */
-    public function strToIntHash(string $idToHash = ''): float
+    public function strToIntHash(string $idToHash): int
     {
         $hex = hash(self::HASH_ALGO, $idToHash);
         $dec = hexdec($hex);
 
         $x = $dec / self::TOTAL;
-        return $x * 100;
+        return (int) round($x * 100);
     }
 }
