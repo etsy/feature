@@ -35,12 +35,16 @@ final readonly class Config
     {
         $hashOrRandomNumber = $this->bucketing->strToIntHash($id);
 
-        $variant = key(array_filter(
-            $this->variantIntegerRanges,
-            fn (int $variantRange): bool => $hashOrRandomNumber < $variantRange
-        ));
+        foreach ($this->variantIntegerRanges as $variant => $variantRange) {
+            if ($hashOrRandomNumber < $variantRange) {
+                return $variant;
+            }
+            if ($hashOrRandomNumber === 100 && $variantRange === 100) {
+                return $variant;
+            }
+        }
 
-        return $variant ?? '';
+        return '';
     }
 
     /**
