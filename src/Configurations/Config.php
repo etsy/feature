@@ -15,7 +15,7 @@ final readonly class Config
     private array      $variantIntegerRanges;
     private BucketType $bucketing;
 
-    public function __construct(array $config = ['variants' => ['' => 100]])
+    public function __construct(array $config)
     {
         $this->variantIntegerRanges = $this->calculateIntegerRangeFromVariants(
             $config['variants'] ?? []
