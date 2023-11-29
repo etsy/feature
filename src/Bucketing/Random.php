@@ -18,6 +18,6 @@ final readonly class Random implements Type
 
     public function strToIntHash(string $idToHash): int
     {
-        return $this->randomizer->getInt(0, 100);
+        return $this->randomizer->getInt(0, 99);
     }
 }

@@ -39,9 +39,6 @@ final readonly class Config
             if ($hashOrRandomNumber < $variantRange) {
                 return $variant;
             }
-            if ($hashOrRandomNumber === 100 && $variantRange === 100) {
-                return $variant;
-            }
         }
 
         return '';

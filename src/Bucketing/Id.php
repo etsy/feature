@@ -23,7 +23,7 @@ final readonly class Id implements Type
         $hex = hash(self::HASH_ALGO, $idToHash);
         $dec = hexdec($hex);
 
-        $x = $dec / self::TOTAL;
-        return (int) round($x * 100);
+        $x = (int) round($dec / self::TOTAL * 100);
+        return $x === 100 ? 99 : $x;
     }
 }
