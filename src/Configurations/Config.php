@@ -27,11 +27,11 @@ final readonly class Config
     }
 
     /**
-     * Using a random 0 - 100 number or a 0 - 100 number hashed from an id,
+     * Using a random 0 - 99 number or a 0 - 99 number hashed from an id,
      * Select the variant where this random or hashed integer falls within it's
      * calculated integer range.
      */
-    public function pickVariantOutOfHat(string $id): string
+    public function getEnabledVariant(string $id): string
     {
         $hashOrRandomNumber = $this->bucketing->strToIntHash($id);
 

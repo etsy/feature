@@ -52,6 +52,6 @@ final readonly class Features
         string $id = ''
     ): string
     {
-        return $this->features->get($featureName)->pickVariantOutOfHat($id);
+        return $this->features->get($featureName)->getEnabledVariant($id);
     }
 }
