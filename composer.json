@@ -1,0 +1,43 @@
+{
+    "name": "pablojoan/feature",
+    "description": "Feature flagging API used for operational rampups and A/B testing",
+    "authors": [
+        {
+            "name": "Pablo Iglesias",
+            "email": "iglesias.pablo10@gmail.com"
+        }
+    ],
+    "license": "Unlicense",
+    "keywords": [
+        "feature-flags",
+        "ab-testing",
+        "ab-test",
+        "feature",
+        "feature-flagging",
+        "feature-toggles",
+        "feature-toggle",
+        "ab-tests",
+        "a-b-testing",
+        "a-b-test",
+        "toggle"
+    ],
+    "require": {
+        "php": ">=8.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "scripts": {
+        "test": "php ./vendor/bin/phpunit --stop-on-failure --fail-on-warning --fail-on-risky tests/"
+    },
+    "autoload": {
+        "psr-4": {
+            "PabloJoan\\Feature\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PabloJoan\\Feature\\Tests\\": "tests/"
+        }
+    }
+}
